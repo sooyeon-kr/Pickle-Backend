@@ -1,0 +1,12 @@
+server:
+  port: 8003  # 임의의 가용 포트를 사용 (특정 포트를 원하면 숫자를 설정)
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://localhost:3306/customer
+    password: '7643'
+
+  application:
+    name: pickle-customer  # 서비스 이름
