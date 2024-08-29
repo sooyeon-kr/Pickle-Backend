@@ -1,4 +1,4 @@
-package com.example.real_common.util;
+package com.example.gateway.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
