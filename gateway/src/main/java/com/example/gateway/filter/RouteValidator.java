@@ -1,4 +1,4 @@
-package com.example.real_common.filter;
+package com.example.gateway.filter;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.reactive.ServerHttpRequest;

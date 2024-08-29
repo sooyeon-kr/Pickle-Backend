@@ -1,0 +1,25 @@
+server:
+  port: 8080  # Gateway ??
+
+spring:
+  application:
+    name: pickle-gateway  # Gateway ??? ??
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: pickle-pb  # pickle-pb ???? ???
+          uri: http://localhost:8002
+          predicates:
+            - Path=/pickle-pb/**
+
+        - id: pickle-customer  # pickle-customer ???? ???
+          uri: http://localhost:8003
+          predicates:
+            - Path=/pickle-customer/**
+
+        - id: pickle-common  # pickle-common ???? ???
+          uri: http://localhost:8004
+          predicates:
+            - Path=/pickle-common/**
