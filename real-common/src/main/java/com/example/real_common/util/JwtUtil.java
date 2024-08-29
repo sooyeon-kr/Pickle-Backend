@@ -21,6 +21,7 @@ public class JwtUtil {
 
     public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        System.out.println("sdf");
     }
 
 

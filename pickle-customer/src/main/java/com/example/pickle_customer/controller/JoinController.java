@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,19 +42,30 @@ public class JoinController {
     @PostMapping("/pickle-customer/token")
     public String getToken(@RequestBody CustomerJoinDTO authRequest) {
         System.out.println("12");
-//        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-//        System.out.println("44");
-//        if (authenticate.isAuthenticated()) {
-            System.out.println("34");
-            return joinService.generateToken(authRequest.getUsername());
-//        } else {
-//            System.out.println("ab");
-//            throw new RuntimeException("invalid access");
-//        }
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        System.out.println("44");
+        if (authenticate.isAuthenticated()) {
+        System.out.println("34");
+        return joinService.generateToken(authRequest.getUsername());
+        } else {
+            System.out.println("ab");
+            throw new RuntimeException("invalid access");
+        }
     }
 
+//    @GetMapping("/pickle-customer/validate")
+//    public String validateToken(@RequestParam("token") String token) {
+//        joinService.validateToken(token);
+//        return "Token is valid";
+//    }
+
+
     @GetMapping("/pickle-customer/validate")
-    public String validateToken(@RequestParam("token") String token) {
+    public String validateToken(@RequestHeader(value = "token", required = false) String token) {
+        if (token == null) {
+            return "Token is missing";
+        }
+        // 토큰 검증 로직
         joinService.validateToken(token);
         return "Token is valid";
     }

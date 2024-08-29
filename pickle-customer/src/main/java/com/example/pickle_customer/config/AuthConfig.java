@@ -32,7 +32,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/pickle-customer/join", "/pickle-customer/token").permitAll() // 특정 경로 허용
 //                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
-                          .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 )
                 .build();
     }
