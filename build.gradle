@@ -69,15 +69,12 @@ subprojects {
     project(':pickle-customer') {
         dependencies {
 //            implementation project(':real-common')
-
-
         }
     }
 
     project(':pickle-pb') {
         dependencies {
-//            implementation project(':real-common')
-
+            implementation project(':real-common')
         }
     }
 
