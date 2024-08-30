@@ -20,4 +20,8 @@ public class PresetGroup {
     @ManyToOne
     @JoinColumn(name = "pb_id")
     private Pb pb;
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

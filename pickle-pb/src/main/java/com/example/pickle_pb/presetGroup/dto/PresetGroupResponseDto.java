@@ -34,4 +34,13 @@ public class PresetGroupResponseDto {
         int presetGroupId;
         String name;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class UpdatePresetGroupResponseDto {
+        int presetGroupId;
+        String name;
+    }
 }
