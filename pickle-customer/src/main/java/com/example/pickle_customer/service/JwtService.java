@@ -1,11 +1,16 @@
 package com.example.pickle_customer.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.SignatureException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -23,15 +28,27 @@ public class JwtService {
 
 
     public void validateToken(final String token) {
-        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        try {
+            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            // 토큰 만료 시 예외 처리
+            throw new RuntimeException("Token has expired", e);
+        } catch (UnsupportedJwtException e) {
+            // 지원하지 않는 토큰 형식 시 예외 처리
+            throw new RuntimeException("Unsupported JWT token", e);
+        } catch (MalformedJwtException e) {
+            // 잘못된 토큰 형식 시 예외 처리
+            throw new RuntimeException("Malformed JWT token", e);
+        } catch (IllegalArgumentException e) {
+            // 토큰이 null 또는 빈 문자열일 경우 예외 처리
+            throw new RuntimeException("JWT token is not valid", e);
+        }
     }
 
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        System.out.println(89);
         return createToken(claims, userName);
-
     }
 
     private String createToken(Map<String, Object> claims, String userName) {

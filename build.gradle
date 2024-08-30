@@ -87,6 +87,12 @@ subprojects {
         }
     }
 
+    project(':gateway') {
+        dependencies {
+//            implementation project(':real-common')
+        }
+    }
+
 
 
 }

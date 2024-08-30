@@ -30,9 +30,9 @@ public class AuthConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화 (메서드 참조)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/pickle-customer/join", "/pickle-customer/token").permitAll() // 특정 경로 허용
-//                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
-                                .anyRequest().permitAll()
+                        .requestMatchers("/pickle-customer/join", "/pickle-customer/token", "pickle-customer/validate").permitAll() // 특정 경로 허용
+                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
+//                                .anyRequest().permitAll()
                 )
                 .build();
     }

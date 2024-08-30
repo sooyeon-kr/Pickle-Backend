@@ -21,19 +21,19 @@ public class JoinService {
     }
 
     public void joinProcess(CustomerJoinDTO customerJoinDTO){
-        String user_id = customerJoinDTO.getUser_id();
+        String userid = customerJoinDTO.getUser_id();
         String password = customerJoinDTO.getPassword();
         String username = customerJoinDTO.getUsername();
         String email = customerJoinDTO.getEmail();
         String phone_number = customerJoinDTO.getPhone_number();
 
         CustomerEntity data = new CustomerEntity();
-        data.setUser_id(user_id);
+        data.setUserid(userid);
         data.setPassword(passwordEncoder.encode(password));
         data.setName(username);
         data.setEmail(email);
-        data.setPhone_number(phone_number);
-        data.setMydata_id(1);
+        data.setPhonenumber(phone_number);
+        data.setMydataid(1);
 
         customerRepository.save(data);
 

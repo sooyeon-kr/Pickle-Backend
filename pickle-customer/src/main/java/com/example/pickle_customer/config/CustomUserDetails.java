@@ -1,24 +1,23 @@
 package com.example.pickle_customer.config;
 
 import com.example.pickle_customer.entity.CustomerEntity;
+import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-
-    public CustomUserDetails(CustomerEntity userCredential) {
-        this.username = userCredential.getName();
-        this.password = userCredential.getPassword();
-    }
+    private final String userid;
+    private final String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
@@ -28,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return userid;
     }
 
     @Override

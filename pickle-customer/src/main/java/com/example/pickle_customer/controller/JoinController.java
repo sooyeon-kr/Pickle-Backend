@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Configuration
 public class JoinController {
-
     @Autowired
     private final JoinService joinService;
+    @Autowired
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    public JoinController(JoinService joinService) {
+    public JoinController(JoinService joinService, AuthenticationManager authenticationManager) {
         this.joinService = joinService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/pickle-customer/join")
@@ -45,29 +45,21 @@ public class JoinController {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         System.out.println("44");
         if (authenticate.isAuthenticated()) {
-        System.out.println("34");
-        return joinService.generateToken(authRequest.getUsername());
+            System.out.println("34");
+            return joinService.generateToken(authRequest.getUsername());
         } else {
             System.out.println("ab");
             throw new RuntimeException("invalid access");
         }
     }
 
-//    @GetMapping("/pickle-customer/validate")
-//    public String validateToken(@RequestParam("token") String token) {
-//        joinService.validateToken(token);
-//        return "Token is valid";
-//    }
-
-
     @GetMapping("/pickle-customer/validate")
-    public String validateToken(@RequestHeader(value = "token", required = false) String token) {
-        if (token == null) {
-            return "Token is missing";
-        }
-        // 토큰 검증 로직
+    public String validateToken(@RequestParam("token") String token) {
+        System.out.println("123");
         joinService.validateToken(token);
         return "Token is valid";
     }
+
+
 
 }

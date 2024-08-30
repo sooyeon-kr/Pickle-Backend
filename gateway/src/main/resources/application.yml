@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: pickle-gateway  # Gateway ??? ??
+    name: gateway  # Gateway ??? ??
   main:
     web-application-type: reactive
   cloud:
@@ -18,7 +18,8 @@ spring:
           uri: http://localhost:8003
           predicates:
             - Path=/pickle-customer/**
-
+          filters:
+            - AuthenticationFilter
         - id: pickle-common  # pickle-common ???? ???
           uri: http://localhost:8004
           predicates:
