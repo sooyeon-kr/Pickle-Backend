@@ -16,4 +16,12 @@ public class PresetGroupResponseDto {
     public static class ReadPresetGroupResponseDto {
         List<String> nameList;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class CreatePresetGroupResponseDto {
+        String name;
+    }
 }
