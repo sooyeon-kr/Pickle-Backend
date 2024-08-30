@@ -56,10 +56,11 @@ public class PresetGroupService {
                 .name(createPresetGroupRequestDto.getName())
                 .pb(null) //원래는 pb가 들어가야함
                 .build();
-        presetGroupRepository.save(presetGroup);
+        PresetGroup result = presetGroupRepository.save(presetGroup);
 
         return CreatePresetGroupResponseDto.builder()
-                .name(presetGroup.getName())
+                .presetGroupId(result.getId())
+                .name(result.getName())
                 .build();
     }
 }

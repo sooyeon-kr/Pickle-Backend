@@ -11,7 +11,6 @@ public class PresetGroupRequestDto {
     @Builder
     @NoArgsConstructor
     public static class CreatePresetGroupRequestDto {
-        int presetGroupId;
         String name;
     }
 }
