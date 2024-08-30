@@ -7,6 +7,7 @@ import com.example.pickle_pb.presetGroup.dto.PresetGroupResponseDto.*;
 import com.example.pickle_pb.presetGroup.entity.PresetGroup;
 import com.example.pickle_pb.presetGroup.repository.PresetGroupRepository;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
+import com.example.real_common.global.exception.error.NotFoundGroupException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,10 +57,33 @@ public class PresetGroupService {
                 .name(createPresetGroupRequestDto.getName())
                 .pb(null) //원래는 pb가 들어가야함
                 .build();
-        presetGroupRepository.save(presetGroup);
+        PresetGroup result = presetGroupRepository.save(presetGroup);
 
         return CreatePresetGroupResponseDto.builder()
-                .name(presetGroup.getName())
+                .presetGroupId(result.getId())
+                .name(result.getName())
+                .build();
+    }
+
+    public UpdatePresetGroupResponseDto updatePresetGroup(UpdatePresetGroupRequestDto updatePresetGroupRequestDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+//        Optional<Pb> curPb = pbRepository.findById(authentication.getPbId());
+//        Long curPbId = curPb.get().getId();
+//        Pb pb = pbRepository.findById(curPbId)
+//                .orElseThrow(() -> new NotFoundAccountException("pb not found with id: " + curPbId));
+
+        PresetGroup existPresetGroup = presetGroupRepository.findById((long) updatePresetGroupRequestDto.getPresetGroupId())
+                .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + updatePresetGroupRequestDto.getPresetGroupId()));
+        existPresetGroup.setName(updatePresetGroupRequestDto.getName());
+
+        PresetGroup result = presetGroupRepository.save(existPresetGroup);
+
+        return UpdatePresetGroupResponseDto.builder()
+                .presetGroupId(result.getId())
+                .name(result.getName())
                 .build();
     }
 }

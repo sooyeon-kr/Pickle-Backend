@@ -14,7 +14,16 @@ public class PresetGroupResponseDto {
     @Builder
     @NoArgsConstructor
     public static class ReadPresetGroupResponseDto {
-        List<String> nameList;
+        List<ReadDetailPresetGroupResponseDto> nameList;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class ReadDetailPresetGroupResponseDto {
+        int presetGroupId;
+        String name;
     }
 
     @Getter
@@ -22,6 +31,16 @@ public class PresetGroupResponseDto {
     @Builder
     @NoArgsConstructor
     public static class CreatePresetGroupResponseDto {
+        int presetGroupId;
+        String name;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class UpdatePresetGroupResponseDto {
+        int presetGroupId;
         String name;
     }
 }

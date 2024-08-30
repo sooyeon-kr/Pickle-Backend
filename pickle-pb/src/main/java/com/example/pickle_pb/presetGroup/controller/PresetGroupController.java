@@ -29,4 +29,10 @@ public class PresetGroupController {
         CreatePresetGroupResponseDto result = presetGroupService.createPresetGroup(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "프리셋 생성 성공", result));
     }
+
+    @PutMapping
+    public ResponseEntity<CommonResDto<?>> updatePresetGroup(UpdatePresetGroupRequestDto requestDto) {
+        UpdatePresetGroupResponseDto result = presetGroupService.updatePresetGroup(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 수정 성공", result));
+    }
 }

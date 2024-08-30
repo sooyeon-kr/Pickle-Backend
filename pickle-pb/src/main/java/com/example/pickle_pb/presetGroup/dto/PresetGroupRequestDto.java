@@ -11,6 +11,14 @@ public class PresetGroupRequestDto {
     @Builder
     @NoArgsConstructor
     public static class CreatePresetGroupRequestDto {
+        String name;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class UpdatePresetGroupRequestDto {
         int presetGroupId;
         String name;
     }
