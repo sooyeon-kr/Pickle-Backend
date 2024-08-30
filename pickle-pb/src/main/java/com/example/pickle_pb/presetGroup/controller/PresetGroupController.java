@@ -21,18 +21,24 @@ public class PresetGroupController {
     @GetMapping
     public ResponseEntity<CommonResDto<?>> readPresetGroup() {
         ReadPresetGroupResponseDto result = presetGroupService.readPresetGroup();
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 그룹 조회 성공", result));
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "그룹 조회 성공", result));
     }
 
     @PostMapping
     public ResponseEntity<CommonResDto<?>> createPresetGroup(CreatePresetGroupRequestDto requestDto) {
         CreatePresetGroupResponseDto result = presetGroupService.createPresetGroup(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "프리셋 생성 성공", result));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "그룹 생성 성공", result));
     }
 
     @PutMapping
     public ResponseEntity<CommonResDto<?>> updatePresetGroup(UpdatePresetGroupRequestDto requestDto) {
         UpdatePresetGroupResponseDto result = presetGroupService.updatePresetGroup(requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 수정 성공", result));
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "그룹 수정 성공", result));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<CommonResDto<?>> deletePresetGroup(@RequestParam("presetGroupId") Long presetGroupId) {
+        boolean result = presetGroupService.deletePresetGroup(presetGroupId);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "그룹 삭제 성공", result));
     }
 }

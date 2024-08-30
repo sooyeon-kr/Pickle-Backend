@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PresetGroupService {
     private final PresetGroupRepository presetGroupRepository;
     private final PbRepository pbRepository;
@@ -42,6 +44,7 @@ public class PresetGroupService {
                 .build();
     }
 
+    @Transactional
     public CreatePresetGroupResponseDto createPresetGroup(CreatePresetGroupRequestDto createPresetGroupRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
@@ -65,6 +68,7 @@ public class PresetGroupService {
                 .build();
     }
 
+    @Transactional
     public UpdatePresetGroupResponseDto updatePresetGroup(UpdatePresetGroupRequestDto updatePresetGroupRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
@@ -79,11 +83,35 @@ public class PresetGroupService {
                 .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + updatePresetGroupRequestDto.getPresetGroupId()));
         existPresetGroup.setName(updatePresetGroupRequestDto.getName());
 
+        // Todo
+        // 로그인한 PB의 id와 그룹 id의 소유 PB가 일치하는 로직 추가
+
         PresetGroup result = presetGroupRepository.save(existPresetGroup);
 
         return UpdatePresetGroupResponseDto.builder()
                 .presetGroupId(result.getId())
                 .name(result.getName())
                 .build();
+    }
+
+    @Transactional
+    public boolean deletePresetGroup(Long presetGroupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+        //        Optional<Pb> curPb = pbRepository.findById(authentication.getPbId());
+//        Long curPbId = curPb.get().getId();
+//        Pb pb = pbRepository.findById(curPbId)
+//                .orElseThrow(() -> new NotFoundAccountException("pb not found with id: " + curPbId));
+        PresetGroup existPresetGroup = presetGroupRepository.findById(presetGroupId)
+                .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + presetGroupId));
+
+        // Todo
+        // 로그인한 PB의 id와 그룹 id의 소유 PB가 일치하는 로직 추가
+
+        presetGroupRepository.deleteById((long) existPresetGroup.getId());
+
+        return true;
     }
 }
