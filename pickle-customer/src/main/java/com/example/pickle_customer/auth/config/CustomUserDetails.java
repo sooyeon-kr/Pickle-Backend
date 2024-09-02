@@ -1,4 +1,4 @@
-package com.example.pickle_customer.config;
+package com.example.pickle_customer.auth.config;
 
 import com.example.pickle_customer.entity.CustomerEntity;
 import java.util.Collections;
@@ -12,8 +12,6 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-//    private final String userid;
-//    private final String password;
     private final CustomerEntity customerEntity;
 
     public CustomUserDetails(CustomerEntity customerEntity) {
@@ -25,9 +23,6 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-//    public String getUserid() {
-//        return customerEntity.getUserId();
-//    }
 
     @Override
     public String getPassword() {

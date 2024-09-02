@@ -1,24 +1,18 @@
-package com.example.pickle_customer.service;
+package com.example.pickle_customer.auth;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.SignatureException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 
 @Component
@@ -40,15 +34,15 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String userName) {
+    public String generateToken(String userid) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
+        return createToken(claims, userid);
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    private String createToken(Map<String, Object> claims, String userid) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userName)
+                .setSubject(userid)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
@@ -60,7 +54,7 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject(); // username은 토큰의 subject에 저장됨
+                .getSubject(); // userid는 토큰의 subject에 저장됨
     }
 
     private Key getSignKey() {

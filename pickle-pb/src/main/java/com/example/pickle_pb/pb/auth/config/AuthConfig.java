@@ -24,17 +24,29 @@ public class AuthConfig {
     }
 
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        return http
+//                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화 (메서드 참조)
+//                .cors(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/pickle-pb/join", "/pickle-pb/token", "pickle-pb/validate").permitAll() // 특정 경로 허용
+//                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
+//                               .anyRequest().permitAll()
+//                )
+//                .build();
+//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화 (메서드 참조)
-                .cors(AbstractHttpConfigurer::disable)
+        http
+                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
+                .cors(cors -> cors.disable())  // CORS 보호 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/pickle-pb/join", "/pickle-pb/token", "pickle-pb/validate").permitAll() // 특정 경로 허용
-                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
-//                                .anyRequest().permitAll()
-                )
-                .build();
+                        .anyRequest().permitAll()  // 모든 경로에 대해 접근 허용
+                );
+
+        return http.build();
     }
 
     @Bean
@@ -52,7 +64,6 @@ public class AuthConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        System.out.println("aaaa");
         return config.getAuthenticationManager();
     }
 }
