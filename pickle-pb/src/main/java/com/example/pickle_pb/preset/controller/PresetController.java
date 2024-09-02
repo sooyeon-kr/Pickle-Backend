@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pickle-pb/api/preset")
@@ -19,6 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PresetController {
     private final PresetService presetService;
+
+    @GetMapping
+    public ResponseEntity<CommonResDto<?>> readPresetList() {
+        ReadPresetListResponseDto result = presetService.readPresetList();
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 조회 완료", result));
+    }
+
+//    @GetMapping("/{presetId}")
+//    public ResponseEntity<CommonResDto<?>> readPresetDetail(@PathVariable String presetId) {
+//        ReadPresetDetailResponseDto result = presetService.readpresetDetail(presetId);
+//        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 상세 조회 완료", result));
+//    }
 
     @PostMapping
     public ResponseEntity<CommonResDto<?>> createPreset(@RequestBody CreatePresetRequestDto requestDto) {
