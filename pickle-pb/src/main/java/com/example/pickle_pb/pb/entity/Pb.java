@@ -25,7 +25,6 @@ public class Pb {
     @Column(length = 15, nullable = false)
     private String branchOffice;
 
-
     private String email;
     private String introduction;
     private int consultingCount;

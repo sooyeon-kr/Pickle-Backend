@@ -11,7 +11,9 @@ public class RouteValidator {
 
     public static final List<String> openApiEndpoints = List.of(
             "/pickle-customer/join",
-            "/pickle-customer/token"
+            "/pickle-customer/token",
+            "/pickle-pb/join",
+            "/pickle-pb/token"
     );
 
     public Predicate<ServerHttpRequest> isSecured =

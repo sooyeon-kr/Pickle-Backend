@@ -44,7 +44,6 @@ public class PbJoinService {
     }
 
     public String generateToken(String pbnumber) {
-        System.out.println("56");
         return jwtService.generateToken(pbnumber);
     }
 

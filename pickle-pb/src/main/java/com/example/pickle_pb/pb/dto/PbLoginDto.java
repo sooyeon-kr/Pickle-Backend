@@ -16,5 +16,5 @@ public class PbLoginDto {
     @Column(length = 15, nullable = false)
     private String pbNumber;
     @Column(length = 45, nullable = false)
-    private String passWord;
+    private String password;
 }

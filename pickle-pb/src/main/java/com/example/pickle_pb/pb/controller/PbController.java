@@ -41,7 +41,7 @@ public class PbController {
     public String getToken(@RequestBody PbLoginDto authRequest) {
         System.out.println("12");
         Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassWord()));
+                new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassword()));
         System.out.println("44");
         if (authenticate.isAuthenticated()) {
             System.out.println("34");
