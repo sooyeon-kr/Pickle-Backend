@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PresetGroupRepository extends JpaRepository<PresetGroup, Long> {
-    List<String> findAllById(Long id);
+public interface PresetGroupRepository extends JpaRepository<PresetGroup, Integer> {
+    List<String> findAllById(Integer id);
 }

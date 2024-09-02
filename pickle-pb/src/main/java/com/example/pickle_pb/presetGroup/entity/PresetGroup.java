@@ -15,9 +15,10 @@ import lombok.NoArgsConstructor;
 public class PresetGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "preset_group_id")
     private int id;
     private String name;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pb_id")
     private Pb pb;
 
