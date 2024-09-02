@@ -12,7 +12,7 @@ public class Pb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pb_id")
-    private Long id;
+    private int id;
     @Column(nullable = false)
     private String password;
 
@@ -31,6 +31,5 @@ public class Pb {
     private int consultingCount;
     private int transactionCount;
     private Long minConsultingAmount;
-
 
 }
