@@ -12,7 +12,7 @@ public class Pb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pb_id")
-    private Long id;
+    private int id;
     @Column(nullable = false)
     private String password;
 
@@ -25,12 +25,10 @@ public class Pb {
     @Column(length = 15, nullable = false)
     private String branchOffice;
 
-
     private String email;
     private String introduction;
     private int consultingCount;
     private int transactionCount;
     private Long minConsultingAmount;
-
 
 }

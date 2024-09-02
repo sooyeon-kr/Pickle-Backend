@@ -1,6 +1,7 @@
 package com.example.pickle_pb.preset.entity;
 
 import com.example.pickle_pb.presetGroup.entity.PresetGroup;
+import com.example.real_common.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Preset {
+public class Preset extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "preset_id")
