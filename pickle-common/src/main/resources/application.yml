@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://localhost:3306/customer
-    password: '7643'
+    url: jdbc:mysql://localhost:3306/commonDB
+    password: 'root'
 
   application:
     name: pickle-common  # 서비스 이름
