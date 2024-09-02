@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -29,5 +28,5 @@ public class Account {
 
     @OneToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
-    private CustomerEntity customerEntity;
+    private Customer customer;
 }

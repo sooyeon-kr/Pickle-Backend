@@ -3,7 +3,7 @@ package com.example.pickle_customer.service;
 import com.example.pickle_customer.auth.JwtService;
 import com.example.pickle_customer.dto.AccountResponseDto;
 import com.example.pickle_customer.entity.Account;
-import com.example.pickle_customer.entity.CustomerEntity;
+import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class AccountService {
         String userid = jwtService.extractUsername(token);
         System.out.println(userid +"22");
         // username을 통해 CustomerEntity 찾기
-        CustomerEntity customer = customerRepository.findByUserId(userid)
+        Customer customer = customerRepository.findByUserId(userid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // CustomerId를 통해 Account 찾기
         Account account = accountRepository.findByCustomerEntityCustomerId(customer.getCustomerId())

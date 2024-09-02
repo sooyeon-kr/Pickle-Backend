@@ -1,6 +1,6 @@
 package com.example.pickle_customer.auth.config;
 
-import com.example.pickle_customer.entity.CustomerEntity;
+import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
         log.info("loadUserByUsername");
         log.info(userid);
-        CustomerEntity credential = repository.findByUserId(userid).orElseThrow(
+        Customer credential = repository.findByUserId(userid).orElseThrow(
                 () -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다. username = " + userid));
         return new CustomUserDetails(credential);
     }
