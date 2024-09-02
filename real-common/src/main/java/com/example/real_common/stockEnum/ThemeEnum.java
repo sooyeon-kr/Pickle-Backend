@@ -1,5 +1,6 @@
 package com.example.real_common.stockEnum;
 
+import com.example.real_common.global.exception.error.NotFoundThemeException;
 import lombok.Getter;
 
 @Getter
@@ -107,5 +108,14 @@ public enum ThemeEnum {
         this.categoryId = categoryId;
         this.name = name;
         this.categoryName = categoryName;
+    }
+
+    public static String checkName(String themeName) {
+        for (ThemeEnum themeEnum : ThemeEnum.values()) {
+            if (themeEnum.getName().equals(themeName)) {
+                return themeName;
+            }
+        }
+        throw new NotFoundThemeException("theme not found : " + themeName);
     }
 }
