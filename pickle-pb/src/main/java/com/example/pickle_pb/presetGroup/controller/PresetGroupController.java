@@ -37,7 +37,7 @@ public class PresetGroupController {
     }
 
     @DeleteMapping
-    public ResponseEntity<CommonResDto<?>> deletePresetGroup(@RequestParam("presetGroupId") Long presetGroupId) {
+    public ResponseEntity<CommonResDto<?>> deletePresetGroup(@RequestParam("presetGroupId") Integer presetGroupId) {
         boolean result = presetGroupService.deletePresetGroup(presetGroupId);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "그룹 삭제 성공", result));
     }
