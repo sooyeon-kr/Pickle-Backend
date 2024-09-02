@@ -1,29 +1,30 @@
-package com.example.pickle_customer.entity;
+package com.example.pickle_common.strategy.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Setter
+@Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class CustomerEntity {
+@AllArgsConstructor
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    private int productId;
 
-    private String userId;
-    private String password;
+    private int themeId;
+
+    private String code;
     private String name;
-    private String email;
-    private String phoneNumber;
-    private int mydataId;
+    private String imgUrl;
+    private String themeName;
+    private String categoryName;
 }

@@ -5,9 +5,9 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Pb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Pb {
     @Column(name = "pb_number", length = 15, nullable = false, unique = true)
     private String pbNumber;
     @Column(length = 30, nullable = false)
-    private String name;
+    private String username;
     @Column(length = 15, nullable = false)
     private String phoneNumber;
     @Column(length = 15, nullable = false)
