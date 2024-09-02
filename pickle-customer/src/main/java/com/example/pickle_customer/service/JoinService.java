@@ -1,8 +1,9 @@
 package com.example.pickle_customer.service;
 
+import com.example.pickle_customer.auth.JwtService;
 import com.example.pickle_customer.dto.CustomerJoinDto;
 import com.example.pickle_customer.entity.Account;
-import com.example.pickle_customer.entity.CustomerEntity;
+import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.CustomerRepository;
 import java.util.Random;
@@ -14,40 +15,46 @@ import org.springframework.stereotype.Service;
 public class JoinService {
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
+
     @Autowired
     private JwtService jwtService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public JoinService(CustomerRepository customerRepository, AccountRepository accountRepository){
+    public JoinService(CustomerRepository customerRepository, AccountRepository accountRepository) {
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
     }
 
-    public void joinProcess(CustomerJoinDto customerJoinDTO){
+    public void joinProcess(CustomerJoinDto customerJoinDTO) {
         String userid = customerJoinDTO.getUserid();
         String password = customerJoinDTO.getPassword();
         String username = customerJoinDTO.getUsername();
         String email = customerJoinDTO.getEmail();
         String phonenumber = customerJoinDTO.getPhonenumber();
 
-        CustomerEntity data = new CustomerEntity();
-        data.setUserId(userid);
-        data.setPassword(passwordEncoder.encode(password));
-        data.setName(username);
-        data.setEmail(email);
-        data.setPhoneNumber(phonenumber);
-        data.setMydataId(1);
+        // MydataId를 찾기 위해 가장 큰 mydataId를 조회
+        Integer maxMydataId = customerRepository.findMaxMydataId().orElse(0);
 
-        customerRepository.save(data);
-        // Account 생성 및 account_number 설정
-        Account account = new Account();
-        account.setAccountNumber(generateAccountNumber()); // 자동 생성된 account_number 설정
-        account.setBalance(0);
-        account.setTotalAmount(0);
-        account.setCustomerEntity(data); // 생성된 CustomerEntity와 연결
+        Customer customer = Customer.builder()
+                .userId(userid)
+                .password(passwordEncoder.encode(password))
+                .name(username)
+                .email(email)
+                .phoneNumber(phonenumber)
+                .mydataId(maxMydataId + 1) // mydataId를 현재 가장 큰 값에서 1 증가시켜 설정
+                .build();
 
-        // Account 저장
+        Customer savedCustomer = customerRepository.save(customer);
+
+        Account account = Account.builder()
+                .accountNumber(generateAccountNumber()) // 자동 생성된 account_number 설정
+                .balance(0)
+                .totalAmount(0)
+                .customer(savedCustomer) // 생성된 CustomerEntity와 연결
+                .build();
+
         accountRepository.save(account);
     }
 
@@ -62,9 +69,8 @@ public class JoinService {
         return String.format("%03d-%06d-%02d-%03d", part1, part2, part3, part4);
     }
 
-    public String generateToken(String username) {
-        System.out.println("56");
-        return jwtService.generateToken(username);
+    public String generateToken(String userid) {
+        return jwtService.generateToken(userid);
     }
 
     public void validateToken(String token) {

@@ -1,8 +1,7 @@
-package com.example.pickle_customer.config;
+package com.example.pickle_customer.auth.config;
 
-import com.example.pickle_customer.entity.CustomerEntity;
+import com.example.pickle_customer.entity.Customer;
 import java.util.Collections;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +11,10 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-//    private final String userid;
-//    private final String password;
-    private final CustomerEntity customerEntity;
+    private final Customer customer;
 
-    public CustomUserDetails(CustomerEntity customerEntity) {
-        this.customerEntity = customerEntity;
+    public CustomUserDetails(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
@@ -25,18 +22,15 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-//    public String getUserid() {
-//        return customerEntity.getUserId();
-//    }
 
     @Override
     public String getPassword() {
-        return customerEntity.getPassword();
+        return customer.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return customerEntity.getUserId();
+        return customer.getUserId();
     }
 
     @Override

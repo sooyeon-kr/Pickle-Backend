@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PbLoginDto {
@@ -16,5 +15,5 @@ public class PbLoginDto {
     @Column(length = 15, nullable = false)
     private String pbNumber;
     @Column(length = 45, nullable = false)
-    private String passWord;
+    private String password;
 }
