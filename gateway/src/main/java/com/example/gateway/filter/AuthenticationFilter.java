@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
@@ -13,8 +14,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private RouteValidator validator;
 
-    //    @Autowired
-//    private RestTemplate template;
+    @Autowired
+    private RestTemplate template;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -24,10 +25,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Override
     public GatewayFilter apply(Config config) {
+        System.out.println(88);
         return ((exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
-                System.out.println("wow");
                 //header contains token or not
+                System.out.println(100);
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     throw new RuntimeException("missing authorization header");
                 }
@@ -38,10 +40,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     System.out.println(authHeader);
                 }
                 try {
-//                    //REST call to AUTH service
-//                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
-                    System.out.println("ar");
+                    //REST call to AUTH service
+//                    template.getForObject("http://localhost:8003//validate?token" + authHeader, String.class);
                     jwtUtil.validateToken(authHeader);
+                    System.out.println(66);
 
                 } catch (Exception e) {
                     System.out.println("invalid access...!");

@@ -1,10 +1,10 @@
 package com.example.gateway.util;
 
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -21,13 +21,14 @@ public class JwtUtil {
 
     public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
-        System.out.println("sdf");
+        System.out.println(99);
     }
 
 
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        System.out.println(11);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

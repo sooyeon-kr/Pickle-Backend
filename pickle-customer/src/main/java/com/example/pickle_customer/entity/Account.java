@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,16 +16,17 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerEntity {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    private int accountId;
 
-    private String userId;
-    private String password;
-    private String name;
-    private String email;
-    private String phoneNumber;
-    private int mydataId;
+    private String accountNumber;
+    private int balance;
+    private long totalAmount;
+
+    @OneToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
+    private CustomerEntity customerEntity;
 }
