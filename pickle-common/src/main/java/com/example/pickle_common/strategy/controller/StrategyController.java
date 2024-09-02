@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/strategy")
+@RequestMapping("/pickle-common/api/strategy")
 @Validated
 //@Slf4j
 public class StrategyController {
