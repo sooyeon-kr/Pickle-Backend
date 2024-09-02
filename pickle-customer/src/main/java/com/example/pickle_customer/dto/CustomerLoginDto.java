@@ -11,13 +11,8 @@ import lombok.Setter;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerJoinDTO {
+public class CustomerLoginDto {
 
-
-    private String user_id;
+    private String userid;
     private String password;
-    private String username;
-    private String phone_number;
-    private String email;
-
 }

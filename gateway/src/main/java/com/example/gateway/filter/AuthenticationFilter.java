@@ -14,8 +14,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private RouteValidator validator;
 
-    //    @Autowired
-//    private RestTemplate template;
+    @Autowired
+    private RestTemplate template;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -25,9 +25,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Override
     public GatewayFilter apply(Config config) {
+        System.out.println(88);
         return ((exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
                 //header contains token or not
+                System.out.println(100);
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     throw new RuntimeException("missing authorization header");
                 }
@@ -35,11 +37,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
+                    System.out.println(authHeader);
                 }
                 try {
-//                    //REST call to AUTH service
-//                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
+                    //REST call to AUTH service
+//                    template.getForObject("http://localhost:8003//validate?token" + authHeader, String.class);
                     jwtUtil.validateToken(authHeader);
+                    System.out.println(66);
 
                 } catch (Exception e) {
                     System.out.println("invalid access...!");

@@ -10,3 +10,11 @@ spring:
 
   application:
     name: pickle-customer  # 서비스 이름
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG  # Spring Security의 로그 레벨을 DEBUG로 설정
+
+

@@ -21,12 +21,14 @@ public class JwtUtil {
 
     public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        System.out.println(99);
     }
 
 
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        System.out.println(11);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
