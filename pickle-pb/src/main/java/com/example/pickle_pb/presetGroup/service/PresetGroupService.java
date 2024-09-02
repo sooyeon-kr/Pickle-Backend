@@ -79,7 +79,7 @@ public class PresetGroupService {
 //        Pb pb = pbRepository.findById(curPbId)
 //                .orElseThrow(() -> new NotFoundAccountException("pb not found with id: " + curPbId));
 
-        PresetGroup existPresetGroup = presetGroupRepository.findById((long) updatePresetGroupRequestDto.getPresetGroupId())
+        PresetGroup existPresetGroup = presetGroupRepository.findById(updatePresetGroupRequestDto.getPresetGroupId())
                 .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + updatePresetGroupRequestDto.getPresetGroupId()));
         existPresetGroup.setName(updatePresetGroupRequestDto.getName());
 
@@ -95,7 +95,7 @@ public class PresetGroupService {
     }
 
     @Transactional
-    public boolean deletePresetGroup(Long presetGroupId) {
+    public boolean deletePresetGroup(Integer presetGroupId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
@@ -110,7 +110,7 @@ public class PresetGroupService {
         // Todo
         // 로그인한 PB의 id와 그룹 id의 소유 PB가 일치하는 로직 추가
 
-        presetGroupRepository.deleteById((long) existPresetGroup.getId());
+        presetGroupRepository.deleteById(existPresetGroup.getId());
 
         return true;
     }
