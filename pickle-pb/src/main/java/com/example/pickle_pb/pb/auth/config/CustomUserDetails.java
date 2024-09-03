@@ -11,10 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
 
-//    private final String pbNumber;
-//    private final String name;
-//    private final String password;
-
     private final Pb pb;
 
     public CustomUserDetails(Pb pb) {
@@ -25,10 +21,6 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
-//
-//    public String getPbNumber(){
-//        return pb.getPbNumber();
-//    }
 
     @Override
     public String getPassword() {

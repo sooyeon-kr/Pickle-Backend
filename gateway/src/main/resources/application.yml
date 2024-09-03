@@ -13,6 +13,8 @@ spring:
           uri: http://localhost:8002
           predicates:
             - Path=/pickle-pb/**
+          filters:
+            - AuthenticationFilter
 
         - id: pickle-customer  # pickle-customer ???? ???
           uri: http://localhost:8003
@@ -20,6 +22,7 @@ spring:
             - Path=/pickle-customer/**
           filters:
             - AuthenticationFilter
+
         - id: pickle-common  # pickle-common ???? ???
           uri: http://localhost:8004
           predicates:

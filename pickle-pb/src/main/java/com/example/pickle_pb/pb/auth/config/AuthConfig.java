@@ -1,5 +1,7 @@
 package com.example.pickle_pb.pb.auth.config;
 
+import com.example.pickle_pb.pb.auth.JwtAuthenticationFilter;
+import com.example.pickle_pb.pb.auth.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,27 +15,31 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class AuthConfig {
-
+    private final JwtService jwtService;
     @Bean
     public UserDetailsService userDetailsService(){
         return new CustomUserDetailsService();
     }
 
+    public AuthConfig(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화 (메서드 참조)
-                .cors(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
+                .cors(cors -> cors.disable())  // CORS 보호 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/pickle-pb/join", "/pickle-pb/token", "pickle-pb/validate").permitAll() // 특정 경로 허용
-                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
-//                                .anyRequest().permitAll()
+                                .requestMatchers("/pickle-pb/api/**").authenticated()
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -52,7 +58,6 @@ public class AuthConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        System.out.println("aaaa");
         return config.getAuthenticationManager();
     }
 }

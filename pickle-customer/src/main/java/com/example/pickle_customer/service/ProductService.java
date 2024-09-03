@@ -1,8 +1,9 @@
 package com.example.pickle_customer.service;
 
+import com.example.pickle_customer.auth.JwtService;
 import com.example.pickle_customer.dto.ProductResponseDto;
 import com.example.pickle_customer.entity.Account;
-import com.example.pickle_customer.entity.CustomerEntity;
+import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.entity.ProductInAccount;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.CustomerRepository;
@@ -34,14 +35,14 @@ public class ProductService {
     public List<ProductResponseDto> myProudcts(String token) {
 
         // JWT 토큰에서 username 추출
-        String username = jwtService.extractUsername(token);
+        String userid = jwtService.extractUsername(token);
 
-        // username을 통해 CustomerEntity 찾기
-        CustomerEntity customer = customerRepository.findByName(username)
+        // userid을 통해 CustomerEntity 찾기
+        Customer customer = customerRepository.findByUserId(userid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // CustomerId를 통해 Account 찾기
-        Account account = accountRepository.findByCustomerEntityCustomerId(customer.getCustomerId())
+        Account account = accountRepository.findByCustomerCustomerId(customer.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         // AccountId를 통해 Products 찾기
@@ -52,7 +53,6 @@ public class ProductService {
                 .peek(productInAccount -> {
                     System.out.println("Product Name: " + productInAccount.getProductName());
                     System.out.println("Product Code: " + productInAccount.getProductCode());
-                    // 추가 로그
                 })
                 .map(productInAccount -> new ProductResponseDto(
                         productInAccount.getAccount().getAccountId(),

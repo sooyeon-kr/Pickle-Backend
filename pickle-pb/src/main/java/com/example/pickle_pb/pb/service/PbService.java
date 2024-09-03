@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PbJoinService {
+public class PbService {
 
     private final PbRepository pbRepository;
 
@@ -19,32 +19,33 @@ public class PbJoinService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public PbJoinService(PbRepository pbRepository) {
+    public PbService(PbRepository pbRepository) {
         this.pbRepository = pbRepository;
     }
 
-    public void joinProcess(PbJoinDto pbJoinDTO){
+    public void joinProcess(PbJoinDto pbJoinDTO) {
         String pbnumber = pbJoinDTO.getPbNumber();
         String password = pbJoinDTO.getPassword();
         String office = pbJoinDTO.getBranchOffice();
         String name = pbJoinDTO.getUsername();
         String phone_number = pbJoinDTO.getPhoneNumber();
 
-        Pb data = new Pb();
-        PbPassword data2 = new PbPassword();
-        data.setPbNumber(pbnumber);
-        data2.setPbNumber(pbnumber);
-        data.setPassword(passwordEncoder.encode(password));
-        data.setBranchOffice(office);
-        data.setName(name);
-        data.setPhoneNumber(phone_number);
+        Pb data = Pb.builder()
+                .pbNumber(pbnumber)
+                .password(passwordEncoder.encode(password))
+                .branchOffice(office)
+                .username(name)
+                .phoneNumber(phone_number)
+                .build();
+
+        PbPassword data2 = PbPassword.builder()
+                .pbNumber(pbnumber)
+                .build();
 
         pbRepository.save(data);
-
     }
 
     public String generateToken(String pbnumber) {
-        System.out.println("56");
         return jwtService.generateToken(pbnumber);
     }
 
