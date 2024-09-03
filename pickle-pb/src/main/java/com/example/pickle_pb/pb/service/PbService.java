@@ -19,6 +19,7 @@ import com.example.pickle_pb.pb.repository.PbTagRepository;
 import com.example.pickle_pb.pb.repository.TagRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
