@@ -1,5 +1,6 @@
 package com.example.pickle_pb.preset.entity;
 
+import com.example.real_common.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class PresetCategoryComposition {
+public class PresetCategoryComposition extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_composition_id")
@@ -20,4 +21,12 @@ public class PresetCategoryComposition {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preset_id")
     private Preset preset;
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void updateCategoryRatio(double categoryRatio) {
+        this.categoryRatio = categoryRatio;
+    }
 }

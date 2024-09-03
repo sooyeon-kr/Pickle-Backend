@@ -1,5 +1,6 @@
 package com.example.real_common.stockEnum;
 
+import com.example.real_common.global.exception.error.NotFoundCategoryException;
 import lombok.Getter;
 
 @Getter
@@ -16,5 +17,15 @@ public enum CategoryEnum {
     CategoryEnum(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static String checkName(String categoryName) {
+        for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+            if (categoryEnum.getName().equals(categoryName)) {
+                return categoryEnum.getName();
+            }
+        }
+
+        throw new NotFoundCategoryException("category not found : " + categoryName);
     }
 }
