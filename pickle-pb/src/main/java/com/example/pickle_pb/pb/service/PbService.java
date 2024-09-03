@@ -2,9 +2,11 @@ package com.example.pickle_pb.pb.service;
 
 import com.example.pickle_pb.pb.auth.JwtService;
 import com.example.pickle_pb.pb.dto.PbJoinDto;
+import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
 import com.example.pickle_pb.pb.entity.Pb;
 import com.example.pickle_pb.pb.entity.PbPassword;
 import com.example.pickle_pb.pb.repository.PbRepository;
+import com.example.real_common.global.exception.error.NotFoundAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,5 +53,15 @@ public class PbService {
 
     public void validateToken(String token) {
         jwtService.validateToken(token);
+    }
+
+    public ReadPbResponseDto.InfoForStrategyDto getPbById(Integer pbId) {
+        Pb existPb = pbRepository.findById(Long.valueOf(pbId))
+                .orElseThrow(() -> new NotFoundAccountException("not found pb by id : " + pbId));
+
+        return ReadPbResponseDto.InfoForStrategyDto.builder()
+                .name(existPb.getUsername())
+                .branchOffice(existPb.getBranchOffice())
+                .build();
     }
 }
