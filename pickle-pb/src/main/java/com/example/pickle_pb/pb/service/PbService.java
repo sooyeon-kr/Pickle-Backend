@@ -83,6 +83,7 @@ public class PbService {
         return ReadPbResponseDto.InfoForStrategyDto.builder()
                 .name(existPb.getUsername())
                 .branchOffice(existPb.getBranchOffice())
+                .build();
     }
 
     @Transactional
