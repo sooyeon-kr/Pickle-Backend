@@ -4,6 +4,7 @@ package com.example.pickle_pb.pb.controller;
 import com.example.pickle_pb.pb.dto.PbJoinDto;
 import com.example.pickle_pb.pb.dto.PbLoginDto;
 import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
+import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
 import com.example.pickle_pb.pb.service.PbService;
 import com.example.real_common.global.common.CommonResDto;
 import java.util.Arrays;
