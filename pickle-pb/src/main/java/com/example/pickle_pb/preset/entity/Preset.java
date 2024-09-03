@@ -22,4 +22,7 @@ public class Preset extends BaseTimeEntity {
     @JoinColumn(name = "preset_group_id")
     private PresetGroup presetGroup;
 
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
