@@ -19,6 +19,7 @@ import com.example.pickle_pb.pb.repository.PbTagRepository;
 import com.example.pickle_pb.pb.repository.TagRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,6 +151,12 @@ public class PbService {
         return pbs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+
+    public List<pbProfileResponseDto> getFilteredPbList(List<String> mainFields, List<String> tags, Long minConsultingAmount) {
+        List<Pb> filteredPbs = pbRepository.findByFilters(mainFields, tags, minConsultingAmount);
+        return filteredPbs.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     private pbProfileResponseDto convertToDto(Pb pb) {
         return pbProfileResponseDto.builder()
                 .pbNumber(pb.getPbNumber())
@@ -169,4 +176,6 @@ public class PbService {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+
 }
