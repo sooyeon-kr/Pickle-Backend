@@ -31,7 +31,7 @@ public class AccountService {
         Customer customer = customerRepository.findByUserId(userid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // CustomerId를 통해 Account 찾기
-        Account account = accountRepository.findByCustomerEntityCustomerId(customer.getCustomerId())
+        Account account = accountRepository.findByCustomerCustomerId(customer.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         // Account 엔티티를 AccountResponseDto로 변환하여 반환

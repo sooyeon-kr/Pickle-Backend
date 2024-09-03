@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     // CustomerEntity의 customerId를 통해 Account 조회
-    Optional<Account> findByCustomerEntityCustomerId(int customerId);
+    Optional<Account> findByCustomerCustomerId(int customerId);
 }
