@@ -1,9 +1,6 @@
 package com.example.pickle_common.strategy.service;
 
-import com.example.pickle_common.strategy.dto.CreateStrategyRequestDto;
-import com.example.pickle_common.strategy.dto.CreateStrategyResponseDto;
-import com.example.pickle_common.strategy.dto.ReadStrategyResponseDto;
-import com.example.pickle_common.strategy.dto.RestClientDto;
+import com.example.pickle_common.strategy.dto.*;
 import com.example.pickle_common.strategy.entity.CategoryComposition;
 import com.example.pickle_common.strategy.entity.Product;
 import com.example.pickle_common.strategy.entity.ProductComposition;
@@ -38,6 +35,7 @@ public class StrategyService {
     @Transactional
     public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto) {
         //TODO 로그인 한 사용자만 전략을 생성할 수 있다. (PB 혹은 고객)
+
         // 고객 : 리밸런싱할 때 커스텀 전략 생성 가능 (이 경우 고객id만 들어감)
         // PB : 상담할 때 고객을 위한 전략 생성 (이 경우 고객id, pbId 들어감)
 
@@ -127,6 +125,43 @@ public class StrategyService {
         return ReadStrategyResponseDto.builder()
                 .strategyList(strategyList)
                 .build();
+    }
+
+    public ReadDetailStrategyResponseDto readDetailStrategy(Integer strategyId) {
+        //TODO pb와 고객이 조회할 수 있는 상세 조회 -> 로그인 인증 필요
+
+        Strategy curStrategy = strategyRepository.findById(strategyId)
+                .orElseThrow(() -> new NotFoundStrategyException("not found strategy Id : " + strategyId));
+
+        List<CategoryComposition> curCategoryCompositionList = categoryCompositionRepository
+                .findByStrategy_strategyId(curStrategy.getStrategyId());
+
+        List<ReadDetailStrategyResponseDto.CategoryDto> categoryList = curCategoryCompositionList.stream()
+                .map(categoryComposition -> {
+                    List<ReadDetailStrategyResponseDto.ProductDto> productList
+                            = productCompositionRepository.findAllByCategoryComposition_Id(categoryComposition.getId())
+                            .stream().map(productComposition -> {
+                                return ReadDetailStrategyResponseDto.ProductDto.builder()
+                                        .code(productComposition.getCode())
+                                        .name(productComposition.getName())
+                                        .ratio(productComposition.getRatio())
+                                        .themeName(productComposition.getThemeName())
+                                        .build();
+                            }).toList();
+
+                    return ReadDetailStrategyResponseDto.CategoryDto.builder()
+                            .categoryName(categoryComposition.getCategoryName())
+                            .productList(productList)
+                            .categoryRatio(categoryComposition.getCategoryRatio())
+                            .build();
+                }).toList();
+
+        return ReadDetailStrategyResponseDto.builder()
+                .name(curStrategy.getName())
+                .createdAt(curStrategy.getCreatedAt())
+                .categoryList(categoryList)
+                .build();
+
     }
 }
 
