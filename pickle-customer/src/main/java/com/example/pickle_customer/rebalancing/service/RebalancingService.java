@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class RebalancingService {
-    private RebalancingRepository rebalancingRepository;
+    final private RebalancingRepository rebalancingRepository;
 
     public List<RebalancingResponseDTO> getQuantity(List<RebalancingRequestDTO> requestDTOs) {
         return requestDTOs.stream()
