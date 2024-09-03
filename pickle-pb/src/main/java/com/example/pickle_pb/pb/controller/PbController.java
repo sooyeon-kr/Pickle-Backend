@@ -3,6 +3,7 @@ package com.example.pickle_pb.pb.controller;
 
 import com.example.pickle_pb.pb.dto.PbJoinDto;
 import com.example.pickle_pb.pb.dto.PbLoginDto;
+import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
 import com.example.pickle_pb.pb.service.PbService;
 import com.example.real_common.global.common.CommonResDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,4 +58,19 @@ public class PbController {
         pbService.validateToken(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "토큰 검증 완료", "토큰 검증완료"));
     }
+
+    @PostMapping("/pickle-pb/profile")
+    public ResponseEntity<CommonResDto<?>> postProfile(@RequestBody PbProfileRequestDto pbProfileRequestDto,
+                                                       @RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        pbService.postProfile(pbProfileRequestDto, jwtToken);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", "PB 프로필 등록 완료"));
+    }
+
+    @GetMapping("/pickle-pb/pblist")
+    public ResponseEntity<CommonResDto<?>> pbList(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", pbService.pblist()));
+    }
+
 }
