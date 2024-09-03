@@ -2,6 +2,7 @@ package com.example.pickle_pb.pb.service;
 
 import com.example.pickle_pb.pb.auth.JwtService;
 import com.example.pickle_pb.pb.dto.PbJoinDto;
+import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
 import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
 import com.example.pickle_pb.pb.dto.pbProfileResponseDto;
 import com.example.pickle_pb.pb.entity.MainField;
@@ -13,6 +14,7 @@ import com.example.pickle_pb.pb.entity.Tag;
 import com.example.pickle_pb.pb.repository.MainFieldRepository;
 import com.example.pickle_pb.pb.repository.PbMainFieldRepository;
 import com.example.pickle_pb.pb.repository.PbRepository;
+import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.pickle_pb.pb.repository.PbTagRepository;
 import com.example.pickle_pb.pb.repository.TagRepository;
 import jakarta.persistence.EntityManager;
@@ -72,6 +74,15 @@ public class PbService {
 
     public void validateToken(String token) {
         jwtService.validateToken(token);
+    }
+
+    public ReadPbResponseDto.InfoForStrategyDto getPbById(Integer pbId) {
+        Pb existPb = pbRepository.findById(Long.valueOf(pbId))
+                .orElseThrow(() -> new NotFoundAccountException("not found pb by id : " + pbId));
+
+        return ReadPbResponseDto.InfoForStrategyDto.builder()
+                .name(existPb.getUsername())
+                .branchOffice(existPb.getBranchOffice())
     }
 
     @Transactional
