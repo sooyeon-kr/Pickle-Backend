@@ -31,6 +31,42 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(NotFoundGroupException.class)
+    protected ResponseEntity<?> handleNotFoundGroupException(NotFoundGroupException exception) {
+        log.error("handleNotFoundGroupException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_GROUP_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundAccountException.class)
+    protected ResponseEntity<?> handleNotFoundAccountException(NotFoundAccountException exception) {
+        log.error("handleNotFoundAccountException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_ACCOUNT_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
     @ExceptionHandler(NotFoundCategoryException.class)
     protected ResponseEntity<?> handleNotFoundCategoryException(NotFoundCategoryException exception) {
         log.error("handleNotFoundCategoryException :: ");
