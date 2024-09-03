@@ -11,5 +11,4 @@ public interface PresetGroupRepository extends JpaRepository<PresetGroup, Intege
 
     List<PresetGroup> findAllByPbId(Integer pbId);
 
-    Optional<PresetGroup> findByPbId(int id);
 }

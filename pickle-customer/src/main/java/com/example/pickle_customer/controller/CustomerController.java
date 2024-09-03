@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Configuration
 public class CustomerController {
     @Autowired
     private final JoinService joinService;
@@ -44,13 +43,13 @@ public class CustomerController {
         this.productSevice = productService;
     }
 
-    @PostMapping("/pickle-customer/join")
+    @PostMapping("/pickle-customer/api/join")
     public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody CustomerJoinDto customerjoinDTO){
         joinService.joinProcess(customerjoinDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "고객 회원가입 완료", "환영합니다!"));
     }
 
-    @PostMapping("/pickle-customer/token")
+    @PostMapping("/pickle-customer/api/token")
     public ResponseEntity<CommonResDto<?>> getToken(@RequestBody CustomerLoginDto authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserid(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
@@ -60,20 +59,20 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/pickle-customer/validate")
+    @GetMapping("/pickle-customer/api/validate")
     public String validateToken(@RequestParam("token") String token) {
         joinService.validateToken(token);
         return "Token is valid";
     }
 
-    @GetMapping("/pickle-customer/my-asset")
+    @GetMapping("/pickle-customer/api/my-asset")
     public ResponseEntity<CommonResDto<?>> myAsset(@RequestHeader("Authorization") String token) {
         // "Bearer " 제거 후 토큰 처리
         String jwtToken = token.substring(7);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 계좌 및 자산 조회 완료", accountService.myAsset(jwtToken)));
     }
 
-    @GetMapping("/pickle-customer/my-products")
+    @GetMapping("/pickle-customer/api/my-products")
     public ResponseEntity<CommonResDto<?>> myProudcts(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 계좌 및 자산 조회 완료", productSevice.myProudcts(jwtToken)));

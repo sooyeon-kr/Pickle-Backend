@@ -13,7 +13,7 @@ public class PresetRequestDto {
     @Builder
     @NoArgsConstructor
     public static class CreatePresetRequestDto {
-        private Integer presetGroupId;
+        private int presetGroupId;
         private String name;
         private List<CategoryDto> presetList;
 
@@ -32,6 +32,39 @@ public class PresetRequestDto {
         @Builder
         @NoArgsConstructor
         public static class ProductDto {
+            private String code;
+            private String name;
+            private String themeName;
+            private double ratio;
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class UpdatePresetRequestDto {
+        private int presetGroupId;
+        private String name;
+        private List<CategoryDto> presetList;
+
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        @NoArgsConstructor
+        public static class CategoryDto {
+            private int categoryCompositionId;
+            private String categoryName;
+            private double categoryRatio;
+            private List<ProductDto> productList;
+        }
+
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        @NoArgsConstructor
+        public static class ProductDto {
+            private int productCompositionId;
             private String code;
             private String name;
             private String themeName;

@@ -21,4 +21,12 @@ public class PresetCategoryComposition extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preset_id")
     private Preset preset;
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void updateCategoryRatio(double categoryRatio) {
+        this.categoryRatio = categoryRatio;
+    }
 }

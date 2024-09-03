@@ -42,7 +42,7 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // CustomerId를 통해 Account 찾기
-        Account account = accountRepository.findByCustomerEntityCustomerId(customer.getCustomerId())
+        Account account = accountRepository.findByCustomerCustomerId(customer.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         // AccountId를 통해 Products 찾기
