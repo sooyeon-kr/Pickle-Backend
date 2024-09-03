@@ -127,8 +127,19 @@ public class StrategyService {
                 .build();
     }
 
+    public ReadDetailStrategyResponseDto pbReadDetailStrategy(Integer strategyId) {
+        //TODO pb 로그인 확인 로직
+
+        return readDetailStrategy(strategyId); //세부 조회 로직은 현재 동일함
+    }
+
+    public ReadDetailStrategyResponseDto cusReadDetailStrategy(Integer strategyId) {
+        //TODO customer 로그인 확인 로직
+
+        return readDetailStrategy(strategyId);
+    }
+
     public ReadDetailStrategyResponseDto readDetailStrategy(Integer strategyId) {
-        //TODO pb와 고객이 조회할 수 있는 상세 조회 -> 로그인 인증 필요
 
         Strategy curStrategy = strategyRepository.findById(strategyId)
                 .orElseThrow(() -> new NotFoundStrategyException("not found strategy Id : " + strategyId));
@@ -140,14 +151,13 @@ public class StrategyService {
                 .map(categoryComposition -> {
                     List<ReadDetailStrategyResponseDto.ProductDto> productList
                             = productCompositionRepository.findAllByCategoryComposition_Id(categoryComposition.getId())
-                            .stream().map(productComposition -> {
-                                return ReadDetailStrategyResponseDto.ProductDto.builder()
-                                        .code(productComposition.getCode())
-                                        .name(productComposition.getName())
-                                        .ratio(productComposition.getRatio())
-                                        .themeName(productComposition.getThemeName())
-                                        .build();
-                            }).toList();
+                            .stream().map(productComposition ->
+                                    ReadDetailStrategyResponseDto.ProductDto.builder()
+                                    .code(productComposition.getCode())
+                                    .name(productComposition.getName())
+                                    .ratio(productComposition.getRatio())
+                                    .themeName(productComposition.getThemeName())
+                                    .build()).toList();
 
                     return ReadDetailStrategyResponseDto.CategoryDto.builder()
                             .categoryName(categoryComposition.getCategoryName())
@@ -161,7 +171,6 @@ public class StrategyService {
                 .createdAt(curStrategy.getCreatedAt())
                 .categoryList(categoryList)
                 .build();
-
     }
 }
 
