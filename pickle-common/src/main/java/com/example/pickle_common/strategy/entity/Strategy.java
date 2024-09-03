@@ -1,5 +1,6 @@
 package com.example.pickle_common.strategy.entity;
 
+import com.example.real_common.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,7 +9,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Strategy {
+public class Strategy extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int strategyId;
