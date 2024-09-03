@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Configuration
@@ -60,6 +61,12 @@ public class PbController {
     public ResponseEntity<CommonResDto<?>> validateToken(@RequestParam("token") String token) {
         pbService.validateToken(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "토큰 검증 완료", "토큰 검증완료"));
+    }
+
+    @GetMapping("/pickle-pb/inner/{pbId}")
+    public ResponseEntity<?> getPbById(@PathVariable("pbId") Integer pbId) {
+        ReadPbResponseDto.InfoForStrategyDto result = pbService.getPbById(pbId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping("/pickle-pb/api/profile")
