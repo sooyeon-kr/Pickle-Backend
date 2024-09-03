@@ -39,8 +39,14 @@ public class PresetController {
     @PutMapping("/{presetId}")
     public ResponseEntity<CommonResDto<?>> updatePreset(
             @PathVariable @Valid Integer presetId,
-            @RequestBody @Valid UpdatePresetRequestDto requestDto){
+            @RequestBody @Valid UpdatePresetRequestDto requestDto) {
         UpdatePresetResponseDto result = presetService.updatePreset(presetId, requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1,"프리셋 수정 성공", result));
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 수정 성공", result));
+    }
+
+    @DeleteMapping("/{presetId}")
+    public ResponseEntity<CommonResDto<?>> deletePreset(@PathVariable @Valid Integer presetId) {
+        boolean result = presetService.deletePreset(presetId);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 삭제 성공", result));
     }
 }

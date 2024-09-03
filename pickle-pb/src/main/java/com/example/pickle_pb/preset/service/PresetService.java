@@ -14,6 +14,7 @@ import com.example.pickle_pb.preset.repository.PresetRepository;
 import com.example.pickle_pb.presetGroup.entity.PresetGroup;
 import com.example.pickle_pb.presetGroup.repository.PresetGroupRepository;
 import com.example.real_common.global.exception.error.NotFoundGroupException;
+import com.example.real_common.global.exception.error.UnAuthorizedException;
 import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
 import lombok.RequiredArgsConstructor;
@@ -217,6 +218,26 @@ public class PresetService {
                 .name(updatedPreset.getName())
                 .presetList(categoryDtoList)
                 .build();
+    }
+
+    @Transactional
+    public boolean deletePreset(Integer presetId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+
+        Preset existPreset = presetRepository.findById(presetId)
+                .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
+        if(!existPreset.getPresetGroup().getPb().equals(curPb)) {
+            throw new UnAuthorizedException("사용자의 프리셋이 아닙니다. ");
+        }
+
+        presetRepository.deleteById(presetId);
+
+        return true;
     }
 
 //    public ReadPresetDetailResponseDto readpresetDetail(String presetId) {
