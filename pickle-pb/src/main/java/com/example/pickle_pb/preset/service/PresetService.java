@@ -231,7 +231,7 @@ public class PresetService {
 
         Preset existPreset = presetRepository.findById(presetId)
                 .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
-        if(!existPreset.getPresetGroup().getPb().equals(curPb)) {
+        if (!existPreset.getPresetGroup().getPb().equals(curPb)) {
             throw new UnAuthorizedException("사용자의 프리셋이 아닙니다. ");
         }
 
@@ -240,6 +240,43 @@ public class PresetService {
         return true;
     }
 
-//    public ReadPresetDetailResponseDto readpresetDetail(String presetId) {
-//    }
+    public ReadPresetDetailResponseDto readPresetDetail(Integer presetId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        Preset existPreset = presetRepository.findById(presetId)
+                .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
+        if (!existPreset.getPresetGroup().getPb().equals(curPb)) {
+            throw new UnAuthorizedException("사용자의 프리셋이 아닙니다. ");
+        }
+
+        List<ReadPresetDetailResponseDto.CategoryDto> categoryDtoListList
+                = presetCategoryCompositionRepository.findByPreset(existPreset).stream()
+                .map(category -> {
+                    List<ReadPresetDetailResponseDto.ProductDto> productDtoList
+                            = presetProductCompositionRepository.findByCategoryCompositionId(category.getId()).stream()
+                            .map(product -> ReadPresetDetailResponseDto.ProductDto.builder()
+                                    .productCompositionId(product.getId())
+                                    .code(product.getCode())
+                                    .name(product.getName())
+                                    .themeName(product.getThemeName())
+                                    .ratio(product.getRatio())
+                                    .build()).toList();
+                    return ReadPresetDetailResponseDto.CategoryDto.builder()
+                            .categoryCompositionId(category.getId())
+                            .categoryName(category.getCategoryName())
+                            .categoryRatio(category.getCategoryRatio())
+                            .productList(productDtoList)
+                            .build();
+                }).toList();
+        return ReadPresetDetailResponseDto.builder()
+                .presetId(existPreset.getId())
+                .groupId(existPreset.getPresetGroup().getId())
+                .name(existPreset.getName())
+                .presetList(categoryDtoListList)
+                .build();
+    }
 }

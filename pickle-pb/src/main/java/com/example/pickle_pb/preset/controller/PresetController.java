@@ -24,11 +24,11 @@ public class PresetController {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 조회 완료", result));
     }
 
-//    @GetMapping("/{presetId}")
-//    public ResponseEntity<CommonResDto<?>> readPresetDetail(@PathVariable String presetId) {
-//        ReadPresetDetailResponseDto result = presetService.readpresetDetail(presetId);
-//        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 상세 조회 완료", result));
-//    }
+    @GetMapping("/{presetId}")
+    public ResponseEntity<CommonResDto<?>> readPresetDetail(@PathVariable @Valid Integer presetId) {
+        ReadPresetDetailResponseDto result = presetService.readPresetDetail(presetId);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 상세 조회 완료", result));
+    }
 
     @PostMapping
     public ResponseEntity<CommonResDto<?>> createPreset(@RequestBody CreatePresetRequestDto requestDto) {
