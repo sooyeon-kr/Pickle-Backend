@@ -29,7 +29,7 @@ public class AuthConfig {
 //                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
 //                .cors(cors -> cors.disable())  // CORS 보호 비활성화
 //                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/pickle-customer/join", "/pickle-customer/token", "pickle-customer/validate").permitAll() // 특정 경로 허용
+//                        .requestMatchers("/pickle-customer/api/join", "/pickle-customer/api/token", "pickle-customer/api/validate").permitAll() // 특정 경로 허용
 //                        .anyRequest().authenticated()  // 나머지 모든 요청은 인증 필요
 //                );
 //

@@ -1,6 +1,7 @@
 package com.example.pickle_pb.pb.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 @Entity
@@ -30,5 +31,10 @@ public class Pb {
     private int consultingCount;
     private int transactionCount;
     private Long minConsultingAmount;
+    @OneToMany(mappedBy = "pb", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PbMainField> pbMainFields;
+
+    @OneToMany(mappedBy = "pb", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PbTag> pbTags;
 
 }
