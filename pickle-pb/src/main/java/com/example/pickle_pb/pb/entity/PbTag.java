@@ -22,7 +22,7 @@ public class PbTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int interestId;
+    private int pbTagId;
 
     @ManyToOne
     @JoinColumn(name = "pb_id", referencedColumnName = "pb_id")

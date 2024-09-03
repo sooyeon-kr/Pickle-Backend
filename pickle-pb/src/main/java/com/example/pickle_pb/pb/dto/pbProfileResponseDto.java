@@ -24,9 +24,9 @@ public class pbProfileResponseDto {
     private int consultingCount;
     private int transactionCount;
     private Long minConsultingAmount;
-    @OneToMany(mappedBy = "pb", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
     private List<String> mainFields;
-    @OneToMany(mappedBy = "pb", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
     private List<String> tags;
 
 }

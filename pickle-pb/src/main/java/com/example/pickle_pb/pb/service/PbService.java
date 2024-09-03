@@ -18,40 +18,31 @@ import com.example.pickle_pb.pb.repository.TagRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Service
 public class PbService {
 
     private final PbRepository pbRepository;
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MainFieldRepository mainFieldRepository;
+    private final MainFieldRepository mainFieldRepository;
 
-    @Autowired
-    private PbMainFieldRepository pbMainFieldRepository;
+    private final PbMainFieldRepository pbMainFieldRepository;
 
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
 
-    @Autowired
-    private PbTagRepository pbTagRepository;
+    private final PbTagRepository pbTagRepository;
 
-    @Autowired
-    private EntityManager entityManager;
-
-    public PbService(PbRepository pbRepository) {
-        this.pbRepository = pbRepository;
-    }
+    private final EntityManager entityManager;
 
     public void joinProcess(PbJoinDto pbJoinDTO) {
         String pbnumber = pbJoinDTO.getPbNumber();

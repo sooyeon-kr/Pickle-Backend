@@ -61,7 +61,7 @@ public class JwtService {
                 .getSubject(); // userid는 토큰의 subject에 저장됨
     }
 
-    private Key getSignKey() {
+    public Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }

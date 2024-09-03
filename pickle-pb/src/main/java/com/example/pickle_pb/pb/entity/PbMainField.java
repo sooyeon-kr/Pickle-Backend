@@ -21,7 +21,7 @@ public class PbMainField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mainId;
+    private int pbMainFieldId;
 
     @ManyToOne
     @JoinColumn(name = "pb_id", referencedColumnName = "pb_id")

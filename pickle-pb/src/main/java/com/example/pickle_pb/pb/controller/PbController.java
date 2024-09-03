@@ -35,13 +35,13 @@ public class PbController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/pickle-pb/join")
+    @PostMapping("/pickle-pb/api/join")
     public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody PbJoinDto pbjoinDTO) {
         pbService.joinProcess(pbjoinDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 회원가입 완료", "환영합니다!"));
     }
 
-    @PostMapping("/pickle-pb/token")
+    @PostMapping("/pickle-pb/api/token")
     public ResponseEntity<CommonResDto<?>> getToken(@RequestBody PbLoginDto authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassword()));
@@ -53,13 +53,13 @@ public class PbController {
         }
     }
 
-    @GetMapping("/pickle-pb/validate")
+    @GetMapping("/pickle-pb/api/validate")
     public ResponseEntity<CommonResDto<?>> validateToken(@RequestParam("token") String token) {
         pbService.validateToken(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "토큰 검증 완료", "토큰 검증완료"));
     }
 
-    @PostMapping("/pickle-pb/profile")
+    @PostMapping("/pickle-pb/api/profile")
     public ResponseEntity<CommonResDto<?>> postProfile(@RequestBody PbProfileRequestDto pbProfileRequestDto,
                                                        @RequestHeader("Authorization") String token){
         String jwtToken = token.substring(7);
@@ -67,10 +67,10 @@ public class PbController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", "PB 프로필 등록 완료"));
     }
 
-    @GetMapping("/pickle-pb/pblist")
+    @GetMapping("/pickle-pb/api/pblist")
     public ResponseEntity<CommonResDto<?>> pbList(@RequestHeader("Authorization") String token){
         String jwtToken = token.substring(7);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", pbService.pblist()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 조회 완료", pbService.pblist()));
     }
 
 }
