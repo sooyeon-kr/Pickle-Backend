@@ -10,6 +10,7 @@ import com.example.pickle_customer.mystrategy.repository.CategoryCompositionRepo
 import com.example.pickle_customer.mystrategy.repository.MyStrategyRepository;
 import com.example.pickle_customer.mystrategy.repository.ProductCompositionRepository;
 import com.example.pickle_customer.repository.AccountRepository;
+import com.example.real_common.global.exception.error.ConflictMyStrategyException;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.real_common.global.restClient.CustomRestClient;
 import com.example.real_common.stockEnum.CategoryEnum;
@@ -39,7 +40,11 @@ public class MyStrategyService {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new NotFoundAccountException("not found account" + request.getAccountId()));
 
-        // 이제 찐 저장
+        MyStrategy checkMyStrategy = myStrategyRepository.findByAccount(account).orElse(null);
+        if (checkMyStrategy != null) {
+            throw new ConflictMyStrategyException("conflict with exist my strategy");
+        }
+
         MyStrategy myStrategy = MyStrategy.builder()
                 .account(account)
                 .selectedStrategyId(request.getSelectedStrategyId())
