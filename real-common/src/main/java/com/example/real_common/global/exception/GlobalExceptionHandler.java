@@ -31,6 +31,60 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(UnAuthorizedException.class)
+    protected ResponseEntity<?> handleUnAuthorizedException(UnAuthorizedException exception) {
+        log.error("handleUnAuthorizedException :: ");
+        ErrorCode errorCode = ErrorCode.UN_AUTHORIZED_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundGroupException.class)
+    protected ResponseEntity<?> handleNotFoundGroupException(NotFoundGroupException exception) {
+        log.error("handleNotFoundGroupException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_GROUP_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundAccountException.class)
+    protected ResponseEntity<?> handleNotFoundAccountException(NotFoundAccountException exception) {
+        log.error("handleNotFoundAccountException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_ACCOUNT_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
     @ExceptionHandler(NotFoundCategoryException.class)
     protected ResponseEntity<?> handleNotFoundCategoryException(NotFoundCategoryException exception) {
         log.error("handleNotFoundCategoryException :: ");
@@ -112,6 +166,25 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleNotFoundConsultingStatusException(NotFoundConsultingStatusException exception) {
         log.error("handleNotFoundConsultingStatusException :: ");
         ErrorCode errorCode = ErrorCode.NOT_FOUND_CONSULTING_STATUS_EXCEPTION;
+      
+        ErrorResponse error = ErrorResponse.builder()
+                  .status(errorCode.getStatus().value())
+                  .message(errorCode.getMessage())
+                  .code(errorCode.getCode())
+                  .build();
+
+         CommonResponse response = CommonResponse.builder()
+                  .success(false)
+                  .error(error)
+                  .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+  
+    @ExceptionHandler(NotFoundStrategyException.class)
+    protected ResponseEntity<?> handleNotFoundStrategyException(NotFoundStrategyException exception) {
+        log.error("handleNotFoundStrategyException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_STRATEGY_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
@@ -126,7 +199,3 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
-
-
-
-}

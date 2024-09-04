@@ -9,7 +9,7 @@ public enum CategoryEnum {
     GLOBAL(2, "해외"),
     BOND(3, "채권"),
     MATERIAL(4, "원자재"),
-    ETF(5, "채권");
+    ETF(5, "ETF");
 
     private final int id;
     private final String name;

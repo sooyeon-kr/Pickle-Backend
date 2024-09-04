@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class ProductInAccount {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

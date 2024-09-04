@@ -11,7 +11,8 @@ import lombok.*;
 public class CategoryComposition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int categoryCompositionId;
+    @Column(name = "category_composition_id")
+    private int Id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "strategy_id")
