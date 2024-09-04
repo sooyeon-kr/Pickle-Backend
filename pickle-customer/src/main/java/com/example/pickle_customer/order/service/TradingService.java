@@ -1,6 +1,5 @@
 package com.example.pickle_customer.order.service;
 
-import com.example.pickle_customer.dto.ProductResponseDto;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.ProductInAccount;
 import com.example.pickle_customer.mystrategy.entity.MyStrategy;
@@ -57,7 +56,7 @@ public class TradingService {
 
         List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findByMyStrategy(myStrategy);
         for (MyStrategyCategoryComposition category : categories) {
-            List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findByMyStrategyCategoryComposition(category);
+            List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findAllByCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {
                 ProductInAccount productInAccount = dtoToProductAccount(product, category, productInAccountSaveDTO.getTradingRequestDTO(), account);
                 productRepository.save(productInAccount);
