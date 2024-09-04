@@ -22,7 +22,7 @@ public class RebalancingService {
                     return productInAccounts.stream()
                             .map(productInAccount -> new HeldQuantityResponseDTO(
                                     productInAccount.getProductCode(),
-                                    requestDTO.getHeldQuantity()-productInAccount.getHeldQuantity()));
+                                     requestDTO.getHeldQuantity()-productInAccount.getHeldQuantity()));
                 })
                 .collect(Collectors.toList());
     }

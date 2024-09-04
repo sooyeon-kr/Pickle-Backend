@@ -12,7 +12,7 @@ public class AccountResponseDto {
 
     private int accountId;
     private String accountNumber;
-    private int balance;
-    private long totalAmount;
+    private double balance;
+    private double totalAmount;
 
 }

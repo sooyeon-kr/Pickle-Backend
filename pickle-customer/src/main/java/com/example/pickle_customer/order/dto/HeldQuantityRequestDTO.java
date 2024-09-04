@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class HeldQuantityRequestDTO {
     private String productCode;
-    private Integer heldQuantity;
+    private double heldQuantity;
 
 
 }
