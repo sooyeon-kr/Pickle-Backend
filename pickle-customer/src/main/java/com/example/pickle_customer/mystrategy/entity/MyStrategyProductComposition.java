@@ -1,14 +1,12 @@
 package com.example.pickle_customer.mystrategy.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
 @AllArgsConstructor
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MyStrategyProductComposition {
     @Id
