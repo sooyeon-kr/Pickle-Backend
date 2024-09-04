@@ -69,8 +69,8 @@ public class JoinService {
         return String.format("%03d-%06d-%02d-%03d", part1, part2, part3, part4);
     }
 
-    public String generateToken(String userid) {
-        return jwtService.generateToken(userid);
+    public String generateToken(int customerid) {
+        return jwtService.generateToken(customerid);
     }
 
     public void validateToken(String token) {

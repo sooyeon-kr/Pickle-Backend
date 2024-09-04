@@ -38,15 +38,15 @@ public class JwtService {
     }
 
 
-    public String generateToken(String pbnumber) {
+    public String generateToken(int id) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, pbnumber);
+        return createToken(claims, id);
     }
 
-    private String createToken(Map<String, Object> claims, String pbnumber) {
+    private String createToken(Map<String, Object> claims, int id) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(pbnumber)
+                .setSubject(String.valueOf(id))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();

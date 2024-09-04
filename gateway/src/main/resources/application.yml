@@ -1,5 +1,5 @@
 server:
-  port: 8080  # Gateway ??
+  port: 8081  # Gateway ??
 
 spring:
   application:

@@ -69,8 +69,8 @@ public class PbService {
         pbRepository.save(data);
     }
 
-    public String generateToken(String pbnumber) {
-        return jwtService.generateToken(pbnumber);
+    public String generateToken(int id) {
+        return jwtService.generateToken(id);
     }
 
     public void validateToken(String token) {
@@ -78,7 +78,7 @@ public class PbService {
     }
 
     public ReadPbResponseDto.InfoForStrategyDto getPbById(Integer pbId) {
-        Pb existPb = pbRepository.findById(Long.valueOf(pbId))
+        Pb existPb = pbRepository.findById(pbId)
                 .orElseThrow(() -> new NotFoundAccountException("not found pb by id : " + pbId));
 
         return ReadPbResponseDto.InfoForStrategyDto.builder()
@@ -90,10 +90,10 @@ public class PbService {
     @Transactional
     public void postProfile(PbProfileRequestDto pbProfileRequestDto, String token) {
 
-        String pbNumber = jwtService.extractUsername(token);
+        String pbId = jwtService.extractUsername(token);
 
         // pbNumber로 Pb 엔티티를 조회
-        Pb pb = pbRepository.findByPbNumber(pbNumber)
+        Pb pb = pbRepository.findById(Integer.valueOf(pbId))
                 .orElseThrow(() -> new RuntimeException("PB not found"));
 
         System.out.println(entityManager.isOpen());
