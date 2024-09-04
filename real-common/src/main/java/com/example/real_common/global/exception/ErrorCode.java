@@ -11,7 +11,8 @@ public enum ErrorCode {
     NOT_FOUND_CONSULTING_HISTORY_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_HISTORY_001", "상담 기록을 찾을 수 없음"),
     NOT_FOUND_CATEGORY_EXCEPTION(HttpStatus.NOT_FOUND, "CATEGORY_001","카테고리를 찾을 없음"),
     NOT_FOUND_THEME_EXCEPTION(HttpStatus.NOT_FOUND, "THEME_001", "테마를 찾을 수 없음"),
-    NOT_FOUND_PRODUCT_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT_001", "상품을 찾을 수 없음");
+    NOT_FOUND_PRODUCT_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT_001", "상품을 찾을 수 없음"),
+    NOT_FOUND_CONSULTING_STATUS_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_001", "상담 상태를 찾을 수 없음");
 
     private final String code;
     private final String message;
