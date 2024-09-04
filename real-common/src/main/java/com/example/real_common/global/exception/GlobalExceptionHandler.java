@@ -119,6 +119,7 @@ public class GlobalExceptionHandler {
                 .code(errorCode.getCode())
                 .build();
 
+        CommonResponse response = CommonResponse.builder()
                 .success(false)
                 .error(error)
                 .build();
