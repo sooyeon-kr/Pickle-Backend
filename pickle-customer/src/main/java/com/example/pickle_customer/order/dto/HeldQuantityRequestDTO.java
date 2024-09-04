@@ -1,4 +1,4 @@
-package com.example.pickle_customer.rebalancing.dto;
+package com.example.pickle_customer.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class RebalancingRequestDTO {
+public class HeldQuantityRequestDTO {
     private String productCode;
     private Integer heldQuantity;
 
