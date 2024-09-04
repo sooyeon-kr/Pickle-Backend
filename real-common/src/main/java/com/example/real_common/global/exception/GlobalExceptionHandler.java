@@ -162,4 +162,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(NotFoundStrategyException.class)
+    protected ResponseEntity<?> handleNotFoundStrategyException(NotFoundStrategyException exception) {
+        log.error("handleNotFoundStrategyException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_STRATEGY_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }

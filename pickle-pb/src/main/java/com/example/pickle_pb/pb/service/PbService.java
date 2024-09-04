@@ -83,7 +83,8 @@ public class PbService {
 
         return ReadPbResponseDto.InfoForStrategyDto.builder()
                 .name(existPb.getUsername())
-                .branchOffice(existPb.getBranchOffice()).build();
+                .branchOffice(existPb.getBranchOffice())
+                .build();
     }
 
     @Transactional
@@ -151,7 +152,6 @@ public class PbService {
         return pbs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-
     public List<pbProfileResponseDto> getFilteredPbList(List<String> mainFields, List<String> tags, Long minConsultingAmount) {
         List<Pb> filteredPbs = pbRepository.findByFilters(mainFields, tags, minConsultingAmount);
         return filteredPbs.stream().map(this::convertToDto).collect(Collectors.toList());
@@ -176,6 +176,4 @@ public class PbService {
                         .collect(Collectors.toList()))
                 .build();
     }
-
-
 }
