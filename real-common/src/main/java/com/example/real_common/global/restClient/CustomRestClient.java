@@ -6,12 +6,16 @@ public class CustomRestClient {
 
     private static final String baseUrl = "http://localhost";
 
-    public static RestClient connectPbRestClient(String path) {
+    public static RestClient connectPb(String path) {
         return RestClient.builder()
                 .baseUrl(baseUrl + ":8002/pickle-pb" + path)
                 .build();
     }
 
+    public static RestClient connectCommon(String path) {
+        return RestClient.builder()
+                .baseUrl(baseUrl + ":8004/pickle-common" + path)
+                .build();
+    }
 //    public static RestClient connectCustomerRestClient(String path) {}
-//    public static RestClient connectCommonRestClient(String path) {}
 }
