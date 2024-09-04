@@ -75,7 +75,7 @@ public class CustomerController {
     @GetMapping("/pickle-customer/api/my-products")
     public ResponseEntity<CommonResDto<?>> myProudcts(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 계좌 및 자산 조회 완료", productSevice.myProudcts(jwtToken)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 보유 자산 조회 완료", productSevice.myProudcts(jwtToken)));
     }
 
 }
