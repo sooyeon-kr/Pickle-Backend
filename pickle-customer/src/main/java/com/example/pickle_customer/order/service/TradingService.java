@@ -3,14 +3,14 @@ package com.example.pickle_customer.order.service;
 import com.example.pickle_customer.dto.ProductResponseDto;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.ProductInAccount;
+import com.example.pickle_customer.mystrategy.entity.MyStrategy;
+import com.example.pickle_customer.mystrategy.entity.MyStrategyCategoryComposition;
+import com.example.pickle_customer.mystrategy.entity.MyStrategyProductComposition;
+import com.example.pickle_customer.mystrategy.repository.CategoryCompositionRepository;
+import com.example.pickle_customer.mystrategy.repository.MyStrategyRepository;
+import com.example.pickle_customer.mystrategy.repository.ProductCompositionRepository;
 import com.example.pickle_customer.order.dto.ProductDTO;
 import com.example.pickle_customer.order.dto.TradingRequestDTO;
-import com.example.pickle_customer.order.entity.MyStrategy;
-import com.example.pickle_customer.order.entity.MyStrategyCategoryComposition;
-import com.example.pickle_customer.order.entity.MyStrategyProductComposition;
-import com.example.pickle_customer.order.repository.MyStrategyCategoryCompositionRepository;
-import com.example.pickle_customer.order.repository.MyStrategyProductCompositionRepository;
-import com.example.pickle_customer.order.repository.MyStrategyRepository;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -24,8 +24,8 @@ public class TradingService {
 
     private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
-    private final MyStrategyCategoryCompositionRepository myStrategyCategoryCompositionRepository;
-    private final MyStrategyProductCompositionRepository myStrategyProductCompositionRepository;
+    private final CategoryCompositionRepository myStrategyCategoryCompositionRepository;
+    private final ProductCompositionRepository myStrategyProductCompositionRepository;
     private final MyStrategyRepository myStrategyRepository;
 
     public void updateTotalAmount(TradingRequestDTO tradingRequestDTO) {
@@ -46,7 +46,7 @@ public class TradingService {
     }
 
     public void productInAccountSave(int strategyId, TradingRequestDTO tradingRequestDTO) {
-        MyStrategy myStrategy = myStrategyRepository.findById((long) strategyId)
+        MyStrategy myStrategy = myStrategyRepository.findById(strategyId)
                 .orElseThrow(() -> new RuntimeException("Strategy not found"));
         Account account = accountRepository.findById(4)//로직 따로 빼기
                 .orElseThrow(() -> new RuntimeException("Account not found"));
