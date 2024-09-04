@@ -2,6 +2,7 @@ package com.example.pickle_pb.pb.service;
 
 import com.example.pickle_pb.pb.auth.JwtService;
 import com.example.pickle_pb.pb.dto.PbJoinDto;
+import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
 import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
 import com.example.pickle_pb.pb.dto.pbProfileResponseDto;
 import com.example.pickle_pb.pb.entity.MainField;
@@ -13,10 +14,12 @@ import com.example.pickle_pb.pb.entity.Tag;
 import com.example.pickle_pb.pb.repository.MainFieldRepository;
 import com.example.pickle_pb.pb.repository.PbMainFieldRepository;
 import com.example.pickle_pb.pb.repository.PbRepository;
+import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.pickle_pb.pb.repository.PbTagRepository;
 import com.example.pickle_pb.pb.repository.TagRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +75,16 @@ public class PbService {
 
     public void validateToken(String token) {
         jwtService.validateToken(token);
+    }
+
+    public ReadPbResponseDto.InfoForStrategyDto getPbById(Integer pbId) {
+        Pb existPb = pbRepository.findById(Long.valueOf(pbId))
+                .orElseThrow(() -> new NotFoundAccountException("not found pb by id : " + pbId));
+
+        return ReadPbResponseDto.InfoForStrategyDto.builder()
+                .name(existPb.getUsername())
+                .branchOffice(existPb.getBranchOffice())
+                .build();
     }
 
     @Transactional
@@ -137,6 +150,11 @@ public class PbService {
     public List<pbProfileResponseDto> pblist() {
         List<Pb> pbs = pbRepository.findAll();
         return pbs.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public List<pbProfileResponseDto> getFilteredPbList(List<String> mainFields, List<String> tags, Long minConsultingAmount) {
+        List<Pb> filteredPbs = pbRepository.findByFilters(mainFields, tags, minConsultingAmount);
+        return filteredPbs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private pbProfileResponseDto convertToDto(Pb pb) {

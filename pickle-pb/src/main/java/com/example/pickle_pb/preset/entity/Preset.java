@@ -5,6 +5,8 @@ import com.example.real_common.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,6 +23,9 @@ public class Preset extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preset_group_id")
     private PresetGroup presetGroup;
+
+    @OneToMany(mappedBy = "preset", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PresetCategoryComposition> presetCategoryCompositions;
 
     public void updateName(String name) {
         this.name = name;

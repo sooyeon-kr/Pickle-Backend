@@ -1,4 +1,4 @@
-package com.example.pickle_common.strategy.entity;
+package com.example.pickle_customer.mystrategy.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,18 +8,16 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategoryComposition {
+public class MyStrategyCategoryComposition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_composition_id")
-    private int Id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "strategy_id")
-    private Strategy strategy;
+    @JoinColumn(name = "my_strategy_id")
+    private MyStrategy myStrategy;
 
     private String categoryName;
-
     private double categoryRatio;
-
 }
