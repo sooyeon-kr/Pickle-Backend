@@ -10,7 +10,9 @@ import com.example.pickle_customer.mystrategy.repository.CategoryCompositionRepo
 import com.example.pickle_customer.mystrategy.repository.MyStrategyRepository;
 import com.example.pickle_customer.mystrategy.repository.ProductCompositionRepository;
 import com.example.pickle_customer.order.dto.ProductDTO;
+import com.example.pickle_customer.order.dto.ProductInAccountSaveDTO;
 import com.example.pickle_customer.order.dto.TradingRequestDTO;
+import com.example.pickle_customer.order.dto.UpdateTotalAmountDTO;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -28,10 +30,11 @@ public class TradingService {
     private final ProductCompositionRepository myStrategyProductCompositionRepository;
     private final MyStrategyRepository myStrategyRepository;
 
-    public void updateTotalAmount(TradingRequestDTO tradingRequestDTO) {
-
+    public void updateTotalAmount(UpdateTotalAmountDTO updateTotalAmountDTO) {
+        TradingRequestDTO tradingRequestDTO=updateTotalAmountDTO.getTradingRequestDTO();
+        int accountId=updateTotalAmountDTO.getAccountId();
         double tradingAmount = tradingRequestDTO.getTotalAmount();
-        Account account = accountRepository.findById(4)//로직 따로 빼기
+        Account account = accountRepository.findById(accountId)//로직 따로 빼기
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         Account updateAccount = Account.builder()
                 .accountId(account.getAccountId())
@@ -45,8 +48,9 @@ public class TradingService {
 
     }
 
-    public void productInAccountSave(int strategyId, TradingRequestDTO tradingRequestDTO) {
-        MyStrategy myStrategy = myStrategyRepository.findById(strategyId)
+    public void productInAccountSave(ProductInAccountSaveDTO productInAccountSaveDTO) {
+
+        MyStrategy myStrategy = myStrategyRepository.findById(productInAccountSaveDTO.getStrategyId())
                 .orElseThrow(() -> new RuntimeException("Strategy not found"));
         Account account = accountRepository.findById(4)//로직 따로 빼기
                 .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -55,7 +59,7 @@ public class TradingService {
         for (MyStrategyCategoryComposition category : categories) {
             List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findByMyStrategyCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {
-                ProductInAccount productInAccount = dtoToProductAccount(product, category, tradingRequestDTO, account);
+                ProductInAccount productInAccount = dtoToProductAccount(product, category, productInAccountSaveDTO.getTradingRequestDTO(), account);
                 productRepository.save(productInAccount);
 
             }
