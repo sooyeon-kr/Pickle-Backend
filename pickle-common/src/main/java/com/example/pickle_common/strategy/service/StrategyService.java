@@ -65,7 +65,7 @@ public class StrategyService {
                     .categoryRatio(categoryDto.getCategoryRatio())
                     .build();
 
-            CategoryComposition createdCategoryComposition = categoryCompositionRepository.save(categoryComposition);
+            CategoryComposition savedCategoryComposition = categoryCompositionRepository.save(categoryComposition);
 
             for (CreateStrategyRequestDto.ProductDto productDTO : categoryDto.getProductList()) {
 
@@ -81,7 +81,7 @@ public class StrategyService {
                         .themeName(curProductTheme)
                         .categoryName(categoryDto.getCategory())
                         .product(curProduct)
-                        .categoryComposition(createdCategoryComposition)
+                        .categoryComposition(savedCategoryComposition)
                         .build();
 
                 productCompositionRepository.save(productComposition);
@@ -99,7 +99,7 @@ public class StrategyService {
 
         List<Strategy> existStrategies = strategyRepository.findAllByCustomerId(customerId);
 
-        RestClient restClient = CustomRestClient.connectPbRestClient("/inner");
+        RestClient restClient = CustomRestClient.connectPb("/inner");
 
         List<ReadStrategyResponseDto.StrategyInfoDto> strategyList = existStrategies.stream()
                 .map(existStrategy -> {
@@ -140,37 +140,55 @@ public class StrategyService {
     }
 
     public ReadDetailStrategyResponseDto readDetailStrategy(Integer strategyId) {
-
         Strategy curStrategy = strategyRepository.findById(strategyId)
                 .orElseThrow(() -> new NotFoundStrategyException("not found strategy Id : " + strategyId));
 
-        List<CategoryComposition> curCategoryCompositionList = categoryCompositionRepository
-                .findByStrategy_strategyId(curStrategy.getStrategyId());
-
-        List<ReadDetailStrategyResponseDto.CategoryDto> categoryList = curCategoryCompositionList.stream()
-                .map(categoryComposition -> {
-                    List<ReadDetailStrategyResponseDto.ProductDto> productList
-                            = productCompositionRepository.findAllByCategoryComposition_Id(categoryComposition.getId())
-                            .stream().map(productComposition ->
-                                    ReadDetailStrategyResponseDto.ProductDto.builder()
-                                    .code(productComposition.getCode())
-                                    .name(productComposition.getName())
-                                    .ratio(productComposition.getRatio())
-                                    .themeName(productComposition.getThemeName())
-                                    .build()).toList();
-
-                    return ReadDetailStrategyResponseDto.CategoryDto.builder()
-                            .categoryName(categoryComposition.getCategoryName())
-                            .productList(productList)
-                            .categoryRatio(categoryComposition.getCategoryRatio())
-                            .build();
-                }).toList();
+        List<ReadDetailStrategyResponseDto.CategoryDto> categoryList = getCategoryDtoList(strategyId);
 
         return ReadDetailStrategyResponseDto.builder()
                 .name(curStrategy.getName())
                 .createdAt(curStrategy.getCreatedAt())
                 .categoryList(categoryList)
                 .build();
+    }
+
+    public RestClientDto.ReadStrategyResponseDto getStrategy(int strategyId) {
+        Strategy curStrategy = strategyRepository.findById(strategyId).orElseThrow(
+                () -> new NotFoundStrategyException("not found strategy id : " + strategyId)
+        );
+
+        List<ReadDetailStrategyResponseDto.CategoryDto> categoryDtoList = getCategoryDtoList(strategyId);
+
+        return RestClientDto.ReadStrategyResponseDto.builder()
+                .name(curStrategy.getName())
+                .strategyId(curStrategy.getStrategyId())
+                .categoryList(categoryDtoList)
+                .build();
+    }
+
+    private List<ReadDetailStrategyResponseDto.CategoryDto> getCategoryDtoList(int strategyId) {
+        List<ReadDetailStrategyResponseDto.CategoryDto> categoryList = categoryCompositionRepository.findByStrategy_strategyId(strategyId)
+                .stream().map(categoryComposition -> {
+
+                    List<ReadDetailStrategyResponseDto.ProductDto> productList
+                            = productCompositionRepository.findAllByCategoryComposition_Id(categoryComposition.getId())
+                            .stream().map(productComposition -> {
+                                return ReadDetailStrategyResponseDto.ProductDto.builder()
+                                        .themeName(productComposition.getThemeName())
+                                        .ratio(productComposition.getRatio())
+                                        .code(productComposition.getCode())
+                                        .name(productComposition.getName())
+                                        .build();
+                            }).toList();
+
+
+                    return ReadDetailStrategyResponseDto.CategoryDto.builder()
+                            .categoryName(categoryComposition.getCategoryName())
+                            .categoryRatio(categoryComposition.getCategoryRatio())
+                            .productList(productList)
+                            .build();
+                }).toList();
+        return categoryList;
     }
 }
 

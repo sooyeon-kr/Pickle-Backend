@@ -12,8 +12,12 @@ public enum ErrorCode {
     NOT_FOUND_CATEGORY_EXCEPTION(HttpStatus.NOT_FOUND, "CATEGORY_001", "카테고리를 찾을 없음"),
     NOT_FOUND_THEME_EXCEPTION(HttpStatus.NOT_FOUND, "THEME_001", "테마를 찾을 수 없음"),
     NOT_FOUND_PRODUCT_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT_001", "상품을 찾을 수 없음"),
+    NOT_FOUND_CONSULTING_STATUS_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_001", "상담 상태를 찾을 수 없음"),
     UN_AUTHORIZED_EXCEPTION(HttpStatus.UNAUTHORIZED, "ACCOUNT_002", "사용자의 권한이 아님"),
-    NOT_FOUND_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "전략을 찾을 수 없음");
+    NOT_FOUND_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "전략을 찾을 수 없음"),
+    NOT_FOUND_MY_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "나의 전략을 찾을 수 없음"),
+
+    CONFLICT_MY_STRATEGY_EXCEPTION(HttpStatus.CONFLICT, "MY_STRATEGY_002", "이미 나의 전략이 존재함");
 
     private final String code;
     private final String message;

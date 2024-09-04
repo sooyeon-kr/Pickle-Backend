@@ -162,10 +162,48 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(NotFoundConsultingStatusException.class)
+    protected ResponseEntity<?> handleNotFoundConsultingStatusException(NotFoundConsultingStatusException exception) {
+        log.error("handleNotFoundConsultingStatusException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_CONSULTING_STATUS_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
     @ExceptionHandler(NotFoundStrategyException.class)
     protected ResponseEntity<?> handleNotFoundStrategyException(NotFoundStrategyException exception) {
         log.error("handleNotFoundStrategyException :: ");
         ErrorCode errorCode = ErrorCode.NOT_FOUND_STRATEGY_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(ConflictMyStrategyException.class)
+    protected ResponseEntity<?> handleConflictMyStrategyException(ConflictMyStrategyException exception) {
+        log.error("handleConflictMyStrategyException :: ");
+        ErrorCode errorCode = ErrorCode.CONFLICT_MY_STRATEGY_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
