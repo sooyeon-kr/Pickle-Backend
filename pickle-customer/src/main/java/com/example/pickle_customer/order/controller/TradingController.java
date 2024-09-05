@@ -22,8 +22,7 @@ public class TradingController {
     private TradingService tradingService;
     private MyStrategyService myStrategyService;
     @PostMapping(value = "/")
-    public void trading(@RequestBody TradingRequestDTO tradingRequestDTO){
-        //int accountId = service 로직 때고 뺀거 서비스 메서드
+    public  ResponseEntity<String> trading(@RequestBody TradingRequestDTO tradingRequestDTO){
         CreateMyStrategyDto.Request strategyRequest =CreateMyStrategyDto.Request.builder()
                         .accountId(1)
                         .selectedStrategyId(tradingRequestDTO.getStrategyId())
@@ -40,6 +39,8 @@ public class TradingController {
                 .tradingRequestDTO(tradingRequestDTO)
                 .build();
         tradingService.productInAccountSave(productInAccountSaveDTO);
+        return ResponseEntity.ok("Trading operation completed successfully");
     }
+
 
 }
