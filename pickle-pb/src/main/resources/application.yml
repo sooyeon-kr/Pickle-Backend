@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${PB_DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    username: ${PB_DATASOURCE_USERNAME}
+    password: ${PB_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
