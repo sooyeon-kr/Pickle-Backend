@@ -33,7 +33,7 @@ public class ConsultingHistory extends BaseTimeEntity {
     private String pbImage;
 
     @Enumerated(EnumType.STRING)
-    private String consultingStatusName;
+    private ConsultingStatusEnum consultingStatusName;
 
     // 양방향이 꼭 필요한지 확인을 해봐야한다.
     // OneToOne 양방향 매핑에서는 fetch LAZY 적용이 안되는 상황이 많다.
@@ -44,6 +44,6 @@ public class ConsultingHistory extends BaseTimeEntity {
     private ConsultingConfirmDate consultingConfirmDate;
 
     // 전략과 양방향 매핑
-    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Strategy strategy;
+//    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Strategy strategy;
 }
