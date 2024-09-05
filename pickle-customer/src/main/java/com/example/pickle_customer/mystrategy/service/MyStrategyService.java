@@ -3,6 +3,7 @@ package com.example.pickle_customer.mystrategy.service;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.mystrategy.dto.CreateMyStrategyDto;
 import com.example.pickle_customer.mystrategy.dto.RestClientDto;
+import com.example.pickle_customer.mystrategy.dto.UpdateMyStrategyDto;
 import com.example.pickle_customer.mystrategy.entity.MyStrategyCategoryComposition;
 import com.example.pickle_customer.mystrategy.entity.MyStrategy;
 import com.example.pickle_customer.mystrategy.entity.MyStrategyProductComposition;
@@ -12,6 +13,7 @@ import com.example.pickle_customer.mystrategy.repository.ProductCompositionRepos
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.real_common.global.exception.error.ConflictMyStrategyException;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
+import com.example.real_common.global.exception.error.NotFoundMyStrategyException;
 import com.example.real_common.global.restClient.CustomRestClient;
 import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
@@ -19,6 +21,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,14 @@ public class MyStrategyService {
 
         MyStrategy savedMyStrategy = myStrategyRepository.save(myStrategy);
 
+        saveMyStrategyComposition(selectedStrategy, savedMyStrategy);
+
+        return CreateMyStrategyDto.Response.builder()
+                .createdMyStrategyId(savedMyStrategy.getId())
+                .build();
+    }
+
+    private void saveMyStrategyComposition(RestClientDto.ReadStrategyResponseDto selectedStrategy, MyStrategy savedMyStrategy) {
         for (RestClientDto.CategoryDto categoryDto : selectedStrategy.getCategoryList()) {
             String curCategory = CategoryEnum.checkName(categoryDto.getCategoryName());
 
@@ -79,10 +91,46 @@ public class MyStrategyService {
                 productCompositionRepository.save(productComposition);
             }
         }
-
-        return CreateMyStrategyDto.Response.builder()
-                .createdMyStrategyId(savedMyStrategy.getId())
-                .build();
     }
 
+    @Transactional
+    public UpdateMyStrategyDto.Response updateMyStrategy(UpdateMyStrategyDto.Request request) {
+        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
+
+        RestClientDto.ReadStrategyResponseDto selectedStrategy = restClient.get()
+                .uri("/{strategyId}", request.getSelectedStrategyId())
+                .retrieve()
+                .body(RestClientDto.ReadStrategyResponseDto.class);
+
+        Account account = accountRepository.findById(request.getAccountId())
+                .orElseThrow(() -> new NotFoundAccountException("not found account" + request.getAccountId()));
+
+        MyStrategy myStrategy = myStrategyRepository.findByAccount(account)
+                .orElseThrow(() -> new NotFoundMyStrategyException("not found myStrategy" + request.getSelectedStrategyId()));
+
+        List<MyStrategyCategoryComposition> categoryCompositionList =
+                categoryCompositionRepository.findAllByMyStrategy(myStrategy);
+
+        for (MyStrategyCategoryComposition myStrategyCategoryComposition : categoryCompositionList) {
+            productCompositionRepository.deleteAllInBatch(
+                    productCompositionRepository.findAllByCategoryComposition(
+                            myStrategyCategoryComposition
+                    )
+            );
+        }
+        categoryCompositionRepository.deleteAllInBatch(categoryCompositionList);
+
+        myStrategy.updateSelectedStrategyInfo(
+                request.getSelectedStrategyId(),
+                selectedStrategy.getName()
+        );
+
+        myStrategyRepository.save(myStrategy);
+
+        saveMyStrategyComposition(selectedStrategy, myStrategy);
+
+        return UpdateMyStrategyDto.Response.builder()
+                .updatedStrategyId(myStrategy.getId())
+                .build();
+    }
 }
