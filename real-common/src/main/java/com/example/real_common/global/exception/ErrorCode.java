@@ -17,8 +17,8 @@ public enum ErrorCode {
     NOT_FOUND_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "전략을 찾을 수 없음"),
     NOT_FOUND_MY_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "나의 전략을 찾을 수 없음"),
 
-    CONFLICT_MY_STRATEGY_EXCEPTION(HttpStatus.CONFLICT, "MY_STRATEGY_002", "이미 나의 전략이 존재함");
-
+    CONFLICT_MY_STRATEGY_EXCEPTION(HttpStatus.CONFLICT, "MY_STRATEGY_002", "이미 나의 전략이 존재함"),
+    NOT_FOUND_IMAGE_EXCEPTION(HttpStatus.NOT_FOUND, "IMAGE_001", "사진이 없습니다.");
     private final String code;
     private final String message;
     private final HttpStatus status;

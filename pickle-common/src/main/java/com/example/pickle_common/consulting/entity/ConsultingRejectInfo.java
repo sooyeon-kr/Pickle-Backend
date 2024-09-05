@@ -18,7 +18,7 @@ public class ConsultingRejectInfo extends BaseTimeEntity {
     @Column(name = "consulting_reject_info_id")
     private int id;
 
-    @OneToOne(mappedBy = "request_letter_id")
+    @OneToOne(mappedBy = "consultingRejectInfo")
     private RequestLetter requestLetter;
     private String content;
 

@@ -52,9 +52,9 @@ public class PresetService {
         PresetGroup existGroup = presetGroupRepository.findById(createPresetRequestDto.getPresetGroupId())
                 .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + createPresetRequestDto.getPresetGroupId()));
 
-//        if (existGroup.getId() != curPb.getId()) {
-//            throw new UsernameNotFoundException("pb랑 그룹id 다를때 이거 커스텀에러 추가 예정임");
-//        }
+        if (existGroup.getPb() != curPb) {
+            throw new UsernameNotFoundException("pb랑 그룹id 다를때 이거 커스텀에러 추가 예정임");
+        }
 
         String presetName = createPresetRequestDto.getName();
         List<CreatePresetRequestDto.CategoryDto> presetList = createPresetRequestDto.getPresetList();
