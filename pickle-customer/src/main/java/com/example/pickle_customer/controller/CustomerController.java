@@ -70,7 +70,7 @@ public class CustomerController {
 
         if (authenticate.isAuthenticated()) {
             // 2. userid로 고객 정보 조회
-            Optional<Customer> customerOptional = customerRepository.findByUserId(authRequest.getUserid());
+            Optional<Customer> customerOptional = joinService.find(authRequest.getUserid());
 
             // 3. 고객 정보가 존재하는지 확인
             if (customerOptional.isPresent()) {

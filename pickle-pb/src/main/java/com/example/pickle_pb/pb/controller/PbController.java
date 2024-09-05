@@ -62,7 +62,8 @@ public class PbController {
                 new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassword()));
 
         if (authenticate.isAuthenticated()) {
-            Optional<Pb> pbOptional = pbRepository.findByPbNumber(authRequest.getPbNumber());
+            Optional<Pb> pbOptional =
+                    pbService.find(authRequest.getPbNumber());
 
             if (pbOptional.isPresent()) {
                 Pb pb = pbOptional.get();

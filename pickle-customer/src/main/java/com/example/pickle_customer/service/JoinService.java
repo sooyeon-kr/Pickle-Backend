@@ -6,6 +6,7 @@ import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.CustomerRepository;
+import java.util.Optional;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,5 +76,9 @@ public class JoinService {
 
     public void validateToken(String token) {
         jwtService.validateToken(token);
+    }
+
+    public Optional<Customer> find(String id){
+        return customerRepository.findByUserId(id);
     }
 }

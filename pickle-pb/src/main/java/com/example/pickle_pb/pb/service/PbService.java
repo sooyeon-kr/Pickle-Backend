@@ -176,4 +176,8 @@ public class PbService {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+    public Optional<Pb> find(String id){
+        return pbRepository.findByPbNumber(id);
+    }
 }
