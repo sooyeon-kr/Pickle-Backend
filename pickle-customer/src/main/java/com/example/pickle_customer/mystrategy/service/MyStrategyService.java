@@ -14,17 +14,21 @@ import com.example.pickle_customer.repository.AccountRepository;
 import com.example.real_common.global.exception.error.ConflictMyStrategyException;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.real_common.global.exception.error.NotFoundMyStrategyException;
+import com.example.real_common.global.exception.error.NotFoundStrategyException;
 import com.example.real_common.global.restClient.CustomRestClient;
 import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MyStrategyService {
     private final MyStrategyRepository myStrategyRepository;
@@ -39,7 +43,11 @@ public class MyStrategyService {
         RestClientDto.ReadStrategyResponseDto selectedStrategy = restClient.get()
                 .uri("/{strategyId}", request.getSelectedStrategyId())
                 .retrieve()
+                .onStatus(status -> status.value() == 404, (req, res) -> {
+                    throw new NotFoundStrategyException("not found strategy id : " + request.getSelectedStrategyId());
+                })
                 .body(RestClientDto.ReadStrategyResponseDto.class);
+
 
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new NotFoundAccountException("not found account" + request.getAccountId()));
@@ -100,6 +108,9 @@ public class MyStrategyService {
         RestClientDto.ReadStrategyResponseDto selectedStrategy = restClient.get()
                 .uri("/{strategyId}", request.getSelectedStrategyId())
                 .retrieve()
+                .onStatus(status -> status.value() == 404, (req, res) -> {
+                    throw new NotFoundStrategyException("not found strategy id : " + request.getSelectedStrategyId());
+                })
                 .body(RestClientDto.ReadStrategyResponseDto.class);
 
         Account account = accountRepository.findById(request.getAccountId())
