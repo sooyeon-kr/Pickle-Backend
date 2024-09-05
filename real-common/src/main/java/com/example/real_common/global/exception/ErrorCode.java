@@ -18,7 +18,10 @@ public enum ErrorCode {
     NOT_FOUND_MY_STRATEGY_EXCEPTION(HttpStatus.NOT_FOUND, "STRATEGY_001", "나의 전략을 찾을 수 없음"),
 
     CONFLICT_MY_STRATEGY_EXCEPTION(HttpStatus.CONFLICT, "MY_STRATEGY_002", "이미 나의 전략이 존재함"),
-    NOT_FOUND_IMAGE_EXCEPTION(HttpStatus.NOT_FOUND, "IMAGE_001", "사진이 없습니다.");
+    NOT_FOUND_IMAGE_EXCEPTION(HttpStatus.NOT_FOUND, "IMAGE_001", "사진이 없습니다."),
+
+    ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION(HttpStatus.BAD_REQUEST, "AMOUNT_001", "잔액 이상의 값을 매매할 수 없음");
+
     private final String code;
     private final String message;
     private final HttpStatus status;
