@@ -38,7 +38,7 @@ public class TradingService {
         Account updateAccount = Account.builder()
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance())
+                .balance(account.getBalance()-tradingAmount)
                 .totalAmount(tradingAmount)
                 .customer(account.getCustomer())
                 .build();
