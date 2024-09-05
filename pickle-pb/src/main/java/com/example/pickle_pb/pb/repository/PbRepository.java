@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface PbRepository extends JpaRepository<Pb, Long> {
+public interface PbRepository extends JpaRepository<Pb, Integer> {
     Optional<Pb> findByUsername(String username);
     Optional<Pb> findByPbNumber(String PbNumber);
+    Optional<Pb> findById(Integer id);
 
     @Query("SELECT DISTINCT pb FROM Pb pb " +
             "JOIN pb.pbMainFields pmf " +

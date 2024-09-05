@@ -1,14 +1,18 @@
 package com.example.pickle_pb.pb.controller;
 
 
+import com.example.pickle_pb.pb.auth.JwtService;
 import com.example.pickle_pb.pb.dto.PbJoinDto;
 import com.example.pickle_pb.pb.dto.PbLoginDto;
 import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
 import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
+import com.example.pickle_pb.pb.entity.Pb;
+import com.example.pickle_pb.pb.repository.PbRepository;
 import com.example.pickle_pb.pb.service.PbService;
 import com.example.real_common.global.common.CommonResDto;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -33,11 +37,17 @@ public class PbController {
     private final PbService pbService;
     @Autowired
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private final PbRepository pbRepository;
+    @Autowired
+    private final JwtService jwtService;
 
-
-    public PbController(PbService pbService, AuthenticationManager authenticationManager) {
+    public PbController(PbService pbService, AuthenticationManager authenticationManager, PbRepository pbRepository,
+                        JwtService jwtService) {
         this.pbService = pbService;
         this.authenticationManager = authenticationManager;
+        this.pbRepository = pbRepository;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/pickle-pb/api/join")
@@ -50,11 +60,23 @@ public class PbController {
     public ResponseEntity<CommonResDto<?>> getToken(@RequestBody PbLoginDto authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassword()));
-        if (authenticate.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 로그인 완료 및 토큰 발급 성공", pbService.generateToken(authRequest.getPbNumber())));
 
-        } else {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(-1, "PB 로그인 실패", "Invalid access"));
+        if (authenticate.isAuthenticated()) {
+            Optional<Pb> pbOptional =
+                    pbService.find(authRequest.getPbNumber());
+
+            if (pbOptional.isPresent()) {
+                Pb pb = pbOptional.get();
+                String token = pbService.generateToken(pb.getId());
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(new CommonResDto<>(1, "PB 로그인 및 토큰 발급 완료", token));
+             }else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new CommonResDto<>(-1, "PB 정보를 찾을 수 없습니다", "해당 사용자를 찾을 수 없습니다"));
+            }
+         }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CommonResDto<>(-1, "PB 로그인 및 토큰 발급 실패", "잘못된 로그인 정보입니다"));
         }
     }
 
@@ -98,6 +120,13 @@ public class PbController {
         List<String> mainFieldList = mainFields != null ? Arrays.asList(mainFields) : null;
         List<String> tagList = tags != null ? Arrays.asList(tags) : null;
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 개별 프로필 조회 완료", pbService.getFilteredPbList(mainFieldList, tagList, minConsultingAmount)));
+
+    }
+
+    @GetMapping("/pickle-pb/api/getpbid")
+    public String getPbId(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        return jwtService.extractUsername(jwtToken);
 
     }
 

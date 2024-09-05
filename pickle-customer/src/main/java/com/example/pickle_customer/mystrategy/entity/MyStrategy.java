@@ -24,4 +24,9 @@ public class MyStrategy extends BaseTimeEntity {
     private int selectedStrategyId;
 
     private String name;
+
+    public void updateSelectedStrategyInfo(int selectedStrategyId, String name) {
+        this.selectedStrategyId = selectedStrategyId;
+        this.name = name;
+    }
 }
