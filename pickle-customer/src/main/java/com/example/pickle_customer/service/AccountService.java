@@ -28,7 +28,7 @@ public class AccountService {
         String userid = jwtService.extractUsername(token);
         System.out.println(userid +"22");
         // username을 통해 CustomerEntity 찾기
-        Customer customer = customerRepository.findByUserId(userid)
+        Customer customer = customerRepository.findByCustomerId(Integer.parseInt(userid))
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // CustomerId를 통해 Account 찾기
         Account account = accountRepository.findByCustomerCustomerId(customer.getCustomerId())
