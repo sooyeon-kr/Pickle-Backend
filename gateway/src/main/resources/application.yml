@@ -10,20 +10,20 @@ spring:
     gateway:
       routes:
         - id: pickle-pb  # pickle-pb ???? ???
-          uri: http://localhost:8002
+          uri: ${GATEWAY_URI_PB}
           predicates:
             - Path=/pickle-pb/**
           filters:
             - AuthenticationFilter
 
         - id: pickle-customer  # pickle-customer ???? ???
-          uri: http://localhost:8003
+          uri: ${GATEWAY_URI_CUSTOMER}
           predicates:
             - Path=/pickle-customer/**
           filters:
             - AuthenticationFilter
 
         - id: pickle-common  # pickle-common ???? ???
-          uri: http://localhost:8004
+          uri: ${GATEWAY_URI_COMMON}
           predicates:
             - Path=/pickle-common/**

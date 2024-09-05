@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    url: jdbc:mysql://localhost:3306/pickle_customer
-    password: '1234'
+    url: ${CUSTOMER_DATASOURCE_URL}
+    username: ${CUSTOMER_DATASOURCE_USERNAME}
+    password: ${CUSTOMER_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

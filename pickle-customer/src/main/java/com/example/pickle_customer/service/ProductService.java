@@ -38,7 +38,7 @@ public class ProductService {
         String userid = jwtService.extractUsername(token);
 
         // userid을 통해 CustomerEntity 찾기
-        Customer customer = customerRepository.findByUserId(userid)
+        Customer customer = customerRepository.findByCustomerId(Integer.parseInt(userid))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // CustomerId를 통해 Account 찾기

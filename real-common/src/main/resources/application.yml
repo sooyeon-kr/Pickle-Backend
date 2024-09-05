@@ -1,25 +1,2 @@
 server:
   port: 8081  # Gateway 포트
-
-#spring:
-#  application:
-#    name: pickle  # Gateway 서비스 이름
-#  main:
-#    web-application-type: reactive
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: pickle-pb  # pickle-pb 서비스로 라우팅
-#          uri: http://localhost:8002
-#          predicates:
-#            - Path=/pickle-pb/**
-#
-#        - id: pickle-customer  # pickle-customer 서비스로 라우팅
-#          uri: http://localhost:8003
-#          predicates:
-#            - Path=/pickle-customer/**
-#
-#        - id: pickle-common  # pickle-common 서비스로 라우팅
-#          uri: http://localhost:8004
-#          predicates:
-#            - Path=/pickle-common/**

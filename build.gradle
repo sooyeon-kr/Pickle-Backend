@@ -9,7 +9,6 @@ allprojects {
     version = '0.0.1-SNAPSHOT'
 
 
-
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)
@@ -42,29 +41,26 @@ allprojects {
     }
 
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
-
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
 
 // 하위 프로젝트마다 플러그인을 적용합니다.
 subprojects {
-
     project(':real-common') {
         dependencies {
 
         }
     }
-
 
     project(':pickle-customer') {
         dependencies {
@@ -86,10 +82,6 @@ subprojects {
 
     project(':gateway') {
         dependencies {
-//            implementation project(':real-common')
         }
     }
-
-
-
 }
