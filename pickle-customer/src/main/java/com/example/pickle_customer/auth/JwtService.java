@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class JwtService {
 
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    public static final String SECRET = System.getenv("SECRET_JWT");
 
     public void validateToken(final String token) {
         try {
@@ -34,15 +34,16 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String userid) {
+    public String generateToken(int customerid) {
+
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userid);
+        return createToken(claims, customerid);
     }
 
-    private String createToken(Map<String, Object> claims, String userid) {
+    private String createToken(Map<String, Object> claims, int customerid) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userid)
+                .setSubject(String.valueOf(customerid))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();

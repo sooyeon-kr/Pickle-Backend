@@ -223,6 +223,25 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleNotFoundImageException(NotFoundImageException exception) {
         log.error("handleNotFoundImageException :: ");
         ErrorCode errorCode = ErrorCode.NOT_FOUND_IMAGE_EXCEPTION;
+    
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundMyStrategyException.class)
+    protected ResponseEntity<?> handleNotFoundMyStrategyException(NotFoundMyStrategyException exception) {
+        log.error("handleNotFoundMyStrategyException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_MY_STRATEGY_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())

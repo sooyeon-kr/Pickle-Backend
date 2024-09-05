@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Optional<Customer> findByUserId(String userid);
+    Optional<Customer> findByCustomerId(int customerid);
     Optional<Customer> findByName(String username);
 
     @Query("SELECT COALESCE(MAX(c.mydataId), 0) FROM Customer c")
