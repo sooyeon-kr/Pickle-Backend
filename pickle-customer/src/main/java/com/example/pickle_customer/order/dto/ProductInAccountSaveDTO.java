@@ -1,17 +1,15 @@
 package com.example.pickle_customer.order.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-public class HeldQuantityRequestDTO {
-    private String productCode;
-    private double heldQuantity;
-
-
+public class ProductInAccountSaveDTO {
+    private int strategyId;
+    private TradingRequestDTO tradingRequestDTO;
 }

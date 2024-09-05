@@ -23,8 +23,8 @@ public class Account {
     private int accountId;
 
     private String accountNumber;
-    private int balance;
-    private long totalAmount;
+    private double balance;
+    private double totalAmount;
 
     @OneToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customerId")

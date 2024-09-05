@@ -12,11 +12,8 @@ public class ProductResponseDto {
     private int accountId;
     private String productName;
     private String productCode;
-    private int heldQuantity;
-    private long purchaseAmount;
-    private long evaluationAmount;
-    private long profitAmount;
-    private double profitMargin;
+    private double heldQuantity;
+    private double purchaseAmount;
     private String themeName;
     private double ratioInCategory;
     private String categoryName;

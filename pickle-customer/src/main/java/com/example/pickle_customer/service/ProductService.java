@@ -60,9 +60,6 @@ public class ProductService {
                         productInAccount.getProductCode(),
                         productInAccount.getHeldQuantity(),
                         productInAccount.getPurchaseAmount(),
-                        productInAccount.getEvaluationAmount(),
-                        productInAccount.getProfitAmount(),
-                        productInAccount.getProfitMargin(),
                         productInAccount.getThemeName(),
                         productInAccount.getRatioInCategory(),
                         productInAccount.getCategoryName()

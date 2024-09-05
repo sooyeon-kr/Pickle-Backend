@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class HeldQuantityResponseDTO {
     private String productCode;
-    private int heldAmount;
+    private double heldAmount;
 
 
 }
