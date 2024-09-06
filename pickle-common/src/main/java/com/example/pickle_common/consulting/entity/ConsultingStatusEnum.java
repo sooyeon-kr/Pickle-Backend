@@ -12,20 +12,20 @@ public enum ConsultingStatusEnum {
     COMPLETED(4, "상담완료"),
     NO_SHOW(5, "상담노쇼"),;
 
-    private final int id;
-    private final String name;
+    private final int code;
+    private final String descriptiong;
 
-    private ConsultingStatusEnum(int id, String name) {
-        this.id = id;
-        this.name = name;
+    private ConsultingStatusEnum(int code, String descriptiong) {
+        this.code = code;
+        this.descriptiong = descriptiong;
     }
 
-    public static ConsultingStatusEnum fromId(int id) {
+    public static ConsultingStatusEnum fromCode(int code) {
         for (ConsultingStatusEnum status : ConsultingStatusEnum.values()) {
-            if (status.getId() == id) {
+            if (status.getCode() == code) {
                 return status;
             }
         }
-        throw new NotFoundConsultingStatusException("Invalid id for ConsultingStatusEnum: " + id);
+        return ConsultingStatusEnum.ETC;
     }
 }

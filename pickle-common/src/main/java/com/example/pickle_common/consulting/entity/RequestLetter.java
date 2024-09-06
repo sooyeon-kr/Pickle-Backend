@@ -23,10 +23,6 @@ public class RequestLetter extends BaseTimeEntity {
     @JoinColumn(name = "consulting_history_id")
     private ConsultingHistory consultingHistory;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "consulting_reject_info_id", nullable = true)
-    private ConsultingRejectInfo consultingRejectInfo;
-
     private int customerId;
     private int customerAge;
     private String customerJob;
