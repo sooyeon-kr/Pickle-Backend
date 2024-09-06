@@ -8,13 +8,13 @@ public class CustomRestClient {
 
     public static RestClient connectPb(String path) {
         return RestClient.builder()
-                .baseUrl(baseUrl + ":8002/pickle-pb" + path)
+                .baseUrl(baseUrl + ":8002/api/pickle-pb" + path)
                 .build();
     }
 
     public static RestClient connectCommon(String path) {
         return RestClient.builder()
-                .baseUrl(baseUrl + ":8004/pickle-common" + path)
+                .baseUrl(baseUrl + ":8004/api/pickle-common" + path)
                 .build();
     }
 //    public static RestClient connectCustomerRestClient(String path) {}

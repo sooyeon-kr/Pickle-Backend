@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/pickle-customer/api/trade")
+@RequestMapping("/api/pickle-customer/trade")
 @AllArgsConstructor
 public class TradingController {
     private final ProductRepository productRepository;

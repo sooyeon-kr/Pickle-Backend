@@ -12,18 +12,18 @@ spring:
         - id: pickle-pb  # pickle-pb ???? ???
           uri: ${GATEWAY_URI_PB}
           predicates:
-            - Path=/pickle-pb/**
+            - Path=/api/pickle-pb/**
           filters:
             - AuthenticationFilter
 
         - id: pickle-customer  # pickle-customer ???? ???
           uri: ${GATEWAY_URI_CUSTOMER}
           predicates:
-            - Path=/pickle-customer/**
+            - Path=/api/pickle-customer/**
           filters:
             - AuthenticationFilter
 
         - id: pickle-common  # pickle-common ???? ???
           uri: ${GATEWAY_URI_COMMON}
           predicates:
-            - Path=/pickle-common/**
+            - Path=/api/pickle-common/**

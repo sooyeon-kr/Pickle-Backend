@@ -50,13 +50,13 @@ public class PbController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/pickle-pb/api/join")
+    @PostMapping("/api/pickle-pb/join")
     public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody PbJoinDto pbjoinDTO) {
         pbService.joinProcess(pbjoinDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 회원가입 완료", "환영합니다!"));
     }
 
-    @PostMapping("/pickle-pb/api/token")
+    @PostMapping("/api/pickle-pb/token")
     public ResponseEntity<CommonResDto<?>> getToken(@RequestBody PbLoginDto authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getPbNumber(), authRequest.getPassword()));
@@ -80,19 +80,19 @@ public class PbController {
         }
     }
 
-    @GetMapping("/pickle-pb/api/validate")
+    @GetMapping("/api/pickle-pb/validate")
     public ResponseEntity<CommonResDto<?>> validateToken(@RequestParam("token") String token) {
         pbService.validateToken(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "토큰 검증 완료", "토큰 검증완료"));
     }
 
-    @GetMapping("/pickle-pb/inner/{pbId}")
+    @GetMapping("/api/pickle-pb/inner/{pbId}")
     public ResponseEntity<?> getPbById(@PathVariable("pbId") Integer pbId) {
         ReadPbResponseDto.InfoForStrategyDto result = pbService.getPbById(pbId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @PostMapping("/pickle-pb/api/profile")
+    @PostMapping("/api/pickle-pb/profile")
     public ResponseEntity<CommonResDto<?>> postProfile(@RequestBody PbProfileRequestDto pbProfileRequestDto,
                                                        @RequestHeader("Authorization") String token){
         String jwtToken = token.substring(7);
@@ -100,18 +100,18 @@ public class PbController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", "PB 프로필 등록 완료"));
     }
 
-    @GetMapping("/pickle-pb/api/pblist")
+    @GetMapping("/api/pickle-pb/pblist")
     public ResponseEntity<CommonResDto<?>> pbList(){
 //        String jwtToken = token.substring(7);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 조회 완료", pbService.pblist()));
     }
 
-    @GetMapping("/pickle-pb/api/pblist/{pbNumber}")
+    @GetMapping("/api/pickle-pb/pblist/{pbNumber}")
     public ResponseEntity<CommonResDto<?>> pbDetalList(@PathVariable("pbNumber") String pbNumber){
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 개별 프로필 조회 완료", pbService.pblist()));
     }
 
-    @GetMapping("/pickle-pb/api/filterpblist")
+    @GetMapping("/api/pickle-pb/filterpblist")
     public ResponseEntity<CommonResDto<?>> filterPbList( @RequestParam(name = "mainFields", required = false) String[] mainFields,
                                                          @RequestParam(name = "tags", required = false) String[] tags,
                                                          @RequestParam(name = "minConsultingAmount", required = false) Long minConsultingAmount) {
@@ -123,7 +123,7 @@ public class PbController {
 
     }
 
-    @GetMapping("/pickle-pb/api/getpbid")
+    @GetMapping("/api/pickle-pb/getpbid")
     public String getPbId(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         return jwtService.extractUsername(jwtToken);
