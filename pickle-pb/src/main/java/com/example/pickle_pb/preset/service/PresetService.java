@@ -13,6 +13,7 @@ import com.example.pickle_pb.preset.repository.PresetProductCompositionRepositor
 import com.example.pickle_pb.preset.repository.PresetRepository;
 import com.example.pickle_pb.presetGroup.entity.PresetGroup;
 import com.example.pickle_pb.presetGroup.repository.PresetGroupRepository;
+import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.real_common.global.exception.error.NotFoundGroupException;
 import com.example.real_common.global.exception.error.UnAuthorizedException;
 import com.example.real_common.stockEnum.CategoryEnum;
@@ -46,8 +47,8 @@ public class PresetService {
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
         }
-        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
 
         PresetGroup existGroup = presetGroupRepository.findById(createPresetRequestDto.getPresetGroupId())
                 .orElseThrow(() -> new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. ID: " + createPresetRequestDto.getPresetGroupId()));
@@ -104,8 +105,8 @@ public class PresetService {
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
         }
-        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
         List<PresetGroup> existGroups = presetGroupRepository.findAllByPbId(curPb.getId());
         if (existGroups.isEmpty()) {
             throw new NotFoundGroupException("프리셋 그룹을 찾을 수 없습니다. PB ID: " + curPb.getId());
@@ -245,8 +246,8 @@ public class PresetService {
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
         }
-        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
         Preset existPreset = presetRepository.findById(presetId)
                 .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
         if (!existPreset.getPresetGroup().getPb().equals(curPb)) {
