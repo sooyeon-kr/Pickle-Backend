@@ -47,6 +47,7 @@ public class RequestLetter extends BaseTimeEntity {
 
     private long availableInvestAmount;
     private long desiredInvestAmount;
+    private long monthlyIncome;
 
     private String referenceFileUrl;
 }
