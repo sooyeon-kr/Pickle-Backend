@@ -70,5 +70,24 @@ public class MessageQueueService {
             return RabbitMQConfig.INVALID_TOKEN;
         }
     }
-
+    /***
+     * authorizationHeader를 보내 customer의 info를 반환받는 메소드
+     * @param authorizationHeader
+     * @return customerId
+     */
+    public String getCustomerNameByCustomerToken(String authorizationHeader){
+        try {
+            String token = authorizationHeader.substring(7);
+            String name = (String) rabbitTemplate.convertSendAndReceive(
+                    RabbitMQConfig.CUSTOMER_EXCHANGE, RabbitMQConfig.CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY, token, message -> {
+                        message.getMessageProperties().setExpiration("4000");
+                        return message;
+                    }
+            );
+            System.out.println(name);
+            return name;
+        } catch (Exception e) {
+            return new RabbitMQConfig().UNKNOWN_CUSTOMER;
+        }
+    }
 }
