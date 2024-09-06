@@ -14,6 +14,14 @@ spring:
   application:
     name: pickle-pb  # 서비스 이름
 
+  rabbitmq:
+    host: ${MQ_HOST}
+    port: ${MQ_PORT}
+    username: ${MQ_USERNAME}
+    password: ${MQ_PASSWORD}
+    listener:
+      simple:
+        auto-startup: true
 
   logging:
     level:
