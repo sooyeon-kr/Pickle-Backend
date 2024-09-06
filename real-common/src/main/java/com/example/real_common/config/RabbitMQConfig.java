@@ -18,6 +18,10 @@ public class RabbitMQConfig {
     public static final String PB_NUMBER_TO_ID_CONVERSION_QUEUE = "pbIdQueue";
     public static final String DEAD_LETTER_QUEUE_NAME = "deadLetterQueue";
 
+    //constants
+    public static final int INVALID_PB_NUMBER = -1;
+    public static final int INVALID_TOKEN = -1;
+
     // Exchanges
     @Bean
     public DirectExchange pbExchange() {
@@ -58,7 +62,7 @@ public class RabbitMQConfig {
     }
 
     /***
-     * Dead Letter Exchange (DLX)와 DLQ 바인딩 
+     * Dead Letter Exchange (DLX)와 DLQ 바인딩
      * @return
      */
     @Bean

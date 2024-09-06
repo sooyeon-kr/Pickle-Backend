@@ -20,6 +20,8 @@ public class PbMessageListener {
      */
     @RabbitListener(queues = RabbitMQConfig.PB_NUMBER_TO_ID_CONVERSION_QUEUE)
     public Integer handlePbIdRequest(String pbNumber) {
-        return pbRepository.findByPbNumber(pbNumber).map(Pb::getId).orElse(-1);
+        return pbRepository.findByPbNumber(pbNumber).map(Pb::getId).orElse(RabbitMQConfig.INVALID_PB_NUMBER);
     }
+
+
 }

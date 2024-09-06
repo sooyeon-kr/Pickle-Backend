@@ -15,15 +15,18 @@ public class MessageQueueService {
      */
     public int getPbIdByPbNumberbySync(String pbNumber) {
         try {
-            Integer response = (Integer) rabbitTemplate.convertSendAndReceive(
-                    RabbitMQConfig.PB_EXCHANGE, RabbitMQConfig.PB_NUMBER_TO_ID_ROUTING_KEY, pbNumber
+            /**
+             * 4초동안 기다림
+             */
+            Integer pbId = (Integer) rabbitTemplate.convertSendAndReceive(
+                    RabbitMQConfig.PB_EXCHANGE, RabbitMQConfig.PB_NUMBER_TO_ID_ROUTING_KEY, pbNumber, message -> {
+                        message.getMessageProperties().setExpiration("4000");
+                        return message;
+                    }
             );
-            if (response == null) {
-                return -1;
-            }
-            return response;
+            return pbId;
         } catch (Exception e) {
-            return -1;
+            return RabbitMQConfig.INVALID_PB_NUMBER;
         }
     }
 
