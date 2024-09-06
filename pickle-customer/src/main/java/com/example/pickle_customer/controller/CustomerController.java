@@ -55,13 +55,13 @@ public class CustomerController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/pickle-customer/api/join")
+    @PostMapping("/api/pickle-customer/join")
     public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody CustomerJoinDto customerjoinDTO){
         joinService.joinProcess(customerjoinDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "고객 회원가입 완료", "환영합니다!"));
     }
 
-    @PostMapping("/pickle-customer/api/token")
+    @PostMapping("/api/pickle-customer/token")
     public ResponseEntity<CommonResDto<?>> getToken(@RequestBody CustomerLoginDto authRequest) {
         // 1. 인증 처리
         Authentication authenticate = authenticationManager.authenticate(
@@ -93,26 +93,26 @@ public class CustomerController {
     }
 
 
-    @GetMapping("/pickle-customer/api/validate")
+    @GetMapping("/api/pickle-customer/validate")
     public String validateToken(@RequestParam("token") String token) {
         joinService.validateToken(token);
         return "Token is valid";
     }
 
-    @GetMapping("/pickle-customer/api/my-asset")
+    @GetMapping("/api/pickle-customer/my-asset")
     public ResponseEntity<CommonResDto<?>> myAsset(@RequestHeader("Authorization") String token) {
         // "Bearer " 제거 후 토큰 처리
         String jwtToken = token.substring(7);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 계좌 및 자산 조회 완료", accountService.myAsset(jwtToken)));
     }
 
-    @GetMapping("/pickle-customer/api/my-products")
+    @GetMapping("/api/pickle-customer/my-products")
     public ResponseEntity<CommonResDto<?>> myProudcts(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "내 보유 자산 조회 완료", productSevice.myProudcts(jwtToken)));
     }
 
-    @GetMapping("/pickle-customer/api/getcustomerid")
+    @GetMapping("/api/pickle-customer/getcustomerid")
     public String getCustomerId(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         return jwtService.extractUsername(jwtToken);

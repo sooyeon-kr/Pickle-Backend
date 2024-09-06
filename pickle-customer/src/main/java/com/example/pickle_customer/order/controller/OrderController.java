@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pickle-customer/api/rebalancing")
+@RequestMapping("/api/pickle-customer/rebalancing")
 @AllArgsConstructor
 public class OrderController {
     private final RebalancingService rebalancingService;
