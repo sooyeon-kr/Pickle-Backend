@@ -25,9 +25,8 @@ public class TradingController {
     private TradingService tradingService;
     private MyStrategyService myStrategyService;
     private AccountService accountService;
-    @PostMapping(value = "/")
-    public  ResponseEntity<String> trading(@RequestBody TradingRequestDTO tradingRequestDTO
-    ,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+    @PostMapping
+    public ResponseEntity<String> trading(@RequestBody TradingRequestDTO tradingRequestDTO,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         try {
             AccountResponseDto accountResponseDto = accountService.myAsset(token);
             int accountId = accountResponseDto.getAccountId();
@@ -43,16 +42,14 @@ public class TradingController {
             tradingService.updateTotalAmount(updateRequest);
 
             ProductInAccountSaveDTO productInAccountSaveDTO = ProductInAccountSaveDTO.builder()
+                    .accountId(accountId)
                     .strategyId(strategyResponse.getCreatedMyStrategyId())
                     .tradingRequestDTO(tradingRequestDTO)
                     .build();
             tradingService.productInAccountSave(productInAccountSaveDTO);
             return ResponseEntity.ok("Trading completed successfully");
-        }catch (Exception e){
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error processing trading");
         }
     }
-
-
-
 }

@@ -14,6 +14,7 @@ import com.example.pickle_customer.order.dto.TradingRequestDTO;
 import com.example.pickle_customer.order.dto.UpdateTotalAmountDTO;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.ProductRepository;
+import com.example.real_common.global.exception.error.IllegalArgumentAmountException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +34,15 @@ public class TradingService {
         TradingRequestDTO tradingRequestDTO=updateTotalAmountDTO.getTradingRequestDTO();
         int accountId=updateTotalAmountDTO.getAccountId();
         double tradingAmount = tradingRequestDTO.getTotalAmount();
-        Account account = accountRepository.findById(accountId)//로직 따로 빼기
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+        if ((account.getTotalAmount()-tradingAmount)<0 && account.getBalance()<(tradingAmount-account.getTotalAmount())){
+            throw new IllegalArgumentAmountException("Trading amount is too small");
+        }
         Account updateAccount = Account.builder()
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance()-tradingAmount)
+                .balance(account.getBalance() - (tradingAmount - account.getTotalAmount()))
                 .totalAmount(tradingAmount)
                 .customer(account.getCustomer())
                 .build();
@@ -51,10 +55,10 @@ public class TradingService {
 
         MyStrategy myStrategy = myStrategyRepository.findById(productInAccountSaveDTO.getStrategyId())
                 .orElseThrow(() -> new RuntimeException("Strategy not found"));
-        Account account = accountRepository.findById(4)//로직 따로 빼기
+        Account account = accountRepository.findById(productInAccountSaveDTO.getAccountId())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findByMyStrategy(myStrategy);
+        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findAllByMyStrategy(myStrategy);
         for (MyStrategyCategoryComposition category : categories) {
             List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findAllByCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {
