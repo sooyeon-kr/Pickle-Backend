@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateRequestLetterRequestDto {
     private LocalDateTime date; // 상담일자
-    private LocalDateTime startTime; // 상담시작시간
     private String request;
 
     private int answer1;
@@ -35,7 +34,7 @@ public class CreateRequestLetterRequestDto {
     @NoArgsConstructor
     public static class CustomerInfo {
         private int customerAge;
-        private String customerGender;
+        private int customerGender;
         private String customerJob;
     }
 

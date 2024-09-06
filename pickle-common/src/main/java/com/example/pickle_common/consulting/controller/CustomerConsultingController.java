@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pickle-common/consulting/customer")
@@ -18,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerConsultingController {
     private final CustomerConsultingService customerConsultingService;
-
     @PostMapping("/request-letters")
-    public ResponseEntity<CommonResDto<?>> createRequestLetter(CreateRequestLetterRequestDto requestDto) {
-        CreateRequestLetterResponseDto result = customerConsultingService.createRequestLetter(requestDto);
+    public ResponseEntity<CommonResDto<?>> createRequestLetter(@RequestHeader("Authorization") String authorizationHeader,@RequestBody CreateRequestLetterRequestDto requestDto) {
+        CreateRequestLetterResponseDto result = customerConsultingService.createRequestLetter(authorizationHeader, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "요청서 생성 성공", result));
     }
 }
