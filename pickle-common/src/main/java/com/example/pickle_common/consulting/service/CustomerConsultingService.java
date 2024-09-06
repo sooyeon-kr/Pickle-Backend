@@ -1,7 +1,9 @@
 package com.example.pickle_common.consulting.service;
 
-import com.example.pickle_common.consulting.dto.CreateRequestLetterRequestDto;
-import com.example.pickle_common.consulting.dto.CreateRequestLetterResponseDto;
+import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
+import com.example.pickle_common.consulting.dto.CreateRequestLetterRequest;
+import com.example.pickle_common.consulting.dto.CreateRequestLetterResponse;
+import com.example.pickle_common.consulting.dto.RequestHistoriesResponse;
 import com.example.pickle_common.consulting.entity.*;
 import com.example.pickle_common.consulting.repository.ConsultingConfirmDateRepository;
 import com.example.pickle_common.consulting.repository.ConsultingHistoryRepository;
@@ -13,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,7 +30,7 @@ public class CustomerConsultingService {
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
 
-    public CreateRequestLetterResponseDto createRequestLetter(String authorizationHeader,CreateRequestLetterRequestDto requestDto) {
+    public CreateRequestLetterResponse createRequestLetter(String authorizationHeader, CreateRequestLetterRequest requestDto) {
         //상담기록이 먼저 생성 되어야 한다.
         /**
          * TODO 현재는 더미값임.
@@ -38,13 +43,15 @@ public class CustomerConsultingService {
         int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
         int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
         String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
-        String randomString = UUID.randomUUID().toString();
+
+//        String randomString = UUID.randomUUID().toString();
+
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
                 .customerId(customerId)
                 .customerName(customerName)
                 .pbId(pbId)
                 .consultingStatusName(ConsultingStatusEnum.REQUESTED)
-                .roomId(randomString)
+                .roomId(null)
                 .pbName(requestDto.getPbInfo().getName())
                 .pbBranchOffice(requestDto.getPbInfo().getBranchOffice())
                 .date(requestDto.getDate())
@@ -71,8 +78,45 @@ public class CustomerConsultingService {
                 .build();
         RequestLetter savedRequestLetter = requestLetterRepository.save(requestLetter);
 
-        return CreateRequestLetterResponseDto.builder()
+        return CreateRequestLetterResponse.builder()
                 .requestLetterId(savedRequestLetter.getId())
                 .build();
+    }
+
+    public List<RequestHistoriesResponse> getAllRequesetHistories(String authorizationHeader) {
+        List<RequestHistoriesResponse> requestHistoriesResponses = new ArrayList<>();
+
+
+        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
+        List<ConsultingHistory> consultingHistories = consultingHistoryRepository.findAllByCustomerId(customerId);
+
+        for (ConsultingHistory consultingHistory : consultingHistories) {
+            RequestLetter requestLetter = requestLetterRepository.findByConsultingHistoryId(consultingHistory.getId());
+
+            ConsultingRejectInfo consultingRejectInfo = null;
+            if (consultingHistory.getConsultingStatusName().equals(ConsultingStatusEnum.REJECTED)) {
+                consultingRejectInfo = consultingRejectInfoRepository.findByConsultingHistoryId(consultingHistory.getId());
+            }
+
+            RequestHistoriesResponse requestHistoriesResponse = RequestHistoriesResponse.builder()
+                    .requestLetterId(requestLetter.getId())
+                    .pbId(consultingHistory.getPbId())
+                    .pbName(consultingHistory.getPbName())
+                    .date(consultingHistory.getDate())
+                    .createdAt(consultingHistory.getCreatedAt())
+                    .status(consultingHistory.getConsultingStatusName())
+                    .consultingRejectInfoInfo(consultingRejectInfo != null ?
+                            new ConsultingRejectInfoDto(consultingRejectInfo.getContent(), consultingRejectInfo.getCreatedAt()) : null)
+                    .build();
+
+            requestHistoriesResponses.add(requestHistoriesResponse);
+        }
+
+        return requestHistoriesResponses;
+    }
+
+    public List<RequestHistoriesResponse> getRequestHistoriesByStatus(String authorizationHeader, int status) {
+        //TODO: 상태값에 따라 목록 가져오기 구현
+        return new ArrayList<>();
     }
 }
