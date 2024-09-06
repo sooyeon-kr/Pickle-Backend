@@ -32,12 +32,13 @@ public class MessageQueueService {
     }
 
     /***
-     * token을 보내 pb의 pk를 반환받는 메소드
-     * @param token
+     * authorizationHeader를 보내 pb의 pk를 반환받는 메소드
+     * @param authorizationHeader
      * @return pbId
      */
-    public int getPbIdByPbToken(String token){
+    public int getPbIdByPbToken(String authorizationHeader){
         try {
+            String token = authorizationHeader.substring(7);
             Integer pbId = (Integer) rabbitTemplate.convertSendAndReceive(
                     RabbitMQConfig.PB_EXCHANGE, RabbitMQConfig.PB_TOKEN_TO_ID_ROUTING_KEY, token, message -> {
                         message.getMessageProperties().setExpiration("4000");
@@ -51,12 +52,13 @@ public class MessageQueueService {
     }
 
     /***
-     * token을 보내 customer의 pk를 반환받는 메소드
-     * @param token
+     * authorizationHeader를 보내 customer의 pk를 반환받는 메소드
+     * @param authorizationHeader
      * @return customerId
      */
-    public int getCustomerIdByCustomerToken(String token){
+    public int getCustomerIdByCustomerToken(String authorizationHeader){
         try {
+            String token = authorizationHeader.substring(7);
             Integer customerId = (Integer) rabbitTemplate.convertSendAndReceive(
                     RabbitMQConfig.CUSTOMER_EXCHANGE, RabbitMQConfig.CUSTOMER_TOKEN_TO_ID_ROUTING_KEY, token, message -> {
                         message.getMessageProperties().setExpiration("4000");
