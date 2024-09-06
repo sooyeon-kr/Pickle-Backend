@@ -15,10 +15,12 @@ import com.example.pickle_customer.order.dto.UpdateTotalAmountDTO;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.ProductRepository;
 import com.example.real_common.global.exception.error.IllegalArgumentAmountException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -29,20 +31,21 @@ public class TradingService {
     private final CategoryCompositionRepository myStrategyCategoryCompositionRepository;
     private final ProductCompositionRepository myStrategyProductCompositionRepository;
     private final MyStrategyRepository myStrategyRepository;
-
+    @Transactional
     public void updateTotalAmount(UpdateTotalAmountDTO updateTotalAmountDTO) {
         TradingRequestDTO tradingRequestDTO=updateTotalAmountDTO.getTradingRequestDTO();
         int accountId=updateTotalAmountDTO.getAccountId();
         double tradingAmount = tradingRequestDTO.getTotalAmount();
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        if ((account.getTotalAmount()-tradingAmount)<0 && account.getBalance()<(tradingAmount-account.getTotalAmount())){
+        double additionalAmountNeeded = tradingAmount - account.getTotalAmount();
+        if (additionalAmountNeeded > 0 && account.getBalance() < additionalAmountNeeded){
             throw new IllegalArgumentAmountException("Trading amount is too small");
         }
         Account updateAccount = Account.builder()
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance() - (tradingAmount - account.getTotalAmount()))
+                .balance(account.getBalance() - additionalAmountNeeded)
                 .totalAmount(tradingAmount)
                 .customer(account.getCustomer())
                 .build();
@@ -50,22 +53,24 @@ public class TradingService {
         accountRepository.save(updateAccount);
 
     }
-
+    @Transactional
     public void productInAccountSave(ProductInAccountSaveDTO productInAccountSaveDTO) {
 
         MyStrategy myStrategy = myStrategyRepository.findById(productInAccountSaveDTO.getStrategyId())
                 .orElseThrow(() -> new RuntimeException("Strategy not found"));
         Account account = accountRepository.findById(productInAccountSaveDTO.getAccountId())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
+        productRepository.deleteByAccount(account);
         List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findAllByMyStrategy(myStrategy);
         for (MyStrategyCategoryComposition category : categories) {
             List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findAllByCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {
-                ProductInAccount productInAccount = dtoToProductAccount(product, category, productInAccountSaveDTO.getTradingRequestDTO(), account);
-                productRepository.save(productInAccount);
+                ProductInAccount newProductInAccount = dtoToProductAccount(product, category, productInAccountSaveDTO.getTradingRequestDTO(), account);
+                productRepository.save(newProductInAccount);
 
             }
+
+
         }
 
 
@@ -84,7 +89,7 @@ public class TradingService {
                 .categoryName(category.getCategoryName())
                 .account(account)
                 .heldQuantity(matchingProductDTO.getQuantity())
-                .heldQuantity(matchingProductDTO.getQuantity()*matchingProductDTO.getAmount())
+                .purchaseAmount(matchingProductDTO.getQuantity()*matchingProductDTO.getAmount())
                 .build();
     }
 }
