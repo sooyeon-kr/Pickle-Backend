@@ -1,7 +1,7 @@
 package com.example.pickle_common.consulting.entity;
 
 public enum AnswerType {
-    NONE(0),
+    OPTION_ZERO(0),
     OPTION_ONE(1),
     OPTION_TWO(2),
     OPTION_THREE(3);
