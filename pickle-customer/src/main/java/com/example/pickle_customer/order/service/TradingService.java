@@ -54,7 +54,7 @@ public class TradingService {
         Account account = accountRepository.findById(4)//로직 따로 빼기
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findByMyStrategy(myStrategy);
+        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findAllByMyStrategy(myStrategy);
         for (MyStrategyCategoryComposition category : categories) {
             List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findAllByCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {
