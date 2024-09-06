@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -31,6 +32,7 @@ public class ConsultingHistory extends BaseTimeEntity {
 
     private String roomId;
     private String pbImage;
+    private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
     private ConsultingStatusEnum consultingStatusName;
@@ -39,9 +41,9 @@ public class ConsultingHistory extends BaseTimeEntity {
     // OneToOne 양방향 매핑에서는 fetch LAZY 적용이 안되는 상황이 많다.
     @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RequestLetter requestLetter;
-
-    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ConsultingConfirmDate consultingConfirmDate;
+//
+//    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private ConsultingConfirmDate consultingConfirmDate;
 
     // 전략과 양방향 매핑
 //    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
