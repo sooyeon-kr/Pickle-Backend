@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface PresetRepository extends JpaRepository<Preset, Integer> {
     List<Preset> findByPresetGroup(PresetGroup presetGroup);
+
+    List<Preset> findAllByPresetGroup(PresetGroup group);
 }

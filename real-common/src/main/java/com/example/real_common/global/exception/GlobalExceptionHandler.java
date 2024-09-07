@@ -224,7 +224,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleNotFoundImageException(NotFoundImageException exception) {
         log.error("handleNotFoundImageException :: ");
         ErrorCode errorCode = ErrorCode.NOT_FOUND_IMAGE_EXCEPTION;
-    
+
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
                 .message(errorCode.getMessage())
@@ -258,10 +258,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+
     @ExceptionHandler(IllegalArgumentAmountException.class)
     protected ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
         log.error("handleIllegalArgumentException :: ");
         ErrorCode errorCode = ErrorCode.ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION;
+
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())

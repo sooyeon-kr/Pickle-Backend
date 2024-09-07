@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/pickle-common/consulting/pb")
+@RequestMapping("/api/pickle-common/consulting/pb")
 @Validated
 @RequiredArgsConstructor
 public class PbConsultingController {

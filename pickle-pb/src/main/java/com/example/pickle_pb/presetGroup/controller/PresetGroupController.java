@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.example.pickle_pb.presetGroup.dto.PresetGroupResponseDto.*;
 
 @RestController
-@RequestMapping("/pickle-pb/api/presetGroup")
+@RequestMapping("/api/pickle-pb/presetGroup")
 @Validated
 @RequiredArgsConstructor
 public class PresetGroupController {
