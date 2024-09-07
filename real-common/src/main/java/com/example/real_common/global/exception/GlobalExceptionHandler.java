@@ -4,6 +4,7 @@ import com.example.real_common.global.exception.dto.CommonResponse;
 import com.example.real_common.global.exception.dto.ErrorResponse;
 import com.example.real_common.global.exception.error.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -257,10 +258,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
-    @ExceptionHandler(NotFoundPresetException.class)
-    protected ResponseEntity<?> handleNotFoundPresetException(NotFoundPresetException exception) {
-        log.error("handleNotFoundPresetException :: ");
-        ErrorCode errorCode = ErrorCode.NOT_FOUND_PRESET_EXCEPTION;
+
+    @ExceptionHandler(IllegalArgumentAmountException.class)
+    protected ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error("handleIllegalArgumentException :: ");
+        ErrorCode errorCode = ErrorCode.ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION;
+
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())

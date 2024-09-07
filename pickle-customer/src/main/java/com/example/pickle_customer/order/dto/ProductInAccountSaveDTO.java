@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductInAccountSaveDTO {
     private int strategyId;
+    private int accountId;
     private TradingRequestDTO tradingRequestDTO;
 }

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProductCompositionRepository extends JpaRepository<ProductComposition, Integer> {
     List<ProductComposition> findAllByCategoryComposition_Id(Integer categoryCompositionId);
+    List<ProductComposition> findAllByCategoryComposition_CategoryName(String categoryName);
+
 }
