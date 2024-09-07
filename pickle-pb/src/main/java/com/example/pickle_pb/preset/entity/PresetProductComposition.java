@@ -12,7 +12,7 @@ import lombok.*;
 public class PresetProductComposition extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_product_id")
+    @Column(name = "product_composition_id")
     private int id;
 
     @Column(length = 10, nullable = false)

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/pickle-customer/api/my-strategy")
+@RequestMapping("/api/pickle-customer/my-strategy")
 public class MyStrategyController {
     private final MyStrategyService myStrategyService;
 

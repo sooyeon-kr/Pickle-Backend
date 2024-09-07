@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pickle-common/inner/strategy")
+@RequestMapping("/api/pickle-common/inner/strategy")
 public class InnerStrategyController {
 
     private final StrategyService strategyService;
