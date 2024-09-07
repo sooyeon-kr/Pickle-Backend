@@ -30,6 +30,12 @@ public class PresetController {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 상세 조회 완료", result));
     }
 
+    @GetMapping("/presetGroupId/{presetGroupId}")
+    public ResponseEntity<CommonResDto<?>> readPresetListByGroupId(@PathVariable @Valid Integer presetGroupId) {
+        ReadPresetListResponseDto result = presetService.readPresetListByGroupId(presetGroupId);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 조회 완료", result));
+    }
+
     @PostMapping
     public ResponseEntity<CommonResDto<?>> createPreset(@RequestBody CreatePresetRequestDto requestDto) {
         CreatePresetResponseDto result = presetService.createPreset(requestDto);

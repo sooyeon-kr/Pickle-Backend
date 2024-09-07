@@ -2,7 +2,6 @@ package com.example.pickle_pb.preset.service;
 
 import com.example.pickle_pb.pb.entity.Pb;
 import com.example.pickle_pb.pb.repository.PbRepository;
-import com.example.pickle_pb.preset.dto.PresetRequestDto;
 import com.example.pickle_pb.preset.dto.PresetRequestDto.*;
 import com.example.pickle_pb.preset.dto.PresetResponseDto.*;
 import com.example.pickle_pb.preset.entity.Preset;
@@ -15,21 +14,20 @@ import com.example.pickle_pb.presetGroup.entity.PresetGroup;
 import com.example.pickle_pb.presetGroup.repository.PresetGroupRepository;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.real_common.global.exception.error.NotFoundGroupException;
+import com.example.real_common.global.exception.error.NotFoundProductException;
 import com.example.real_common.global.exception.error.UnAuthorizedException;
 import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.context.Theme;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -278,6 +276,45 @@ public class PresetService {
                 .groupId(existPreset.getPresetGroup().getId())
                 .name(existPreset.getName())
                 .presetList(categoryDtoListList)
+                .build();
+    }
+
+    public ReadPresetListResponseDto readPresetListByGroupId(@Valid Integer presetGroupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        PresetGroup group = presetGroupRepository.findByIdAndPbId(presetGroupId, curPb.getId())
+                .orElseThrow(() -> new NotFoundGroupException("해당하는 프리셋 그룹을 찾을 수 없습니다. PB ID: " + curPb.getId()));
+
+        List<Preset> presetList = presetRepository.findAllByPresetGroup(group);
+        if (presetList.isEmpty()) {
+            throw new NotFoundProductException("해당하는 프리셋이 업습니다.");
+        }
+
+        List<ReadPresetListResponseDto.PresetDto> presetDtoList = presetList.stream()
+                .map(preset -> {
+                    List<ReadPresetListResponseDto.CategoryDto> categoryDtoList = presetCategoryCompositionRepository.findByPreset(preset).stream()
+                            .map(category -> ReadPresetListResponseDto.CategoryDto.builder()
+                                    .categoryCompositionId(category.getId())
+                                    .categoryName(category.getCategoryName())
+                                    .categoryRatio(category.getCategoryRatio())
+                                    .build())
+                            .toList();
+                    return ReadPresetListResponseDto.PresetDto.builder()
+                            .presetId(preset.getId())
+                            .groupId(group.getId())
+                            .name(preset.getName())
+                            .createdAt(preset.getCreatedAt())
+                            .categoryList(categoryDtoList)
+                            .build();
+                })
+                .toList();
+
+        return ReadPresetListResponseDto.builder()
+                .presetList(presetDtoList)
                 .build();
     }
 }
