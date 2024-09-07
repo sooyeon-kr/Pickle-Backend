@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final AccountService accountService;
-    @PostMapping(value = "/")
+    @PostMapping(value = "/quantity")
     public List<HeldQuantityResponseDTO> getOrders(@RequestBody List<HeldQuantityRequestDTO> heldQuantityRequestDTOS){
         return orderService.getQuantity(heldQuantityRequestDTOS);
     }

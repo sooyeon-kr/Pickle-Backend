@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<ProductInAccount, Long> {
-    List<ProductInAccount> findByProductCode(String productCode);
+    ProductInAccount findByProductCode(String productCode);
 
 }
