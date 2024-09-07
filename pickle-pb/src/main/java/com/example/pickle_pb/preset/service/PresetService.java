@@ -2,7 +2,6 @@ package com.example.pickle_pb.preset.service;
 
 import com.example.pickle_pb.pb.entity.Pb;
 import com.example.pickle_pb.pb.repository.PbRepository;
-import com.example.pickle_pb.preset.dto.PresetRequestDto;
 import com.example.pickle_pb.preset.dto.PresetRequestDto.*;
 import com.example.pickle_pb.preset.dto.PresetResponseDto.*;
 import com.example.pickle_pb.preset.entity.Preset;
@@ -15,21 +14,22 @@ import com.example.pickle_pb.presetGroup.entity.PresetGroup;
 import com.example.pickle_pb.presetGroup.repository.PresetGroupRepository;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
 import com.example.real_common.global.exception.error.NotFoundGroupException;
+import com.example.real_common.global.exception.error.NotFoundProductException;
 import com.example.real_common.global.exception.error.UnAuthorizedException;
 import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.context.Theme;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -142,8 +142,8 @@ public class PresetService {
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
         }
-        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
         Preset existPreset = presetRepository.findById(presetId)
                 .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
         PresetGroup existGroup = presetGroupRepository.findById(existPreset.getPresetGroup().getId())
@@ -151,6 +151,11 @@ public class PresetService {
 
         existPreset.updateName(requestDto.getName());
         Preset updatedPreset = presetRepository.save(existPreset);
+
+        // 요청에서 받은 카테고리 및 상품 ID 목록을 추적
+        Set<Integer> updatedCategoryIds = new HashSet<>();
+        Set<Integer> updatedProductIds = new HashSet<>();
+
         // 자산군 구성 비율
         for (UpdatePresetRequestDto.CategoryDto categoryDto : requestDto.getPresetList()) {
             PresetCategoryComposition existCategory;
@@ -168,6 +173,8 @@ public class PresetService {
                 existCategory.updateCategoryRatio(categoryDto.getCategoryRatio());
             }
             PresetCategoryComposition savedCategory = presetCategoryCompositionRepository.save(existCategory);
+            updatedCategoryIds.add(savedCategory.getId());
+
             // 상품 구성 비율
             for (UpdatePresetRequestDto.ProductDto productDto : categoryDto.getProductList()) {
                 PresetProductComposition existProduct;
@@ -188,11 +195,29 @@ public class PresetService {
                     existProduct.updateName(productDto.getName());
                     existProduct.updateRatio(productDto.getRatio());
                 }
-                presetProductCompositionRepository.save(existProduct);
+                PresetProductComposition savedProduct = presetProductCompositionRepository.save(existProduct);
+                updatedProductIds.add(savedProduct.getId());
             }
         }
-        List<PresetCategoryComposition> categoryCompositions = presetCategoryCompositionRepository.findByPreset(updatedPreset);
-        List<UpdatePresetResponseDto.CategoryDto> categoryDtoList = categoryCompositions.stream()
+
+        // 삭제 로직: 기존의 카테고리와 상품에서 요청에 포함되지 않은 항목 삭제
+        List<PresetCategoryComposition> existingCategories = presetCategoryCompositionRepository.findByPreset(updatedPreset);
+        for (PresetCategoryComposition category : existingCategories) {
+            // 요청에 포함되지 않은 카테고리를 삭제
+            if (!updatedCategoryIds.contains(category.getId())) {
+                presetCategoryCompositionRepository.delete(category);
+            } else {
+                List<PresetProductComposition> existingProducts = presetProductCompositionRepository.findByCategoryCompositionId(category.getId());
+                for (PresetProductComposition product : existingProducts) {
+                    // 요청에 포함되지 않은 상품을 삭제
+                    if (!updatedProductIds.contains(product.getId())) {
+                        presetProductCompositionRepository.delete(product);
+                    }
+                }
+            }
+        }
+
+        List<UpdatePresetResponseDto.CategoryDto> categoryDtoList = existingCategories.stream()
                 .map(categoryComposition -> {
                     List<PresetProductComposition> productCompositions = presetProductCompositionRepository.findByCategoryCompositionId(categoryComposition.getId());
                     List<UpdatePresetResponseDto.ProductDto> productDtoList = productCompositions.stream()
@@ -227,9 +252,8 @@ public class PresetService {
         if (authentication == null) {
             throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
         }
-        Pb curPb = pbRepository.findByPbNumber(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 ID를 가진 PB를 찾을 수 없습니다."));
-
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
         Preset existPreset = presetRepository.findById(presetId)
                 .orElseThrow(() -> new NotFoundGroupException("프리셋을 찾을 수 없습니다. ID: " + presetId));
         if (!existPreset.getPresetGroup().getPb().equals(curPb)) {
@@ -278,6 +302,45 @@ public class PresetService {
                 .groupId(existPreset.getPresetGroup().getId())
                 .name(existPreset.getName())
                 .presetList(categoryDtoListList)
+                .build();
+    }
+
+    public ReadPresetListResponseDto readPresetListByGroupId(@Valid Integer presetGroupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UsernameNotFoundException("PB를 찾을 수 없습니다.");
+        }
+        Pb curPb = pbRepository.findById(Integer.valueOf(authentication.getName()))
+                .orElseThrow(() -> new NotFoundAccountException("해당 ID를 가진 PB를 찾을 수 없습니다."));
+        PresetGroup group = presetGroupRepository.findByIdAndPbId(presetGroupId, curPb.getId())
+                .orElseThrow(() -> new NotFoundGroupException("해당하는 프리셋 그룹을 찾을 수 없습니다. PB ID: " + curPb.getId()));
+
+        List<Preset> presetList = presetRepository.findAllByPresetGroup(group);
+        if (presetList.isEmpty()) {
+            throw new NotFoundProductException("해당하는 프리셋이 업습니다.");
+        }
+
+        List<ReadPresetListResponseDto.PresetDto> presetDtoList = presetList.stream()
+                .map(preset -> {
+                    List<ReadPresetListResponseDto.CategoryDto> categoryDtoList = presetCategoryCompositionRepository.findByPreset(preset).stream()
+                            .map(category -> ReadPresetListResponseDto.CategoryDto.builder()
+                                    .categoryCompositionId(category.getId())
+                                    .categoryName(category.getCategoryName())
+                                    .categoryRatio(category.getCategoryRatio())
+                                    .build())
+                            .toList();
+                    return ReadPresetListResponseDto.PresetDto.builder()
+                            .presetId(preset.getId())
+                            .groupId(group.getId())
+                            .name(preset.getName())
+                            .createdAt(preset.getCreatedAt())
+                            .categoryList(categoryDtoList)
+                            .build();
+                })
+                .toList();
+
+        return ReadPresetListResponseDto.builder()
+                .presetList(presetDtoList)
                 .build();
     }
 }
