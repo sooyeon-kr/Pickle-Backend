@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface CategoryCompositionRepository extends JpaRepository<MyStrategyCategoryComposition, Integer> {
 
-    List<MyStrategyCategoryComposition> findAllByMyStrategy(MyStrategy myStrategy);
+    List<MyStrategyCategoryComposition> findAllByMyStrategy(Optional<MyStrategy> myStrategy);
 
 }
