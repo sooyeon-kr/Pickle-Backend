@@ -12,17 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestHistoriesResponse {
-
+public class ConsultingResponse {
     private int requestLetterId;
     private int pbId;
     private String pbName;
     private LocalDateTime date;
     private LocalDateTime createdAt;
     private ConsultingStatusEnum status;
-    private ConsultingRejectInfoDto consultingRejectInfoInfo;
-
-
+    private ConsultingRejectInfoDto consultingRejectInfo;
 }
 
 
