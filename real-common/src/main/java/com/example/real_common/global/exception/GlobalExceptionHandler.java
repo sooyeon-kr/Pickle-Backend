@@ -278,4 +278,23 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(UnauthorizedStrategyException.class)
+    protected ResponseEntity<?> handleUnauthorizedStrategyException(UnauthorizedStrategyException exception) {
+        log.error("handleUnauthorizedStrategyException :: ");
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED_STRATEGY_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
