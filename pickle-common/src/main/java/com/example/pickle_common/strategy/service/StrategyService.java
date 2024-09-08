@@ -1,5 +1,8 @@
 package com.example.pickle_common.strategy.service;
 
+import com.example.pickle_common.consulting.entity.ConsultingHistory;
+import com.example.pickle_common.consulting.repository.ConsultingHistoryRepository;
+import com.example.pickle_common.mq.MessageQueueService;
 import com.example.pickle_common.strategy.dto.*;
 import com.example.pickle_common.strategy.entity.CategoryComposition;
 import com.example.pickle_common.strategy.entity.Product;
@@ -9,6 +12,7 @@ import com.example.pickle_common.strategy.repository.CategoryCompositionReposito
 import com.example.pickle_common.strategy.repository.ProductCompositionRepository;
 import com.example.pickle_common.strategy.repository.ProductRepository;
 import com.example.pickle_common.strategy.repository.StrategyRepository;
+import com.example.pickle_common.userType.UserType;
 import com.example.real_common.global.exception.error.*;
 import com.example.real_common.global.restClient.CustomRestClient;
 import com.example.real_common.stockEnum.CategoryEnum;
@@ -29,22 +33,21 @@ public class StrategyService {
     private final CategoryCompositionRepository categoryCompositionRepository;
     private final ProductCompositionRepository productCompositionRepository;
     private final ProductRepository productRepository;
-//    private final ConsultingHistoryRepository consultingHistoryRepository;
-
+    private final ConsultingHistoryRepository consultingHistoryRepository;
+    private final MessageQueueService messageQueueService;
 
     @Transactional
-    public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto) {
-        //TODO 로그인 한 사용자만 전략을 생성할 수 있다. (PB 혹은 고객)
+    public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto, String authorizationHeader) {
 
-        // 고객 : 리밸런싱할 때 커스텀 전략 생성 가능 (이 경우 고객id만 들어감)
-        // PB : 상담할 때 고객을 위한 전략 생성 (이 경우 고객id, pbId 들어감)
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+        if (pbId == -1) {
+            throw new NotFoundAccountException("not found user account");
+        }
 
-        //TODO 상담 도메인 구현되면 연결하기 (현재는 1로 고정)
-//        ConsoultingHistory curConsulting =  consultingHistoryRepository
-//                .findbyId(requestDto.getConsultingHistoryId())
-//                .orElseThrow(() -> new NotFoundConsultingHistoryException("consulting history not found with id : " + requestDto.getConsultingHistoryId()));
-//        int curConsultingId = curConsulting.getId();
-        int curConsultingId = 1;
+        ConsultingHistory curConsultingHistory = consultingHistoryRepository
+                .findById(requestDto.getConsultingHistoryId())
+                .orElseThrow(()->new NotFoundConsultingHistoryException("consulting history not found with id : " + requestDto.getConsultingHistoryId()));
+        int curConsultingId = curConsultingHistory.getId();
 
         Strategy strategy = Strategy.builder()
                 .pbId(requestDto.getPbId())
@@ -93,9 +96,8 @@ public class StrategyService {
         return new CreateStrategyResponseDto(strategyId);
     }
 
-    public ReadStrategyResponseDto readStrategy() {
-        //TODO 로그인한 user가 고객일 경우를 체크, 정보 가져오기
-        int customerId = 1; //임시
+    public ReadStrategyResponseDto readStrategy(String authorizationHeader) {
+        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
 
         List<Strategy> existStrategies = strategyRepository.findAllByCustomerId(customerId);
 
@@ -127,21 +129,27 @@ public class StrategyService {
                 .build();
     }
 
-    public ReadDetailStrategyResponseDto pbReadDetailStrategy(Integer strategyId) {
-        //TODO pb 로그인 확인 로직
+    public ReadDetailStrategyResponseDto pbReadDetailStrategy(Integer strategyId, String authorizationHeader) {
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
-        return readDetailStrategy(strategyId); //세부 조회 로직은 현재 동일함
+        return readDetailStrategy(strategyId, pbId, UserType.PB); //세부 조회 로직은 현재 동일함
     }
 
-    public ReadDetailStrategyResponseDto cusReadDetailStrategy(Integer strategyId) {
-        //TODO customer 로그인 확인 로직
+    public ReadDetailStrategyResponseDto cusReadDetailStrategy(Integer strategyId, String authorizationHeader) {
+        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
 
-        return readDetailStrategy(strategyId);
+        return readDetailStrategy(strategyId, customerId, UserType.CUSTOMER);
     }
 
-    public ReadDetailStrategyResponseDto readDetailStrategy(Integer strategyId) {
+    public ReadDetailStrategyResponseDto readDetailStrategy(Integer strategyId, int userId, UserType userType) {
         Strategy curStrategy = strategyRepository.findById(strategyId)
                 .orElseThrow(() -> new NotFoundStrategyException("not found strategy Id : " + strategyId));
+
+        if (userType == UserType.PB && curStrategy.getPbId() != userId) {
+            throw new UnauthorizedStrategyException("PB cannot access strategy id" + strategyId);
+        } else if (userType == UserType.CUSTOMER && curStrategy.getCustomerId() != userId) {
+            throw new UnauthorizedStrategyException("customer cannot access strategy id" + strategyId);
+        }
 
         List<ReadDetailStrategyResponseDto.CategoryDto> categoryList = getCategoryDtoList(strategyId);
 
