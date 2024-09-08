@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class CreateRequestLetterResponseDto {
+public class CreateRequestLetterResponse {
     private int requestLetterId;
 }

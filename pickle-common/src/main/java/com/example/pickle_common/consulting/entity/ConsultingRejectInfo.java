@@ -18,8 +18,10 @@ public class ConsultingRejectInfo extends BaseTimeEntity {
     @Column(name = "consulting_reject_info_id")
     private int id;
 
-    @OneToOne(mappedBy = "consultingRejectInfo")
-    private RequestLetter requestLetter;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consulting_history_id")
+    private ConsultingHistory consultingHistory;
+
     private String content;
 
 }

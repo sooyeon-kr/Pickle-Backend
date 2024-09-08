@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class CreateRequestLetterRequestDto {
+public class CreateRequestLetterRequest {
     private LocalDateTime date; // 상담일자
     private String request;
 

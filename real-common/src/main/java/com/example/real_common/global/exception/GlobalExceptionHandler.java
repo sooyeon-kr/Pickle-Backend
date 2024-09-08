@@ -4,7 +4,6 @@ import com.example.real_common.global.exception.dto.CommonResponse;
 import com.example.real_common.global.exception.dto.ErrorResponse;
 import com.example.real_common.global.exception.error.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -224,7 +223,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleNotFoundImageException(NotFoundImageException exception) {
         log.error("handleNotFoundImageException :: ");
         ErrorCode errorCode = ErrorCode.NOT_FOUND_IMAGE_EXCEPTION;
-
+    
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
                 .message(errorCode.getMessage())
@@ -258,12 +257,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(UnableToCreateRequestLetterException.class)
+    protected ResponseEntity<?> handleUnableToCreateRequestLetterException(UnableToCreateRequestLetterException exception){
+        log.error("handleUnableToCreateRequestLetterException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REQUEST_LETTER_EXCEPTION;
 
-    @ExceptionHandler(IllegalArgumentAmountException.class)
-    protected ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
-        log.error("handleIllegalArgumentException :: ");
-        ErrorCode errorCode = ErrorCode.ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION;
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
 
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundRequestLetterException.class)
+    protected ResponseEntity<?> handleNotFoundRequestLetterException(NotFoundRequestLetterException exception){
+        log.error("handleNotFoundRequestLetterException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_REQUEST_LETTER_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
@@ -279,10 +294,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
-    @ExceptionHandler(UnauthorizedStrategyException.class)
-    protected ResponseEntity<?> handleUnauthorizedStrategyException(UnauthorizedStrategyException exception) {
-        log.error("handleUnauthorizedStrategyException :: ");
-        ErrorCode errorCode = ErrorCode.UNAUTHORIZED_STRATEGY_EXCEPTION;
+    @ExceptionHandler(UnableToCreateRequestLetterDuoToMqFailure.class)
+    protected ResponseEntity<?> handleUnableToFetchMqDataException(UnableToCreateRequestLetterDuoToMqFailure exception){
+        log.error("handleUnableToFetchMqDataException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REQUEST_LETTER_DUE_TO_MQ_FAILURE;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
@@ -297,4 +312,24 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(UnexpectedServiceException.class)
+    protected ResponseEntity<?> handleUnexpectedServiceException(UnexpectedServiceException exception){
+        log.error("handleUnexpectedServiceException :: ");
+        ErrorCode errorCode = ErrorCode.UNEXPECTED_SERVICE_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
 }

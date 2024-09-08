@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping("/api/pickle-common/api/consulting/image")
-@RequiredArgsConstructor
+@RequestMapping("/pickle-common/consulting/image")
 public class S3Controller {
     private final S3Service s3Service;
 
