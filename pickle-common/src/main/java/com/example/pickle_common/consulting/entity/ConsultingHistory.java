@@ -43,6 +43,10 @@ public class ConsultingHistory extends BaseTimeEntity {
     // OneToOne 양방향 매핑에서는 fetch LAZY 적용이 안되는 상황이 많다.
     @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RequestLetter requestLetter;
+
+    public void changeStatus(ConsultingStatusEnum consultingStatusEnum) {
+        consultingStatusName = consultingStatusEnum;
+    }
 //
 //    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private ConsultingConfirmDate consultingConfirmDate;

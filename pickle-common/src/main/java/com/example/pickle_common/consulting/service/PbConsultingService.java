@@ -4,6 +4,7 @@ package com.example.pickle_common.consulting.service;
 import com.example.pickle_common.consulting.dto.ConsultingDetailResponse;
 import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
 import com.example.pickle_common.consulting.dto.ConsultingResponse;
+import com.example.pickle_common.consulting.dto.RejectConsultingRequest;
 import com.example.pickle_common.consulting.entity.ConsultingHistory;
 import com.example.pickle_common.consulting.entity.ConsultingRejectInfo;
 import com.example.pickle_common.consulting.entity.ConsultingStatusEnum;
@@ -13,8 +14,8 @@ import com.example.pickle_common.consulting.repository.ConsultingRejectInfoRepos
 import com.example.pickle_common.consulting.repository.RequestLetterRepository;
 import com.example.pickle_common.mq.MessageQueueService;
 import com.example.real_common.config.RabbitMQConfig;
-import com.example.real_common.global.exception.error.UnableToCreateRequestLetterDuoToMqFailure;
-import com.example.real_common.global.exception.error.UnexpectedServiceException;
+import com.example.real_common.global.exception.error.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,31 +134,59 @@ public class PbConsultingService {
 
     public ConsultingDetailResponse getConsultingDetail(String authorizationHeader, int requestLetterId){
         ConsultingDetailResponse response;
-        try{
-            int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
-            if(pbId == RabbitMQConfig.INVALID_VALUE ){
-                throw new UnexpectedServiceException("접근 권한이 없는 사용자입니다.");
-            }
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
-            RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow();
-            if(requestLetter.getConsultingHistory().getPbId() != pbId){
-                throw new UnexpectedServiceException("상담 내역에 접근 권한이 없습니다.");
-            }
-
-            response = ConsultingDetailResponse.builder()
-                    .requestLetterId(requestLetterId)
-                    .customerId(requestLetter.getCustomerId())
-                    .customerName(requestLetter.getConsultingHistory().getCustomerName())
-                    .date(requestLetter.getConsultingHistory().getDate())
-                    .status(requestLetter.getConsultingHistory().getConsultingStatusName().getCode())
-                    .requestInfo(ConsultingDetailResponse.RequestInfo.entityToDto(requestLetter))
-                    .build();
-        } catch (Exception e) {
-            log.error("상담 내역 상세 조회 중 예외 발생: {}", e.getMessage(), e);
-            throw new UnexpectedServiceException("상담 상세 내역 조회 중 예기치 않은 예외가 발생했습니다.", e);
+        if(pbId == RabbitMQConfig.INVALID_VALUE ){
+            throw new UnexpectedServiceException("접근 권한이 없는 사용자입니다.");
         }
 
+        RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow(() ->  new NotFoundRequestLetterException("요청서를 찾을 수 없습니다."));
+        if(requestLetter.getConsultingHistory().getPbId() != pbId){
+            throw new UnexpectedServiceException("상담 내역에 접근 권한이 없습니다.");
+        }
+
+        response = ConsultingDetailResponse.builder()
+                .requestLetterId(requestLetterId)
+                .customerId(requestLetter.getCustomerId())
+                .customerName(requestLetter.getConsultingHistory().getCustomerName())
+                .date(requestLetter.getConsultingHistory().getDate())
+                .status(requestLetter.getConsultingHistory().getConsultingStatusName().getCode())
+                .requestInfo(ConsultingDetailResponse.RequestInfo.entityToDto(requestLetter))
+                .build();
+
         return response;
+    }
+
+    @Transactional
+    public int rejectConsultingReservation(String authorizationHeader, int requestLetterId, RejectConsultingRequest rejectConsultingRequest) {
+
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+
+        if(pbId == RabbitMQConfig.INVALID_VALUE ){
+            throw new UnexpectedServiceException("접근 권한이 없는 사용자입니다.");
+        }
+
+        RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow(() ->  new NotFoundRequestLetterException("요청서를 찾을 수 없습니다."));
+        ConsultingHistory consultingHistory = consultingHistoryRepository.findById(requestLetter.getConsultingHistory().getId())
+                .orElseThrow(() -> new NotFoundConsultingHistoryException("요청서에 해당하는 상담 내역을 찾을 수 없습니다."));
+
+        consultingHistory.changeStatus(ConsultingStatusEnum.REJECTED);
+        consultingHistoryRepository.save(consultingHistory);
+
+        ConsultingRejectInfo consultingRejectInfo = ConsultingRejectInfo.builder()
+                .consultingHistory(consultingHistory)
+                .content(rejectConsultingRequest.getContent())
+                .build();
+
+        ConsultingRejectInfo savedConsultingRejectInfo = consultingRejectInfoRepository.save(consultingRejectInfo);
+
+        RequestLetter responseRequestLetter = requestLetterRepository.findByConsultingHistoryId(savedConsultingRejectInfo.getConsultingHistory().getId());
+        if(responseRequestLetter.getId() == requestLetterId){
+            return requestLetterId;
+        }else{
+            throw new UnableToCreateRejectedInfoException("요청에 대해 거절하지 못했습니다.");
+        }
+
     }
 }

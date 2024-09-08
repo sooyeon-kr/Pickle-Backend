@@ -21,7 +21,8 @@ public enum ErrorCode {
     UNABLE_TO_CREATE_REQUEST_LETTER_EXCEPTION(HttpStatus.BAD_REQUEST, "CONSULTING_002", "요청서를 생성할 수 없음"),
     NOT_FOUND_REQUEST_LETTER_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_003", "요청서를 찾을 수 없음"),
     UNABLE_TO_CREATE_REQUEST_LETTER_DUE_TO_MQ_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "CONSULTING_004", "내부 통신 에러로 인해, "),
-    UNEXPECTED_SERVICE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "예기치 않은 예외");
+    UNEXPECTED_SERVICE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "예기치 않은 예외"),
+    UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION(HttpStatus.BAD_REQUEST, "CONSULTING_005", "거절 내역을 저장할 수 없어, 거절을 할 수 없음");
 
     private final String code;
     private final String message;

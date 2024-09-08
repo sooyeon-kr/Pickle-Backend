@@ -2,6 +2,7 @@ package com.example.pickle_common.consulting.controller;
 
 import com.example.pickle_common.consulting.dto.ConsultingDetailResponse;
 import com.example.pickle_common.consulting.dto.ConsultingResponse;
+import com.example.pickle_common.consulting.dto.RejectConsultingRequest;
 import com.example.pickle_common.consulting.service.PbConsultingService;
 import com.example.real_common.global.common.CommonResDto;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,17 @@ public class PbConsultingController {
 //        String randomString = UUID.randomUUID().toString();
 
 //    TODO: 요청 거절(상태를 REJECTED로 변경하고, ConsultingRejectInfo를 생성하여 id를 넣어준다.)
+    @PostMapping("/request-letters/{requestLetterId}/reject")
+    public CommonResDto<Integer> rejectConsultingReservation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("requestLetterId") int requestLetterId,@RequestBody RejectConsultingRequest rejectConsultingRequest) {
+        int responseRequestLetterId = pbConsultingService.rejectConsultingReservation(authorizationHeader, requestLetterId, rejectConsultingRequest);
+        CommonResDto<Integer> response = CommonResDto.<Integer>builder()
+                    .code(1)
+                    .message("상담을 거절하셨습니다.")
+                    .data(responseRequestLetterId)
+                    .build();
+
+        return  response;
+    }
 
 //    TODO: 상담 기록 조회
     @GetMapping("/histories")
