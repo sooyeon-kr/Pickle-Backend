@@ -16,6 +16,8 @@ public class ConsultingResponse {
     private int requestLetterId;
     private int pbId;
     private String pbName;
+    //TODO: image 추가에 따른 로직 추가
+    private String pbImage;
     private LocalDateTime date;
     private LocalDateTime createdAt;
     private ConsultingStatusEnum status;

@@ -45,7 +45,6 @@ public class CustomerConsultingService {
          * pbId 추가
          * customername추가
          */
-        // UUID를 사용해 난수 생성
 //        TODO: 예외처리
         String pbNumber = requestDto.getPbInfo().getPbNumber();
         int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
@@ -56,7 +55,6 @@ public class CustomerConsultingService {
             throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
         }
         System.out.println(String.format("{} {} {}", pbId, customerId, customerName));
-//        String randomString = UUID.randomUUID().toString();
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
                 .customerId(customerId)
                 .customerName(customerName)
@@ -65,6 +63,7 @@ public class CustomerConsultingService {
                 .roomId(null)
                 .pbName(requestDto.getPbInfo().getName())
                 .pbBranchOffice(requestDto.getPbInfo().getBranchOffice())
+                .pbImage(requestDto.getPbInfo().getImg())
                 .date(requestDto.getDate())
                 .customerName(customerName)
                 .build();
@@ -176,6 +175,7 @@ public class CustomerConsultingService {
                         .pbName(consultingHistory.getPbName())
                         .date(consultingHistory.getDate())
                         .createdAt(consultingHistory.getCreatedAt())
+                        .pbImage(consultingHistory.getPbImage())
                         .status(ConsultingStatusEnum.valueOf(String.valueOf(consultingHistory.getConsultingStatusName())))
                         .consultingRejectInfo(consultingRejectInfo != null ?
                                 new ConsultingRejectInfoDto(consultingRejectInfo.getContent(), consultingRejectInfo.getCreatedAt()) : null)

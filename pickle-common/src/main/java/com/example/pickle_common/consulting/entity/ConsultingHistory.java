@@ -25,6 +25,8 @@ public class ConsultingHistory extends BaseTimeEntity {
     private int pbId;
     private String pbName;
     private String pbBranchOffice;
+    // TODO: 추가에 따른 로직 추가
+    private String pbImg;
 
     private int customerId;
     private String customerName;
