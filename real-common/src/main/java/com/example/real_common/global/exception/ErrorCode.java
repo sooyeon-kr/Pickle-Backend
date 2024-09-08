@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-        CUSTOM_TEST_EXCEPTION(HttpStatus.BAD_REQUEST, "TEST_001", "에러 핸들러 테스트입니다."),
+    CUSTOM_TEST_EXCEPTION(HttpStatus.BAD_REQUEST, "TEST_001", "에러 핸들러 테스트입니다."),
     NOT_FOUND_ACCOUNT_EXCEPTION(HttpStatus.UNAUTHORIZED, "ACCOUNT_001", "등록된 계정이 없음"),
     NOT_FOUND_GROUP_EXCEPTION(HttpStatus.NOT_FOUND, "GROUP_001", "등록된 그룹이 없음"),
     NOT_FOUND_CONSULTING_HISTORY_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_HISTORY_001", "상담 기록을 찾을 수 없음"),
@@ -24,8 +24,8 @@ public enum ErrorCode {
     UNEXPECTED_SERVICE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "예기치 않은 예외"),
     NOT_FOUND_PRESET_EXCEPTION(HttpStatus.NOT_FOUND, "PRESET_001", "프리셋을 찾을 수 없습니다."),
     UNAUTHORIZED_STRATEGY_EXCEPTION(HttpStatus.UNAUTHORIZED, "STRATEGY_002", "접근할 권한이 없는 전략임"),
-    ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION(HttpStatus.BAD_REQUEST, "AMOUNT_001", "잔액 이상의 값을 매매할 수 없음");
-
+    ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION(HttpStatus.BAD_REQUEST, "AMOUNT_001", "잔액 이상의 값을 매매할 수 없음"),
+    UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION(HttpStatus.BAD_REQUEST, "CONSULTING_005", "거절 내역을 저장할 수 없어, 거절을 할 수 없음");
 
     private final String code;
     private final String message;

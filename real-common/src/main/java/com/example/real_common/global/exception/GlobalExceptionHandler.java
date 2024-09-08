@@ -332,4 +332,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(UnableToCreateRejectedInfoException.class)
+    protected ResponseEntity<?> handleUnableToCreateRejectedInfoException(UnableToCreateRejectedInfoException exception){
+        log.error("UnableToCreateRejectedInfoException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
 }

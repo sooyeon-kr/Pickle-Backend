@@ -46,7 +46,7 @@ public class CreateRequestLetterRequest {
     public static class PbInfo {
         private String pbNumber;
         private String name;
-//        private String img;
+        private String img;
         private String branchOffice;
     }
 }

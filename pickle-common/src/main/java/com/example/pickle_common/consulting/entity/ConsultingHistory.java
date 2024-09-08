@@ -25,6 +25,8 @@ public class ConsultingHistory extends BaseTimeEntity {
     private int pbId;
     private String pbName;
     private String pbBranchOffice;
+    // TODO: 추가에 따른 로직 추가
+    private String pbImg;
 
     private int customerId;
     private String customerName;
@@ -41,6 +43,14 @@ public class ConsultingHistory extends BaseTimeEntity {
     // OneToOne 양방향 매핑에서는 fetch LAZY 적용이 안되는 상황이 많다.
     @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RequestLetter requestLetter;
+
+    public void changeStatus(ConsultingStatusEnum consultingStatusEnum) {
+        consultingStatusName = consultingStatusEnum;
+    }
+
+    public void setRoomId(String roomId){
+        this.roomId = roomId;
+    }
 //
 //    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private ConsultingConfirmDate consultingConfirmDate;
