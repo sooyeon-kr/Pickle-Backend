@@ -256,4 +256,80 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(UnableToCreateRequestLetterException.class)
+    protected ResponseEntity<?> handleUnableToCreateRequestLetterException(UnableToCreateRequestLetterException exception){
+        log.error("handleUnableToCreateRequestLetterException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REQUEST_LETTER_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundRequestLetterException.class)
+    protected ResponseEntity<?> handleNotFoundRequestLetterException(NotFoundRequestLetterException exception){
+        log.error("handleNotFoundRequestLetterException :: ");
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_REQUEST_LETTER_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(UnableToCreateRequestLetterDuoToMqFailure.class)
+    protected ResponseEntity<?> handleUnableToFetchMqDataException(UnableToCreateRequestLetterDuoToMqFailure exception){
+        log.error("handleUnableToFetchMqDataException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REQUEST_LETTER_DUE_TO_MQ_FAILURE;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(UnexpectedServiceException.class)
+    protected ResponseEntity<?> handleUnexpectedServiceException(UnexpectedServiceException exception){
+        log.error("handleUnexpectedServiceException :: ");
+        ErrorCode errorCode = ErrorCode.UNEXPECTED_SERVICE_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
 }
