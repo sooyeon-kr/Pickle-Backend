@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -208,6 +209,30 @@ public class PbConsultingService {
             return requestLetterId;
         }else{
             throw new UnableToCreateRejectedInfoException("상담을 완료하지 못했습니다.");
+        }
+    }
+
+//    TODO: mq에 상담룸 정보 보내주기
+    public int acceptConsultingReservation(String authorizationHeader, int requestLetterId) {
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+
+        if(pbId == RabbitMQConfig.INVALID_VALUE ){
+            throw new UnexpectedServiceException("접근 권한이 없는 사용자입니다.");
+        }
+
+        RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow(() ->  new NotFoundRequestLetterException("요청서를 찾을 수 없습니다."));
+        ConsultingHistory consultingHistory = consultingHistoryRepository.findById(requestLetter.getConsultingHistory().getId())
+                .orElseThrow(() -> new NotFoundConsultingHistoryException("요청서에 해당하는 상담 내역을 찾을 수 없습니다."));
+
+        consultingHistory.changeStatus(ConsultingStatusEnum.ACCEPTED);
+        String randomRoomId = UUID.randomUUID().toString();
+        consultingHistory.setRoomId(randomRoomId);
+        consultingHistoryRepository.save(consultingHistory);
+
+        if(consultingHistory.getRoomId() == randomRoomId){
+            return requestLetterId;
+        }else{
+            throw new UnableToCreateRejectedInfoException("요청을 수락하지 못했습니다.");
         }
     }
 }

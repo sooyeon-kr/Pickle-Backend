@@ -54,8 +54,18 @@ public class PbConsultingController {
 
 
 //    TODO: 요청 수락(상태를 ACCEPTED로 변경하고, roomId를 랜덤으로 넣어준 후, mq에 상담 정보를 넘겨줌) 정보 넘겨주는 건 나중에해도..
-//        String randomString = UUID.randomUUID().toString();
 
+    @PostMapping("/request-letters/{requestLetterId}/accept")
+    public CommonResDto<Integer> acceptConsultingReservation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("requestLetterId") int requestLetterId) {
+        int responseRequestLetterId = pbConsultingService.acceptConsultingReservation(authorizationHeader, requestLetterId);
+        CommonResDto<Integer> response = CommonResDto.<Integer>builder()
+                .code(1)
+                .message("상담을 수락하셨습니다.")
+                .data(responseRequestLetterId)
+                .build();
+
+        return  response;
+    }
 //    TODO: 요청 거절(상태를 REJECTED로 변경하고, ConsultingRejectInfo를 생성하여 id를 넣어준다.)
     @PostMapping("/request-letters/{requestLetterId}/reject")
     public CommonResDto<Integer> rejectConsultingReservation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("requestLetterId") int requestLetterId,@RequestBody RejectConsultingRequest rejectConsultingRequest) {
@@ -88,16 +98,16 @@ public class PbConsultingController {
         return response;
     }
 
-//    TODO: 상담 완료(상태를 COMPLETED로 변경)
+
     @PostMapping("/request-letters/{requestLetterId}/complete")
     public CommonResDto<Integer> completeConsulting(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("requestLetterId") int requestLetterId) {
-    int responseRequestLetterId = pbConsultingService.completeConsulting(authorizationHeader, requestLetterId);
-    CommonResDto<Integer> response = CommonResDto.<Integer>builder()
-            .code(1)
-            .message("상담을 완료했습니다.")
-            .data(responseRequestLetterId)
-            .build();
+        int responseRequestLetterId = pbConsultingService.completeConsulting(authorizationHeader, requestLetterId);
+        CommonResDto<Integer> response = CommonResDto.<Integer>builder()
+                .code(1)
+                .message("상담을 완료했습니다.")
+                .data(responseRequestLetterId)
+                .build();
 
     return  response;
-}
+    }
 }

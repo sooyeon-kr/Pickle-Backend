@@ -47,6 +47,10 @@ public class ConsultingHistory extends BaseTimeEntity {
     public void changeStatus(ConsultingStatusEnum consultingStatusEnum) {
         consultingStatusName = consultingStatusEnum;
     }
+
+    public void setRoomId(String roomId){
+        this.roomId = roomId;
+    }
 //
 //    @OneToOne(mappedBy = "consultingHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private ConsultingConfirmDate consultingConfirmDate;
