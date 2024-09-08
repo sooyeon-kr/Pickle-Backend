@@ -54,7 +54,6 @@ public class CustomerConsultingService {
         if(pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName == RabbitMQConfig.UNKNOWN_CUSTOMER){
             throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
         }
-        System.out.println(String.format("{} {} {}", pbId, customerId, customerName));
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
                 .customerId(customerId)
                 .customerName(customerName)

@@ -84,7 +84,6 @@ public class MessageQueueService {
                         return message;
                     }
             );
-            System.out.println(name);
             return name;
         } catch (Exception e) {
             return new RabbitMQConfig().UNKNOWN_CUSTOMER;

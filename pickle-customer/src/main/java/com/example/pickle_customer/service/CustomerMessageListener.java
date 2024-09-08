@@ -43,8 +43,6 @@ public class CustomerMessageListener {
         try {
             jwtService.validateToken(customerToken);
             int customerId = Integer.parseInt(jwtService.extractUsername(customerToken));
-            System.out.println(customerId+"CU");
-            System.out.println(customerRepository.findByCustomerId(customerId).map(Customer::getName).orElseThrow(RuntimeException::new));
             return customerRepository.findByCustomerId(customerId).map(Customer::getName).orElse(RabbitMQConfig.UNKNOWN_CUSTOMER);
         } catch (NumberFormatException e) {
             return RabbitMQConfig.UNKNOWN_CUSTOMER;
