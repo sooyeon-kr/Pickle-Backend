@@ -12,10 +12,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. GitHub 리포지토리에서 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v3
-	
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
