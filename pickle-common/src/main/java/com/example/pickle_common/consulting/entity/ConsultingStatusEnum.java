@@ -13,11 +13,11 @@ public enum ConsultingStatusEnum {
     NO_SHOW(5, "상담노쇼"),;
 
     private final int code;
-    private final String descriptiong;
+    private final String description;
 
-    private ConsultingStatusEnum(int code, String descriptiong) {
+    private ConsultingStatusEnum(int code, String description) {
         this.code = code;
-        this.descriptiong = descriptiong;
+        this.description= description;
     }
 
     public static ConsultingStatusEnum fromCode(int code) {
