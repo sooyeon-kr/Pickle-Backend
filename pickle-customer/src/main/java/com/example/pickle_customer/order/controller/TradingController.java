@@ -1,5 +1,6 @@
 package com.example.pickle_customer.order.controller;
 
+import com.example.pickle_customer.dto.AccountResponseDto;
 import com.example.pickle_customer.mystrategy.dto.CreateMyStrategyDto;
 import com.example.pickle_customer.mystrategy.service.MyStrategyService;
 import com.example.pickle_customer.order.dto.ProductInAccountSaveDTO;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/pickle-customer/trade")
 @AllArgsConstructor
+//@CrossOrigin(origins = "http://localhost:5173")
 public class TradingController {
     private TradingService tradingService;
     private MyStrategyService myStrategyService;
@@ -23,21 +25,22 @@ public class TradingController {
     @PostMapping
     public ResponseEntity<String> trading(@RequestBody TradingRequestDTO tradingRequestDTO,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         try {
-//            AccountResponseDto accountResponseDto = accountService.myAsset(token);
-//            int accountId = accountResponseDto.getAccountId();
+            String actualToken = token.replace("Bearer ", "");
+            AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
+            int accountId = accountResponseDto.getAccountId();
             CreateMyStrategyDto.Request strategyRequest = CreateMyStrategyDto.Request.builder()
-                    .accountId(7)
+                    .accountId(accountId)
                     .selectedStrategyId(tradingRequestDTO.getStrategyId())
                     .build();
             CreateMyStrategyDto.Response strategyResponse = myStrategyService.createMyStrategy(strategyRequest);
             UpdateTotalAmountDTO updateRequest = UpdateTotalAmountDTO.builder()
-                    .accountId(7)
+                    .accountId(accountId)
                     .tradingRequestDTO(tradingRequestDTO)
                     .build();
             tradingService.updateTotalAmount(updateRequest);
 
             ProductInAccountSaveDTO productInAccountSaveDTO = ProductInAccountSaveDTO.builder()
-                    .accountId(7)
+                    .accountId(accountId)
                     .strategyId(strategyResponse.getCreatedMyStrategyId())
                     .tradingRequestDTO(tradingRequestDTO)
                     .build();

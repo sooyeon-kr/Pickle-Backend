@@ -62,7 +62,7 @@ public class TradingService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         productRepository.deleteByAccount(account);
 
-        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findAllByMyStrategy(myStrategy);
+        List<MyStrategyCategoryComposition> categories = myStrategyCategoryCompositionRepository.findAllByMyStrategy(Optional.ofNullable(myStrategy));
         for (MyStrategyCategoryComposition category : categories) {
             List<MyStrategyProductComposition> products = myStrategyProductCompositionRepository.findAllByCategoryComposition(category);
             for (MyStrategyProductComposition product : products) {

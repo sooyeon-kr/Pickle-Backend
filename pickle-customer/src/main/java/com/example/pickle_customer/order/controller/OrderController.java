@@ -31,7 +31,8 @@ public class OrderController {
     }
     @PostMapping("/price")
     public PriceDTO getPrice(@RequestBody PriceDTO priceDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        AccountResponseDto accountResponseDto = accountService.myAsset(token);
+        String actualToken = token.replace("Bearer ", "");
+        AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
         int accountId = accountResponseDto.getAccountId();
         return orderService.getPrice(priceDTO, accountId);
     }
