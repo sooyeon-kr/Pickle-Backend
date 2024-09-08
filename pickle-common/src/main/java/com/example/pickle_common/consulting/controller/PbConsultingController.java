@@ -89,4 +89,15 @@ public class PbConsultingController {
     }
 
 //    TODO: 상담 완료(상태를 COMPLETED로 변경)
+    @PostMapping("/request-letters/{requestLetterId}/complete")
+    public CommonResDto<Integer> completeConsulting(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("requestLetterId") int requestLetterId) {
+    int responseRequestLetterId = pbConsultingService.completeConsulting(authorizationHeader, requestLetterId);
+    CommonResDto<Integer> response = CommonResDto.<Integer>builder()
+            .code(1)
+            .message("상담을 완료했습니다.")
+            .data(responseRequestLetterId)
+            .build();
+
+    return  response;
+}
 }

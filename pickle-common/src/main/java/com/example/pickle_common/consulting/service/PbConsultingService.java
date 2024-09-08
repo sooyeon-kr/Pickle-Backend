@@ -189,4 +189,25 @@ public class PbConsultingService {
         }
 
     }
+
+    public int completeConsulting(String authorizationHeader, int requestLetterId) {
+        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+
+        if(pbId == RabbitMQConfig.INVALID_VALUE ){
+            throw new UnexpectedServiceException("접근 권한이 없는 사용자입니다.");
+        }
+
+        RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow(() ->  new NotFoundRequestLetterException("요청서를 찾을 수 없습니다."));
+        ConsultingHistory consultingHistory = consultingHistoryRepository.findById(requestLetter.getConsultingHistory().getId())
+                .orElseThrow(() -> new NotFoundConsultingHistoryException("요청서에 해당하는 상담 내역을 찾을 수 없습니다."));
+
+        consultingHistory.changeStatus(ConsultingStatusEnum.COMPLETED);
+        consultingHistoryRepository.save(consultingHistory);
+
+        if(consultingHistory.getConsultingStatusName() == ConsultingStatusEnum.COMPLETED){
+            return requestLetterId;
+        }else{
+            throw new UnableToCreateRejectedInfoException("상담을 완료하지 못했습니다.");
+        }
+    }
 }
