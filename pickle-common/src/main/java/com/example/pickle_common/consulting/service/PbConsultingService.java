@@ -49,12 +49,37 @@ public class PbConsultingService {
     }
 
     /**
+     * 모든 상담 기록을 가져오는 메소드
+     * 현재는 COMPLETED 상태만 가져옴
+     * @param authorizationHeader
+     * @return
+     */
+    public List<ConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
+        return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
+                ConsultingStatusEnum.COMPLETED
+        ));
+    }
+
+    /**
      * 상태코드에 따라 상담 예약을 가져오는 메소드
      * @param authorizationHeader
      * @param statusCodes
      * @return
      */
     public List<ConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
+        List<ConsultingStatusEnum> statuses = statusCodes.stream()
+                .map(ConsultingStatusEnum::fromCode)
+                .collect(Collectors.toList());
+        return getConsultingHistoriesByStatus(authorizationHeader, statuses);
+    }
+
+    /***
+     * 선택된 상태의 상담 기록만 가져오는 메소드
+     * @param authorizationHeader
+     * @param statusCodes
+     * @return
+     */
+    public List<ConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
         List<ConsultingStatusEnum> statuses = statusCodes.stream()
                 .map(ConsultingStatusEnum::fromCode)
                 .collect(Collectors.toList());

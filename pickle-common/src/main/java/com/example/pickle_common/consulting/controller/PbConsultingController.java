@@ -58,6 +58,23 @@ public class PbConsultingController {
 //    TODO: 요청 거절(상태를 REJECTED로 변경하고, ConsultingRejectInfo를 생성하여 id를 넣어준다.)
 
 //    TODO: 상담 기록 조회
+    @GetMapping("/histories")
+    public CommonResDto<List<ConsultingResponse>> getConsultingCompleted(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(name="status", required = false) List<Integer> status) {
+        List<ConsultingResponse> reservations;
+        if(status != null && !status.isEmpty()) {
+            reservations = pbConsultingService.getConsultingHistoriesRequestedStatus(authorizationHeader, status);
+        }else{
+            reservations = pbConsultingService.getAllConsultingHistories(authorizationHeader);
+        }
+
+        CommonResDto<List<ConsultingResponse>> response = CommonResDto.<List<ConsultingResponse>>builder()
+                .code(1)
+                .message("종료된 상담 조회 성공")
+                .data(reservations)
+                .build();
+
+        return response;
+    }
 
 //    TODO: 상담 완료(상태를 COMPLETED로 변경)
 }
