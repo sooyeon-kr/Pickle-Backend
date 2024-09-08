@@ -3,22 +3,24 @@ package com.example.pickle_common.consulting.service;
 import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
 import com.example.pickle_common.consulting.dto.CreateRequestLetterRequest;
 import com.example.pickle_common.consulting.dto.CreateRequestLetterResponse;
-import com.example.pickle_common.consulting.dto.RequestHistoriesResponse;
+import com.example.pickle_common.consulting.dto.ConsultingResponse;
 import com.example.pickle_common.consulting.entity.*;
-import com.example.pickle_common.consulting.repository.ConsultingConfirmDateRepository;
 import com.example.pickle_common.consulting.repository.ConsultingHistoryRepository;
 import com.example.pickle_common.consulting.repository.ConsultingRejectInfoRepository;
 import com.example.pickle_common.consulting.repository.RequestLetterRepository;
 import com.example.pickle_common.mq.MessageQueueService;
+import com.example.real_common.config.RabbitMQConfig;
+import com.example.real_common.global.exception.error.UnableToCreateRequestLetterDuoToMqFailure;
+import com.example.real_common.global.exception.error.UnexpectedServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +28,15 @@ public class CustomerConsultingService {
     private static final Logger log = LoggerFactory.getLogger(CustomerConsultingService.class);
     private final RequestLetterRepository requestLetterRepository;
     private final ConsultingHistoryRepository consultingHistoryRepository;
-    private final ConsultingConfirmDateRepository consultingConfirmDateRepository;
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
 
+    /**
+     * 요청서 생성 메소드
+     * @param authorizationHeader
+     * @param requestDto
+     * @return
+     */
     public CreateRequestLetterResponse createRequestLetter(String authorizationHeader, CreateRequestLetterRequest requestDto) {
         //상담기록이 먼저 생성 되어야 한다.
         /**
@@ -39,13 +46,17 @@ public class CustomerConsultingService {
          * customername추가
          */
         // UUID를 사용해 난수 생성
+//        TODO: 예외처리
         String pbNumber = requestDto.getPbInfo().getPbNumber();
         int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
         int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
         String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
 
+        if(pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName == RabbitMQConfig.UNKNOWN_CUSTOMER){
+            throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
+        }
+        System.out.println(String.format("{} {} {}", pbId, customerId, customerName));
 //        String randomString = UUID.randomUUID().toString();
-
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
                 .customerId(customerId)
                 .customerName(customerName)
@@ -83,40 +94,100 @@ public class CustomerConsultingService {
                 .build();
     }
 
-    public List<RequestHistoriesResponse> getAllRequesetHistories(String authorizationHeader) {
-        List<RequestHistoriesResponse> requestHistoriesResponses = new ArrayList<>();
+    /**
+     * 상담 예약을 가져오는 메소드(요청중, 거절됨)
+     * @param authorizationHeader
+     * @return
+     */
+    public List<ConsultingResponse> getAllConsultingReservations(String authorizationHeader) {
+        return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
+                ConsultingStatusEnum.REQUESTED,
+                ConsultingStatusEnum.REJECTED
+        ));
+    }
 
+    /**
+     * 상태코드에 따라 상담 예약을 가져오는 메소드
+     * @param authorizationHeader
+     * @param statusCodes
+     * @return
+     */
+    public List<ConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
+        List<ConsultingStatusEnum> statuses = statusCodes.stream()
+                .map(ConsultingStatusEnum::fromCode)
+                .collect(Collectors.toList());
+        return getConsultingHistoriesByStatus(authorizationHeader, statuses);
+    }
 
-        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
-        List<ConsultingHistory> consultingHistories = consultingHistoryRepository.findAllByCustomerId(customerId);
+    /**
+     * 모든 상담 기록을 가져오는 메소드
+     * 현재는 COMPLETED 상태만 가져옴
+     * @param authorizationHeader
+     * @return
+     */
+    public List<ConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
+        return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
+                ConsultingStatusEnum.COMPLETED
+//                , ConsultingStatusEnum.REJECTED
+//                , ConsultingStatusEnum.NO_SHOW
+        ));
+    }
 
-        for (ConsultingHistory consultingHistory : consultingHistories) {
-            RequestLetter requestLetter = requestLetterRepository.findByConsultingHistoryId(consultingHistory.getId());
+    /***
+     * 선택된 상태의 상담 기록만 가져오는 메소드
+     * @param authorizationHeader
+     * @param statusCodes
+     * @return
+     */
+    public List<ConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
+        List<ConsultingStatusEnum> statuses = statusCodes.stream()
+                .map(ConsultingStatusEnum::fromCode)
+                .collect(Collectors.toList());
+        return getConsultingHistoriesByStatus(authorizationHeader, statuses);
+    }
 
-            ConsultingRejectInfo consultingRejectInfo = null;
-            if (consultingHistory.getConsultingStatusName().equals(ConsultingStatusEnum.REJECTED)) {
-                consultingRejectInfo = consultingRejectInfoRepository.findByConsultingHistoryId(consultingHistory.getId());
+    /***
+     * 상태에 따라 상담 기록을 가져오는 메소드(모든 메소드에서 사용)
+     * @param authorizationHeader
+     * @param statuses
+     * @return
+     */
+    public List<ConsultingResponse> getConsultingHistoriesByStatus(String authorizationHeader, List<ConsultingStatusEnum> statuses) {
+        List<ConsultingResponse> consultingResponses = new ArrayList<>();
+        try {
+            int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
+
+            List<ConsultingHistory> consultingHistories = consultingHistoryRepository.findByCustomerIdAndConsultingStatusNameIn(
+                    customerId,
+                    statuses
+            );
+
+            for (ConsultingHistory consultingHistory : consultingHistories) {
+                RequestLetter requestLetter = requestLetterRepository.findByConsultingHistoryId(consultingHistory.getId());
+                ConsultingRejectInfo consultingRejectInfo = null;
+
+                if (ConsultingStatusEnum.REJECTED.name().equals(consultingHistory.getConsultingStatusName())) {
+                    consultingRejectInfo = consultingRejectInfoRepository.findByConsultingHistoryId(consultingHistory.getId());
+                }
+
+                ConsultingResponse consultingResponse = ConsultingResponse.builder()
+                        .requestLetterId(requestLetter.getId())
+                        .pbId(consultingHistory.getPbId())
+                        .pbName(consultingHistory.getPbName())
+                        .date(consultingHistory.getDate())
+                        .createdAt(consultingHistory.getCreatedAt())
+                        .status(ConsultingStatusEnum.valueOf(String.valueOf(consultingHistory.getConsultingStatusName())))
+                        .consultingRejectInfo(consultingRejectInfo != null ?
+                                new ConsultingRejectInfoDto(consultingRejectInfo.getContent(), consultingRejectInfo.getCreatedAt()) : null)
+                        .build();
+
+                consultingResponses.add(consultingResponse);
             }
-
-            RequestHistoriesResponse requestHistoriesResponse = RequestHistoriesResponse.builder()
-                    .requestLetterId(requestLetter.getId())
-                    .pbId(consultingHistory.getPbId())
-                    .pbName(consultingHistory.getPbName())
-                    .date(consultingHistory.getDate())
-                    .createdAt(consultingHistory.getCreatedAt())
-                    .status(consultingHistory.getConsultingStatusName())
-                    .consultingRejectInfoInfo(consultingRejectInfo != null ?
-                            new ConsultingRejectInfoDto(consultingRejectInfo.getContent(), consultingRejectInfo.getCreatedAt()) : null)
-                    .build();
-
-            requestHistoriesResponses.add(requestHistoriesResponse);
+        } catch (Exception e) {
+            log.error("상담 내역 조회 중 오류 발생: {}", e.getMessage(), e);
+            throw new UnexpectedServiceException("상담 내역 조회 중 예기치 않은 오류가 발생했습니다.", e);
         }
-
-        return requestHistoriesResponses;
+        return consultingResponses;
     }
 
-    public List<RequestHistoriesResponse> getRequestHistoriesByStatus(String authorizationHeader, int status) {
-        //TODO: 상태값에 따라 목록 가져오기 구현
-        return new ArrayList<>();
-    }
 }

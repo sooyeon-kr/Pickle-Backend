@@ -28,6 +28,8 @@ public class RabbitMQConfig {
     //constants
     public static final int INVALID_PB_NUMBER = -1;
     public static final int INVALID_TOKEN = -1;
+    public static final int INVALID_VALUE = -1;
+
     public static final String UNKNOWN_CUSTOMER ="Unknown Customer";
 
     // Exchanges
