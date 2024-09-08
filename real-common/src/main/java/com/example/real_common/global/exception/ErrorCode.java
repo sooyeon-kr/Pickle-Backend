@@ -22,6 +22,9 @@ public enum ErrorCode {
     NOT_FOUND_REQUEST_LETTER_EXCEPTION(HttpStatus.NOT_FOUND, "CONSULTING_003", "요청서를 찾을 수 없음"),
     UNABLE_TO_CREATE_REQUEST_LETTER_DUE_TO_MQ_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "CONSULTING_004", "내부 통신 에러로 인해, "),
     UNEXPECTED_SERVICE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "예기치 않은 예외"),
+    NOT_FOUND_PRESET_EXCEPTION(HttpStatus.NOT_FOUND, "PRESET_001", "프리셋을 찾을 수 없습니다."),
+    UNAUTHORIZED_STRATEGY_EXCEPTION(HttpStatus.UNAUTHORIZED, "STRATEGY_002", "접근할 권한이 없는 전략임"),
+    ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION(HttpStatus.BAD_REQUEST, "AMOUNT_001", "잔액 이상의 값을 매매할 수 없음"),
     UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION(HttpStatus.BAD_REQUEST, "CONSULTING_005", "거절 내역을 저장할 수 없어, 거절을 할 수 없음");
 
     private final String code;

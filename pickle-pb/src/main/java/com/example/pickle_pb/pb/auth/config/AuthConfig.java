@@ -36,8 +36,8 @@ public class AuthConfig {
                 .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
                 .cors(cors -> cors.disable())  // CORS 보호 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/pickle-pb/api/join", "/pickle-pb/api/token", "pickle-pb/api/validate", "pickle-pb/inner/**").permitAll() // 특정 경로 허용
-                                .requestMatchers("/pickle-pb/api/**").authenticated()
+                        .requestMatchers("/api/pickle-pb/join", "/api/pickle-pb/token", "/api/pickle-pb/validate", "/api/pickle-pb/inner/**").permitAll() // 특정 경로 허용
+                                .requestMatchers("/api/pickle-pb/**").authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
                 .build();

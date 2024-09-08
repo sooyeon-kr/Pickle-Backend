@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/pickle-pb/api/preset")
+@RequestMapping("/api/pickle-pb/preset")
 @Validated
 @RequiredArgsConstructor
 public class PresetController {
@@ -28,6 +28,12 @@ public class PresetController {
     public ResponseEntity<CommonResDto<?>> readPresetDetail(@PathVariable @Valid Integer presetId) {
         ReadPresetDetailResponseDto result = presetService.readPresetDetail(presetId);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 상세 조회 완료", result));
+    }
+
+    @GetMapping("/presetGroupId/{presetGroupId}")
+    public ResponseEntity<CommonResDto<?>> readPresetListByGroupId(@PathVariable @Valid Integer presetGroupId) {
+        ReadPresetListResponseDto result = presetService.readPresetListByGroupId(presetGroupId);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "프리셋 조회 완료", result));
     }
 
     @PostMapping

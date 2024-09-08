@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -120,7 +121,7 @@ public class MyStrategyService {
                 .orElseThrow(() -> new NotFoundMyStrategyException("not found myStrategy" + request.getSelectedStrategyId()));
 
         List<MyStrategyCategoryComposition> categoryCompositionList =
-                categoryCompositionRepository.findAllByMyStrategy(myStrategy);
+                categoryCompositionRepository.findAllByMyStrategy(Optional.ofNullable(myStrategy));
 
         for (MyStrategyCategoryComposition myStrategyCategoryComposition : categoryCompositionList) {
             productCompositionRepository.deleteAllInBatch(

@@ -5,10 +5,10 @@ import com.example.pickle_customer.mystrategy.entity.MyStrategyCategoryCompositi
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryCompositionRepository extends JpaRepository<MyStrategyCategoryComposition, Integer> {
 
-    List<MyStrategyCategoryComposition> findAllByMyStrategy(MyStrategy myStrategy);
-
+    List<MyStrategyCategoryComposition> findAllByMyStrategy(Optional<MyStrategy> myStrategy);
 
 }
