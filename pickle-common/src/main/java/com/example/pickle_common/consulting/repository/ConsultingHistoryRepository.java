@@ -9,4 +9,6 @@ import java.util.List;
 public interface ConsultingHistoryRepository extends JpaRepository<ConsultingHistory, Integer> {
     List<ConsultingHistory> findAllByCustomerId(int customerId);
     List<ConsultingHistory> findByCustomerIdAndConsultingStatusNameIn(int customerId, List<ConsultingStatusEnum> statuses);
+
+    List<ConsultingHistory> findByPbIdAndConsultingStatusNameIn(int pbId, List<ConsultingStatusEnum> statuses);
 }
