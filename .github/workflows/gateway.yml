@@ -1,0 +1,28 @@
+name: Deploy api-gateway
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'gateway/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. GitHub 리포지토리에서 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+			# 2. EC2 서버로 SSH 접속 후 배포 스크립트 실행
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/Backend
+            ./deploy.sh
