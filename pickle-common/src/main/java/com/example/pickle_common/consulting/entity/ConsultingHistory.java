@@ -19,7 +19,7 @@ import java.util.Date;
 public class ConsultingHistory extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "conulting_history_id")
+    @Column(name = "consulting_history_id")
     private int id;
 
     private int pbId;
