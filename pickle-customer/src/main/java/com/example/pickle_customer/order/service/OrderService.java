@@ -37,34 +37,17 @@ public class OrderService {
     public List<HeldQuantityResponseDTO> getQuantity(List<HeldQuantityRequestDTO> requestDTOs) {
         List<HeldQuantityResponseDTO> responseDTOs = new ArrayList<>();
 
-        Set<String> requestProductCodes = requestDTOs.stream()
-                .map(HeldQuantityRequestDTO::getProductCode)
-                .collect(Collectors.toSet());
-
-
         for (HeldQuantityRequestDTO requestDTO : requestDTOs) {
-            List<ProductInAccount> productInAccounts = orderRepository.findByProductCode(requestDTO.getProductCode());
+            ProductInAccount productInAccount = orderRepository.findByProductCode(requestDTO.getProductCode());
 
+            double heldAmount = productInAccount != null
+                    ? requestDTO.getHeldQuantity() - productInAccount.getHeldQuantity()
+                    : requestDTO.getHeldQuantity();
 
-            if (productInAccounts.isEmpty()) {
-                responseDTOs.add(new HeldQuantityResponseDTO(
-                        requestDTO.getProductCode(), requestDTO.getHeldQuantity()));
-            } else {
-                for (ProductInAccount productInAccount : productInAccounts) {
-                    responseDTOs.add(new HeldQuantityResponseDTO(
-                            productInAccount.getProductCode(),
-                            requestDTO.getHeldQuantity() - productInAccount.getHeldQuantity()));
-                }
-            }
-        }
-
-
-        List<ProductInAccount> allProductInAccounts = orderRepository.findAll();
-        for (ProductInAccount productInAccount : allProductInAccounts) {
-            if (!requestProductCodes.contains(productInAccount.getProductCode())) {
-                responseDTOs.add(new HeldQuantityResponseDTO(
-                        productInAccount.getProductCode(), -productInAccount.getHeldQuantity()));
-            }
+            responseDTOs.add(HeldQuantityResponseDTO.builder()
+                    .productCode(requestDTO.getProductCode())
+                    .heldAmount(heldAmount)
+                    .build());
         }
 
         return responseDTOs;
