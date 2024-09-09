@@ -3,7 +3,7 @@ package com.example.pickle_common.consulting.service;
 
 import com.example.pickle_common.consulting.dto.ConsultingDetailResponse;
 import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
-import com.example.pickle_common.consulting.dto.ConsultingResponse;
+import com.example.pickle_common.consulting.dto.PBConsultingResponse;
 import com.example.pickle_common.consulting.dto.RejectConsultingRequest;
 import com.example.pickle_common.consulting.entity.ConsultingHistory;
 import com.example.pickle_common.consulting.entity.ConsultingRejectInfo;
@@ -42,7 +42,7 @@ public class PbConsultingService {
      * @param authorizationHeader
      * @return
      */
-    public List<ConsultingResponse> getAllConsultingReservations(String authorizationHeader) {
+    public List<PBConsultingResponse> getAllConsultingReservations(String authorizationHeader) {
         return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
                 ConsultingStatusEnum.REQUESTED,
                 ConsultingStatusEnum.REJECTED
@@ -55,7 +55,7 @@ public class PbConsultingService {
      * @param authorizationHeader
      * @return
      */
-    public List<ConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
+    public List<PBConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
         return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
                 ConsultingStatusEnum.COMPLETED
         ));
@@ -67,7 +67,7 @@ public class PbConsultingService {
      * @param statusCodes
      * @return
      */
-    public List<ConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
+    public List<PBConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
         List<ConsultingStatusEnum> statuses = statusCodes.stream()
                 .map(ConsultingStatusEnum::fromCode)
                 .collect(Collectors.toList());
@@ -80,7 +80,7 @@ public class PbConsultingService {
      * @param statusCodes
      * @return
      */
-    public List<ConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
+    public List<PBConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
         List<ConsultingStatusEnum> statuses = statusCodes.stream()
                 .map(ConsultingStatusEnum::fromCode)
                 .collect(Collectors.toList());
@@ -93,8 +93,8 @@ public class PbConsultingService {
      * @param statuses
      * @return
      */
-    public List<ConsultingResponse> getConsultingHistoriesByStatus(String authorizationHeader, List<ConsultingStatusEnum> statuses) {
-        List<ConsultingResponse> consultingResponses = new ArrayList<>();
+    public List<PBConsultingResponse> getConsultingHistoriesByStatus(String authorizationHeader, List<ConsultingStatusEnum> statuses) {
+        List<PBConsultingResponse> pBConsultingResponses = new ArrayList<>();
         try {
             int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
@@ -111,25 +111,24 @@ public class PbConsultingService {
                     consultingRejectInfo = consultingRejectInfoRepository.findByConsultingHistoryId(consultingHistory.getId());
                 }
 
-                ConsultingResponse consultingResponse = ConsultingResponse.builder()
+                PBConsultingResponse pBConsultingResponse = PBConsultingResponse.builder()
                         .requestLetterId(requestLetter.getId())
-                        .pbId(consultingHistory.getPbId())
-                        .pbName(consultingHistory.getPbName())
+                        .customerId(consultingHistory.getId())
+                        .customerName(consultingHistory.getCustomerName())
                         .date(consultingHistory.getDate())
                         .createdAt(consultingHistory.getCreatedAt())
-                        .pbImage(consultingHistory.getPbImage())
                         .status(ConsultingStatusEnum.valueOf(String.valueOf(consultingHistory.getConsultingStatusName())))
                         .consultingRejectInfo(consultingRejectInfo != null ?
                                 new ConsultingRejectInfoDto(consultingRejectInfo.getContent(), consultingRejectInfo.getCreatedAt()) : null)
                         .build();
 
-                consultingResponses.add(consultingResponse);
+                pBConsultingResponses.add(pBConsultingResponse);
             }
         } catch (Exception e) {
             log.error("상담 내역 조회 중 오류 발생: {}", e.getMessage(), e);
             throw new UnexpectedServiceException("상담 내역 조회 중 예기치 않은 오류가 발생했습니다.", e);
         }
-        return consultingResponses;
+        return pBConsultingResponses;
     }
 
     public ConsultingDetailResponse getConsultingDetail(String authorizationHeader, int requestLetterId){
