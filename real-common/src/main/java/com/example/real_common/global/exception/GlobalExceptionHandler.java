@@ -370,4 +370,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
+    @ExceptionHandler(DuplicateUserIdException.class)
+    protected ResponseEntity<?> handleDuplicateUserIdException(DuplicateUserIdException exception){
+        log.error("handleDuplicateUserIdException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_JOIN_USER_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+
+    }
+
 }
