@@ -262,7 +262,7 @@ public class PbConsultingService {
         consultingHistory.setRoomId(randomRoomId);
         consultingHistoryRepository.save(consultingHistory);
 
-        if(consultingHistory.getRoomId() == randomRoomId){
+        if(consultingHistory.getRoomId().equals(randomRoomId)){
             return requestLetterId;
         }else{
             throw new UnableToCreateRejectedInfoException("요청을 수락하지 못했습니다.");

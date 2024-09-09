@@ -1,7 +1,6 @@
 package com.example.pickle_common.consulting.controller;
 
 import com.example.pickle_common.consulting.dto.ConsultingDetailResponse;
-import com.example.pickle_common.consulting.dto.ConsultingResponse;
 import com.example.pickle_common.consulting.dto.PBConsultingResponse;
 import com.example.pickle_common.consulting.dto.RejectConsultingRequest;
 import com.example.pickle_common.consulting.service.PbConsultingService;

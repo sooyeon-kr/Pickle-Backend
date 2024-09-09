@@ -44,7 +44,7 @@ public class ConsultingHistory extends BaseTimeEntity {
     private RequestLetter requestLetter;
 
     public void changeStatus(ConsultingStatusEnum consultingStatusEnum) {
-        consultingStatusName = consultingStatusEnum;
+        this.consultingStatusName = consultingStatusEnum;
     }
 
     public void setRoomId(String roomId){
