@@ -70,11 +70,11 @@ public class PbController {
                 String token = pbService.generateToken(pb.getId());
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(new CommonResDto<>(1, "PB 로그인 및 토큰 발급 완료", token));
-             }else {
+            }else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new CommonResDto<>(-1, "PB 정보를 찾을 수 없습니다", "해당 사용자를 찾을 수 없습니다"));
             }
-         }else{
+        }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new CommonResDto<>(-1, "PB 로그인 및 토큰 발급 실패", "잘못된 로그인 정보입니다"));
         }
@@ -100,15 +100,16 @@ public class PbController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 등록 완료", "PB 프로필 등록 완료"));
     }
 
+    // 전체 PB 리스트 조회
     @GetMapping("/api/pickle-pb/pblist")
-    public ResponseEntity<CommonResDto<?>> pbList(){
-//        String jwtToken = token.substring(7);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 프로필 조회 완료", pbService.pblist()));
+    public ResponseEntity<CommonResDto<?>> pbList() {
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "PB 프로필 조회 완료", pbService.pblist()));
     }
 
+    // 개별 PB 조회 (pbNumber로 조회)
     @GetMapping("/api/pickle-pb/pblist/{pbNumber}")
-    public ResponseEntity<CommonResDto<?>> pbDetalList(@PathVariable("pbNumber") String pbNumber){
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "PB 개별 프로필 조회 완료", pbService.pblist()));
+    public ResponseEntity<CommonResDto<?>> pbDetailList(@PathVariable("pbNumber") String pbNumber) {
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "PB 개별 프로필 조회 완료", pbService.getPbDetail(pbNumber)));
     }
 
     @GetMapping("/api/pickle-pb/filterpblist")
@@ -129,6 +130,7 @@ public class PbController {
         return jwtService.extractUsername(jwtToken);
 
     }
+
 
 
 }
