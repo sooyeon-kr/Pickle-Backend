@@ -58,7 +58,6 @@ public class MessageQueueService {
                         return message;
                     }
             );
-            System.out.println(pbId);
             return pbId;
         } catch (Exception e) {
             return RabbitMQConfig.INVALID_TOKEN;
@@ -114,7 +113,6 @@ public class MessageQueueService {
                     RabbitMQConfig.CONSULTING_EXCHANGE,
                     RabbitMQConfig.CONSULTING_ROOM_CREATION_ROUTING_KEY,
                     jsonMessage);
-            System.out.println(jsonMessage);
             return true;
         }catch (Exception e){
             return false;
