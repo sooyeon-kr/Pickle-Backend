@@ -11,12 +11,15 @@ public class RabbitMQConfig {
     public static final String COMMON_EXCHANGE = "common.direct.exchange";
     public static final String CUSTOMER_EXCHANGE = "customer.direct.exchange";
     public static final String CONSULTING_EXCHANGE = "realtime.consulting.exchange";
+    public static final String DEAD_LETTER_EXCHANGE = "deadLetterExchange";
+
     // Routing keys
     public static final String PB_NUMBER_TO_ID_ROUTING_KEY = "pbRoutingKey.pbNumber";
     public static final String PB_TOKEN_TO_ID_ROUTING_KEY = "pbTokenRoutingKey.pbToken";
     public static final String CUSTOMER_TOKEN_TO_ID_ROUTING_KEY = "customerTokenRoutingKey.customerToken";
-    public static final String CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY = "customerTokenTokenNameRoutingKey.customerToken";
-    public static final String CONSULTING_ROOM_CREATION_ROUNTING_KEY = "transferRoomInfoRoutingKey";
+    public static final String CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY = "customerTokenNameRoutingKey.customerToken";
+    public static final String CONSULTING_ROOM_CREATION_ROUTING_KEY = "transferRoomInfoRoutingKey";
+    public static final String DEAD_LETTER_ROUTING_KEY = "deadLetterRoutingKey";
 
     // Queue names
     public static final String PB_NUMBER_TO_ID_CONVERSION_QUEUE = "pbIdbyNumberQueue";
@@ -24,13 +27,13 @@ public class RabbitMQConfig {
     public static final String CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE = "customerIdbyTokenQueue";
     public static final String CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE = "customerTokenNameQueue";
     public static final String CONSULTING_ROOM_CREATION_QUEUE = "consultingRoomCreationQueue";
+    public static final String DEAD_LETTER_QUEUE_NAME = "deadLetterQueue";
 
-    //constants
+    // Constants
     public static final int INVALID_PB_NUMBER = -1;
     public static final int INVALID_TOKEN = -1;
     public static final int INVALID_VALUE = -1;
-
-    public static final String UNKNOWN_CUSTOMER ="Unknown Customer";
+    public static final String UNKNOWN_CUSTOMER = "Unknown Customer";
 
     // Exchanges
     @Bean
@@ -53,30 +56,53 @@ public class RabbitMQConfig {
         return new DirectExchange(CONSULTING_EXCHANGE);
     }
 
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(DEAD_LETTER_EXCHANGE);
+    }
+
     // Queues
     @Bean
     public Queue pbIdByNumberQueue() {
-        return QueueBuilder.durable(PB_NUMBER_TO_ID_CONVERSION_QUEUE).build();
+        return QueueBuilder.durable(PB_NUMBER_TO_ID_CONVERSION_QUEUE)
+                .withArgument("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
 
     @Bean
     public Queue pbIdByTokenQueue() {
-        return QueueBuilder.durable(PB_TOKEN_TO_ID_CONVERSION_QUEUE).build();
+        return QueueBuilder.durable(PB_TOKEN_TO_ID_CONVERSION_QUEUE)
+                .withArgument("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
 
     @Bean
-    public Queue customerIdbyNumberQueue() {
-        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE).build();
+    public Queue customerIdByTokenQueue() {
+        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE)
+                .withArgument("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
 
     @Bean
     public Queue customerNameByTokenQueue() {
-        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE).build();
+        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE)
+                .withArgument("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
 
     @Bean
     public Queue consultingRoomInfoQueue() {
-        return QueueBuilder.durable(CONSULTING_ROOM_CREATION_QUEUE).build();
+        return QueueBuilder.durable(CONSULTING_ROOM_CREATION_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(DEAD_LETTER_QUEUE_NAME).build();
     }
 
     // Bindings
@@ -96,13 +122,13 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding customerTokenToIdBinding() {
-        return BindingBuilder.bind(customerIdbyNumberQueue())
+        return BindingBuilder.bind(customerIdByTokenQueue())
                 .to(customerExchange())
                 .with(CUSTOMER_TOKEN_TO_ID_ROUTING_KEY);
     }
 
     @Bean
-    public Binding customerTokenNamefoBinding() {
+    public Binding customerTokenNameBinding() {
         return BindingBuilder.bind(customerNameByTokenQueue())
                 .to(customerExchange())
                 .with(CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY);
@@ -112,7 +138,13 @@ public class RabbitMQConfig {
     public Binding consultingRoomInfoBinding() {
         return BindingBuilder.bind(consultingRoomInfoQueue())
                 .to(consultingExchange())
-                .with(CONSULTING_ROOM_CREATION_ROUNTING_KEY);
+                .with(CONSULTING_ROOM_CREATION_ROUTING_KEY);
     }
 
+    @Bean
+    public Binding deadLetterBinding() {
+        return BindingBuilder.bind(deadLetterQueue())
+                .to(deadLetterExchange())
+                .with(DEAD_LETTER_ROUTING_KEY);
+    }
 }
