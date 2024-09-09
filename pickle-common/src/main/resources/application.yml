@@ -12,8 +12,13 @@ spring:
     username: ${COMMON_DATASOURCE_USERNAME}
     password: ${COMMON_DATASOURCE_PASSWORD}
   jpa:
-    hibernate:
-      ddl-auto: update
+    properties:
+      hibernate:
+        ddl-auto: update
+        transaction:
+          jta:
+            platform: org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform
+
 
   application:
     name: pickle-common  # 서비스 이름

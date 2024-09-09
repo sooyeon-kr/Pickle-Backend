@@ -19,9 +19,9 @@ public class CreateRequestLetterRequest {
     private int answer2;
     private int answer3;
     private int answer4;
-    private int availableInvestAmount;
-    private int desiredInvestAmount;
-    private int monthlyIncome;
+    private long availableInvestAmount;
+    private long desiredInvestAmount;
+    private long monthlyIncome;
 
     private CustomerInfo customerInfo;
     private PbInfo pbInfo;
