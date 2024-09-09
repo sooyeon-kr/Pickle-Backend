@@ -28,4 +28,13 @@ public enum CategoryEnum {
 
         throw new NotFoundCategoryException("category not found : " + categoryName);
     }
+
+    public static String getNameById(int id) {
+        for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+            if (categoryEnum.getId() == id) {
+                return categoryEnum.getName();
+            }
+        }
+        throw new NotFoundCategoryException("category not found : " + id);
+    }
 }
