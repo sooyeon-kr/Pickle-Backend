@@ -6,6 +6,7 @@ import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
 import com.example.pickle_customer.repository.CustomerRepository;
+import com.example.real_common.global.exception.error.DuplicateUserIdException;
 import java.util.Optional;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class JoinService {
 
     public void joinProcess(CustomerJoinDto customerJoinDTO) {
         String userid = customerJoinDTO.getUserid();
+
+        // 아이디 중복 체크
+        if (customerRepository.findByUserId(userid).isPresent()) {
+            throw new DuplicateUserIdException("이미 존재하는 아이디입니다: " + userid);
+        }
+
         String password = customerJoinDTO.getPassword();
         String username = customerJoinDTO.getUsername();
         String email = customerJoinDTO.getEmail();
@@ -58,6 +65,7 @@ public class JoinService {
 
         accountRepository.save(account);
     }
+
 
     private String generateAccountNumber() {
         Random random = new Random();

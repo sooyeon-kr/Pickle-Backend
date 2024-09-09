@@ -26,7 +26,8 @@ public enum ErrorCode {
     UNAUTHORIZED_STRATEGY_EXCEPTION(HttpStatus.UNAUTHORIZED, "STRATEGY_002", "접근할 권한이 없는 전략임"),
     ILLEGAL_ARGUMENT_AMOUNT_EXCEPTION(HttpStatus.BAD_REQUEST, "AMOUNT_001", "잔액 이상의 값을 매매할 수 없음"),
     UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION(HttpStatus.BAD_REQUEST, "CONSULTING_005", "거절 내역을 저장할 수 없어, 거절을 할 수 없음"),
-    UNABLE_TO_SEND_ROOM_INFO_TO_MQ_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "CONSULTING_006", "상담방을 생성할 수 없음" );
+    UNABLE_TO_SEND_ROOM_INFO_TO_MQ_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "CONSULTING_006", "상담방을 생성할 수 없음" ),
+    UNABLE_TO_JOIN_USER_EXCEPTION(HttpStatus.CONFLICT, "JOIN_001", "이미 가입된 아이디가 있음" );
     private final String code;
     private final String message;
     private final HttpStatus status;
