@@ -55,6 +55,10 @@ public class SearchService {
 
     public SearchProductDto.Response searchProduct(String name, String theme, String category) {
 
+        if (category == null) category = "";
+        if (theme == null) theme = "";
+        if (name == null) name = "";
+
         Specification<Product> spec;
 
         if (!category.isEmpty()) {
