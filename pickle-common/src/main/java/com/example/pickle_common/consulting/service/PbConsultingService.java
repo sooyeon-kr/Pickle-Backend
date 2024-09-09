@@ -15,16 +15,15 @@ import com.example.pickle_common.consulting.repository.RequestLetterRepository;
 import com.example.pickle_common.mq.MessageQueueService;
 import com.example.real_common.config.RabbitMQConfig;
 import com.example.real_common.global.exception.error.*;
-import jakarta.transaction.Transactional;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -147,6 +146,7 @@ public class PbConsultingService {
             throw new UnexpectedServiceException("상담 내역에 접근 권한이 없습니다.");
         }
 
+
         response = ConsultingDetailResponse.builder()
                 .requestLetterId(requestLetterId)
                 .customerId(requestLetter.getCustomerId())
@@ -157,6 +157,34 @@ public class PbConsultingService {
                 .build();
 
         return response;
+    }
+
+    protected boolean sendMessageToMQ(ConsultingHistory consultingHistory) {
+    try {
+        Map<String, String> message = new HashMap<>();
+        message.put("roomId", consultingHistory.getRoomId());
+        message.put("date", String.valueOf(consultingHistory.getDate()));
+        message.put("pbBranchOffice", consultingHistory.getPbBranchOffice());
+        message.put("customerName", consultingHistory.getCustomerName());
+        message.put("customerId", String.valueOf(consultingHistory.getCustomerId()));
+        message.put("pbImage", consultingHistory.getPbImage());
+        message.put("pbName", consultingHistory.getPbName());
+        message.put("pbId", String.valueOf(consultingHistory.getPbId()));
+        message.put("statue", consultingHistory.getConsultingStatusName().name());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonMessage = objectMapper.writeValueAsString(message);
+
+        if(!messageQueueService.sendMessage(jsonMessage)){
+            return false;
+        }
+        return true;
+    } catch (JsonProcessingException e) {
+        return false;
+//        throw new UnableToSendRoomInfoToMqException("상담룸을 생성할 수 없습니다.");
+    }
+
     }
 
     @Transactional
@@ -191,6 +219,7 @@ public class PbConsultingService {
 
     }
 
+    @Transactional
     public int completeConsulting(String authorizationHeader, int requestLetterId) {
         int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
@@ -213,6 +242,7 @@ public class PbConsultingService {
     }
 
 //    TODO: mq에 상담룸 정보 보내주기
+    @Transactional
     public int acceptConsultingReservation(String authorizationHeader, int requestLetterId) {
         int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
 
@@ -223,6 +253,10 @@ public class PbConsultingService {
         RequestLetter requestLetter = requestLetterRepository.findById(requestLetterId).orElseThrow(() ->  new NotFoundRequestLetterException("요청서를 찾을 수 없습니다."));
         ConsultingHistory consultingHistory = consultingHistoryRepository.findById(requestLetter.getConsultingHistory().getId())
                 .orElseThrow(() -> new NotFoundConsultingHistoryException("요청서에 해당하는 상담 내역을 찾을 수 없습니다."));
+
+        if(!sendMessageToMQ(requestLetter.getConsultingHistory())){
+            throw new UnableToCreateRejectedInfoException("요청을 수락하지 못했습니다.");
+        }
 
         consultingHistory.changeStatus(ConsultingStatusEnum.ACCEPTED);
         String randomRoomId = UUID.randomUUID().toString();

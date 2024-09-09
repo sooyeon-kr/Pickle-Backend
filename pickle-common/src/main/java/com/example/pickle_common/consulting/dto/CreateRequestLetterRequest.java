@@ -19,9 +19,9 @@ public class CreateRequestLetterRequest {
     private int answer2;
     private int answer3;
     private int answer4;
-    private int availableInvestAmount;
-    private int desiredInvestAmount;
-    private int monthlyIncome;
+    private long availableInvestAmount;
+    private long desiredInvestAmount;
+    private long monthlyIncome;
 
     private CustomerInfo customerInfo;
     private PbInfo pbInfo;
@@ -32,7 +32,7 @@ public class CreateRequestLetterRequest {
     @AllArgsConstructor
     @Builder
     @NoArgsConstructor
-    public static class CustomerInfo {
+    public static class  CustomerInfo {
         private int customerAge;
         private int customerGender;
         private String customerJob;
@@ -46,7 +46,7 @@ public class CreateRequestLetterRequest {
     public static class PbInfo {
         private String pbNumber;
         private String name;
-        private String img;
+        private String image;
         private String branchOffice;
     }
 }

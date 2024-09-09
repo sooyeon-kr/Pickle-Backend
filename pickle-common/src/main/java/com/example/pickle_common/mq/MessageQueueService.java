@@ -89,4 +89,21 @@ public class MessageQueueService {
             return new RabbitMQConfig().UNKNOWN_CUSTOMER;
         }
     }
+
+    /**
+     * json형식의 상담룸 정보를 보내는 메소드
+     * @param jsonMessage 상담룸 정보를 가진 Message
+     */
+    public boolean sendMessage(String jsonMessage) {
+        try {
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.CONSULTING_EXCHANGE,
+                    RabbitMQConfig.CONSULTING_ROOM_CREATION_ROUNTING_KEY,
+                    jsonMessage);
+            System.out.println(jsonMessage);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }

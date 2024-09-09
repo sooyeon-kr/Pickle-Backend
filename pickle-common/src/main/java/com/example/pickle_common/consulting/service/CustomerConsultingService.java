@@ -30,7 +30,6 @@ public class CustomerConsultingService {
     private final ConsultingHistoryRepository consultingHistoryRepository;
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
-
     /**
      * 요청서 생성 메소드
      * @param authorizationHeader
@@ -62,7 +61,7 @@ public class CustomerConsultingService {
                 .roomId(null)
                 .pbName(requestDto.getPbInfo().getName())
                 .pbBranchOffice(requestDto.getPbInfo().getBranchOffice())
-                .pbImage(requestDto.getPbInfo().getImg())
+                .pbImage(requestDto.getPbInfo().getImage())
                 .date(requestDto.getDate())
                 .customerName(customerName)
                 .build();
@@ -85,6 +84,7 @@ public class CustomerConsultingService {
                 .customerJob(requestDto.getCustomerInfo().getCustomerJob())
                 .referenceFileUrl(requestDto.getReferenceFileUrl())
                 .build();
+
         RequestLetter savedRequestLetter = requestLetterRepository.save(requestLetter);
 
         return CreateRequestLetterResponse.builder()
@@ -163,10 +163,6 @@ public class CustomerConsultingService {
             for (ConsultingHistory consultingHistory : consultingHistories) {
                 RequestLetter requestLetter = requestLetterRepository.findByConsultingHistoryId(consultingHistory.getId());
                 ConsultingRejectInfo consultingRejectInfo = null;
-
-                if (ConsultingStatusEnum.REJECTED.name().equals(consultingHistory.getConsultingStatusName())) {
-                    consultingRejectInfo = consultingRejectInfoRepository.findByConsultingHistoryId(consultingHistory.getId());
-                }
 
                 ConsultingResponse consultingResponse = ConsultingResponse.builder()
                         .requestLetterId(requestLetter.getId())

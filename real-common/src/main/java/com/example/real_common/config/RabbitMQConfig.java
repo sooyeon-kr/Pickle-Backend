@@ -10,20 +10,20 @@ public class RabbitMQConfig {
     public static final String PB_EXCHANGE = "pb.direct.exchange";
     public static final String COMMON_EXCHANGE = "common.direct.exchange";
     public static final String CUSTOMER_EXCHANGE = "customer.direct.exchange";
-
+    public static final String CONSULTING_EXCHANGE = "realtime.consulting.exchange";
     // Routing keys
     public static final String PB_NUMBER_TO_ID_ROUTING_KEY = "pbRoutingKey.pbNumber";
     public static final String PB_TOKEN_TO_ID_ROUTING_KEY = "pbTokenRoutingKey.pbToken";
     public static final String CUSTOMER_TOKEN_TO_ID_ROUTING_KEY = "customerTokenRoutingKey.customerToken";
     public static final String CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY = "customerTokenTokenNameRoutingKey.customerToken";
+    public static final String CONSULTING_ROOM_CREATION_ROUNTING_KEY = "transferRoomInfoRoutingKey";
 
     // Queue names
     public static final String PB_NUMBER_TO_ID_CONVERSION_QUEUE = "pbIdbyNumberQueue";
     public static final String PB_TOKEN_TO_ID_CONVERSION_QUEUE = "pbIdbyTokenQueue";
     public static final String CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE = "customerIdbyTokenQueue";
-    public static final String DEAD_LETTER_QUEUE_NAME = "deadLetterQueue";
     public static final String CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE = "customerTokenNameQueue";
-
+    public static final String CONSULTING_ROOM_CREATION_QUEUE = "consultingRoomCreationQueue";
 
     //constants
     public static final int INVALID_PB_NUMBER = -1;
@@ -49,39 +49,37 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public DirectExchange deadLetterExchange() {
-        return new DirectExchange("deadLetterExchange");
+    public DirectExchange consultingExchange() {
+        return new DirectExchange(CONSULTING_EXCHANGE);
     }
 
     // Queues
     @Bean
     public Queue pbIdByNumberQueue() {
-        return QueueBuilder.durable(PB_NUMBER_TO_ID_CONVERSION_QUEUE)
-                .withArgument("x-dead-letter-exchange", "deadLetterExchange")
-                .build();
+        return QueueBuilder.durable(PB_NUMBER_TO_ID_CONVERSION_QUEUE).build();
     }
 
     @Bean
     public Queue pbIdByTokenQueue() {
-        return QueueBuilder.durable(PB_TOKEN_TO_ID_CONVERSION_QUEUE)
-                .withArgument("x-dead-letter-exchange", "deadLetterExchange")
-                .build();
+        return QueueBuilder.durable(PB_TOKEN_TO_ID_CONVERSION_QUEUE).build();
     }
 
     @Bean
     public Queue customerIdbyNumberQueue() {
-        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE)
-                .withArgument("x-dead-letter-exchange", "deadLetterExchange")
-                .build();
+        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE).build();
     }
 
     @Bean
     public Queue customerNameByTokenQueue() {
-        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE).withArgument("x-dead-letter-exchange", "deadLetterExchange")
-                .build();
+        return QueueBuilder.durable(CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE).build();
     }
 
-    //Binding
+    @Bean
+    public Queue consultingRoomInfoQueue() {
+        return QueueBuilder.durable(CONSULTING_ROOM_CREATION_QUEUE).build();
+    }
+
+    // Bindings
     @Bean
     public Binding pbNumberToIdBinding() {
         return BindingBuilder.bind(pbIdByNumberQueue())
@@ -109,21 +107,12 @@ public class RabbitMQConfig {
                 .to(customerExchange())
                 .with(CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY);
     }
-    /***
-     * 메시지가 정상적으로 처리되지 못했을 때, Dead Letter Exchange가 보내는 메시지를 저장하는 큐
-     * @return
-     */
+
     @Bean
-    public Queue deadLetterQueue() {
-        return QueueBuilder.durable(DEAD_LETTER_QUEUE_NAME).build();
+    public Binding consultingRoomInfoBinding() {
+        return BindingBuilder.bind(consultingRoomInfoQueue())
+                .to(consultingExchange())
+                .with(CONSULTING_ROOM_CREATION_ROUNTING_KEY);
     }
 
-    /***
-     * Dead Letter Exchange (DLX)와 DLQ 바인딩
-     * @return
-     */
-    @Bean
-    public Binding deadLetterBinding() {
-        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with("#");
-    }
 }
