@@ -19,6 +19,8 @@ public class pbProfileResponseDto {
     private String phoneNumber;
     private String branchOffice;
 
+    private String img;
+
     private String email;
     private String introduction;
     private int consultingCount;

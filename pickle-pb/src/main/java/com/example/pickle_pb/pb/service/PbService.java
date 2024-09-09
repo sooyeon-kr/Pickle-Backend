@@ -47,6 +47,8 @@ public class PbService {
 
     private final EntityManager entityManager;
 
+    private final S3Service s3Service;
+
     public void joinProcess(PbJoinDto pbJoinDTO) {
         String pbnumber = pbJoinDTO.getPbNumber();
         String password = pbJoinDTO.getPassword();
@@ -152,12 +154,21 @@ public class PbService {
         return pbs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    public pbProfileResponseDto getPbDetail(String pbNumber) {
+        Pb pb = pbRepository.findByPbNumber(pbNumber)
+                .orElseThrow(() -> new IllegalArgumentException("해당 PB를 찾을 수 없습니다: " + pbNumber));  // PB 번호로 PB 찾기
+        return convertToDto(pb);
+    }
+
+
     public List<pbProfileResponseDto> getFilteredPbList(List<String> mainFields, List<String> tags, Long minConsultingAmount) {
         List<Pb> filteredPbs = pbRepository.findByFilters(mainFields, tags, minConsultingAmount);
         return filteredPbs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private pbProfileResponseDto convertToDto(Pb pb) {
+        String imageUrl = s3Service.getImageUrl(pb.getId() + ".jpg");  // PB 번호에 맞는 이미지 URL 가져오기
+
         return pbProfileResponseDto.builder()
                 .pbNumber(pb.getPbNumber())
                 .username(pb.getUsername())
@@ -174,6 +185,7 @@ public class PbService {
                 .tags(pb.getPbTags().stream()
                         .map(pbTag -> pbTag.getTag().getName())
                         .collect(Collectors.toList()))
+                .img(imageUrl)  // 이미지 URL 추가
                 .build();
     }
 
