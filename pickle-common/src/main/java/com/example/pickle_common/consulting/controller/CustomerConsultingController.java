@@ -2,7 +2,7 @@ package com.example.pickle_common.consulting.controller;
 
 import com.example.pickle_common.consulting.dto.CreateRequestLetterRequest;
 import com.example.pickle_common.consulting.dto.CreateRequestLetterResponse;
-import com.example.pickle_common.consulting.dto.ConsultingResponse;
+import com.example.pickle_common.consulting.dto.CustomerConsultingResponse;
 import com.example.pickle_common.consulting.service.CustomerConsultingService;
 import com.example.real_common.global.common.CommonResDto;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +28,15 @@ public class CustomerConsultingController {
     }
 
     @GetMapping("/request-letters")
-    public CommonResDto<List<ConsultingResponse>> getConsultingReservations(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(name="status", required = false) List<Integer> status) {
-        List<ConsultingResponse> reservations;
+    public CommonResDto<List<CustomerConsultingResponse>> getConsultingReservations(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(name="status", required = false) List<Integer> status) {
+        List<CustomerConsultingResponse> reservations;
         if(status != null && !status.isEmpty()) {
             reservations = customerConsultingService.getConsultingReservationsByStatus(authorizationHeader, status);
         }else{
             reservations = customerConsultingService.getAllConsultingReservations(authorizationHeader);
         }
 
-        CommonResDto<List<ConsultingResponse>> response = CommonResDto.<List<ConsultingResponse>>builder()
+        CommonResDto<List<CustomerConsultingResponse>> response = CommonResDto.<List<CustomerConsultingResponse>>builder()
                 .code(1)
                 .message("상담 요청 목록 조회 성공")
                 .data(reservations)
@@ -46,15 +46,15 @@ public class CustomerConsultingController {
     }
 
     @GetMapping("/histories")
-    public CommonResDto<List<ConsultingResponse>> getConsultingHistories(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(name="status", required = false) List<Integer> status) {
-        List<ConsultingResponse> histories;
+    public CommonResDto<List<CustomerConsultingResponse>> getConsultingHistories(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(name="status", required = false) List<Integer> status) {
+        List<CustomerConsultingResponse> histories;
         if(status != null && !status.isEmpty()) {
             histories = customerConsultingService.getConsultingHistoriesRequestedStatus(authorizationHeader, status);
         }else{
             histories = customerConsultingService.getAllConsultingHistories(authorizationHeader);
         }
 
-        CommonResDto<List<ConsultingResponse>> response = CommonResDto.<List<ConsultingResponse>>builder()
+        CommonResDto<List<CustomerConsultingResponse>> response = CommonResDto.<List<CustomerConsultingResponse>>builder()
                 .code(1)
                 .message("상담 내역 목록 조회 성공")
                 .data(histories)
