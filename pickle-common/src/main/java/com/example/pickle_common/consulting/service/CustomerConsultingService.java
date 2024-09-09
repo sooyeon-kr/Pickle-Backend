@@ -3,7 +3,7 @@ package com.example.pickle_common.consulting.service;
 import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
 import com.example.pickle_common.consulting.dto.CreateRequestLetterRequest;
 import com.example.pickle_common.consulting.dto.CreateRequestLetterResponse;
-import com.example.pickle_common.consulting.dto.ConsultingResponse;
+import com.example.pickle_common.consulting.dto.CustomerConsultingResponse;
 import com.example.pickle_common.consulting.entity.*;
 import com.example.pickle_common.consulting.repository.ConsultingHistoryRepository;
 import com.example.pickle_common.consulting.repository.ConsultingRejectInfoRepository;
@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,7 @@ public class CustomerConsultingService {
     private final ConsultingHistoryRepository consultingHistoryRepository;
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
+
     /**
      * 요청서 생성 메소드
      * @param authorizationHeader
@@ -37,20 +40,14 @@ public class CustomerConsultingService {
      * @return
      */
     public CreateRequestLetterResponse createRequestLetter(String authorizationHeader, CreateRequestLetterRequest requestDto) {
-        //상담기록이 먼저 생성 되어야 한다.
-        /**
-         * TODO 현재는 더미값임.
-         * customerId 추가
-         * pbId 추가
-         * customername추가
-         */
-//        TODO: 예외처리
+        Instant start = Instant.now();
+
         String pbNumber = requestDto.getPbInfo().getPbNumber();
         int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
         int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
         String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
 
-        if(pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName == RabbitMQConfig.UNKNOWN_CUSTOMER){
+        if(pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName.equals(RabbitMQConfig.UNKNOWN_CUSTOMER)){
             throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
         }
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
@@ -66,7 +63,6 @@ public class CustomerConsultingService {
                 .customerName(customerName)
                 .build();
         ConsultingHistory savedConsultingHistory = consultingHistoryRepository.save(consultingHistory);
-
 
         RequestLetter requestLetter = RequestLetter.builder()
                 .consultingHistory(savedConsultingHistory)
@@ -87,6 +83,9 @@ public class CustomerConsultingService {
 
         RequestLetter savedRequestLetter = requestLetterRepository.save(requestLetter);
 
+        Instant end = Instant.now();
+        log.info("createRequestLetter execution time: {} ms", Duration.between(start, end).toMillis());
+
         return CreateRequestLetterResponse.builder()
                 .requestLetterId(savedRequestLetter.getId())
                 .build();
@@ -97,11 +96,18 @@ public class CustomerConsultingService {
      * @param authorizationHeader
      * @return
      */
-    public List<ConsultingResponse> getAllConsultingReservations(String authorizationHeader) {
-        return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
+    public List<CustomerConsultingResponse> getAllConsultingReservations(String authorizationHeader) {
+        Instant start = Instant.now();
+
+        List<CustomerConsultingResponse> result = getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
                 ConsultingStatusEnum.REQUESTED,
                 ConsultingStatusEnum.REJECTED
         ));
+
+        Instant end = Instant.now();
+        log.info("getAllConsultingReservations execution time: {} ms", Duration.between(start, end).toMillis());
+
+        return result;
     }
 
     /**
@@ -110,11 +116,18 @@ public class CustomerConsultingService {
      * @param statusCodes
      * @return
      */
-    public List<ConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
+    public List<CustomerConsultingResponse> getConsultingReservationsByStatus(String authorizationHeader, List<Integer> statusCodes) {
+        Instant start = Instant.now();
+
         List<ConsultingStatusEnum> statuses = statusCodes.stream()
                 .map(ConsultingStatusEnum::fromCode)
                 .collect(Collectors.toList());
-        return getConsultingHistoriesByStatus(authorizationHeader, statuses);
+        List<CustomerConsultingResponse> result = getConsultingHistoriesByStatus(authorizationHeader, statuses);
+
+        Instant end = Instant.now();
+        log.info("getConsultingReservationsByStatus execution time: {} ms", Duration.between(start, end).toMillis());
+
+        return result;
     }
 
     /**
@@ -123,12 +136,19 @@ public class CustomerConsultingService {
      * @param authorizationHeader
      * @return
      */
-    public List<ConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
-        return getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
+    public List<CustomerConsultingResponse> getAllConsultingHistories(String authorizationHeader) {
+        Instant start = Instant.now();
+
+        List<CustomerConsultingResponse> result = getConsultingHistoriesByStatus(authorizationHeader, Arrays.asList(
                 ConsultingStatusEnum.COMPLETED
 //                , ConsultingStatusEnum.REJECTED
 //                , ConsultingStatusEnum.NO_SHOW
         ));
+
+        Instant end = Instant.now();
+        log.info("getAllConsultingHistories execution time: {} ms", Duration.between(start, end).toMillis());
+
+        return result;
     }
 
     /***
@@ -137,11 +157,18 @@ public class CustomerConsultingService {
      * @param statusCodes
      * @return
      */
-    public List<ConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
+    public List<CustomerConsultingResponse> getConsultingHistoriesRequestedStatus(String authorizationHeader, List<Integer> statusCodes) {
+        Instant start = Instant.now();
+
         List<ConsultingStatusEnum> statuses = statusCodes.stream()
                 .map(ConsultingStatusEnum::fromCode)
                 .collect(Collectors.toList());
-        return getConsultingHistoriesByStatus(authorizationHeader, statuses);
+        List<CustomerConsultingResponse> result = getConsultingHistoriesByStatus(authorizationHeader, statuses);
+
+        Instant end = Instant.now();
+        log.info("getConsultingHistoriesRequestedStatus execution time: {} ms", Duration.between(start, end).toMillis());
+
+        return result;
     }
 
     /***
@@ -150,8 +177,10 @@ public class CustomerConsultingService {
      * @param statuses
      * @return
      */
-    public List<ConsultingResponse> getConsultingHistoriesByStatus(String authorizationHeader, List<ConsultingStatusEnum> statuses) {
-        List<ConsultingResponse> consultingResponses = new ArrayList<>();
+    public List<CustomerConsultingResponse> getConsultingHistoriesByStatus(String authorizationHeader, List<ConsultingStatusEnum> statuses) {
+        Instant start = Instant.now();
+
+        List<CustomerConsultingResponse> consultingResponses = new ArrayList<>();
         try {
             int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
 
@@ -164,7 +193,7 @@ public class CustomerConsultingService {
                 RequestLetter requestLetter = requestLetterRepository.findByConsultingHistoryId(consultingHistory.getId());
                 ConsultingRejectInfo consultingRejectInfo = null;
 
-                ConsultingResponse consultingResponse = ConsultingResponse.builder()
+                CustomerConsultingResponse consultingResponse = CustomerConsultingResponse.builder()
                         .requestLetterId(requestLetter.getId())
                         .pbId(consultingHistory.getPbId())
                         .pbName(consultingHistory.getPbName())
@@ -182,7 +211,10 @@ public class CustomerConsultingService {
             log.error("상담 내역 조회 중 오류 발생: {}", e.getMessage(), e);
             throw new UnexpectedServiceException("상담 내역 조회 중 예기치 않은 오류가 발생했습니다.", e);
         }
+
+        Instant end = Instant.now();
+        log.info("getConsultingHistoriesByStatus execution time: {} ms", Duration.between(start, end).toMillis());
+
         return consultingResponses;
     }
-
 }
