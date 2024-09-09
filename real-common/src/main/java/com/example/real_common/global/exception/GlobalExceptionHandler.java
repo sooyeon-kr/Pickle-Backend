@@ -295,7 +295,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnableToCreateRequestLetterDuoToMqFailure.class)
-    protected ResponseEntity<?> handleUnableToFetchMqDataException(UnableToCreateRequestLetterDuoToMqFailure exception){
+    protected ResponseEntity<?> UnableToCreateRequestLetterDuoToMqFailure(UnableToCreateRequestLetterDuoToMqFailure exception){
         log.error("handleUnableToFetchMqDataException :: ");
         ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REQUEST_LETTER_DUE_TO_MQ_FAILURE;
 
@@ -336,6 +336,25 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleUnableToCreateRejectedInfoException(UnableToCreateRejectedInfoException exception){
         log.error("UnableToCreateRejectedInfoException :: ");
         ErrorCode errorCode = ErrorCode.UNABLE_TO_CREATE_REJECTED_INFO_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(UnableToSendRoomInfoToMqException.class)
+    protected ResponseEntity<?> handleUnableToSendRoomInfoToMqException(UnableToSendRoomInfoToMqException exception){
+        log.error("UnableToSendRoomInfoToMqException :: ");
+        ErrorCode errorCode = ErrorCode.UNABLE_TO_SEND_ROOM_INFO_TO_MQ_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())

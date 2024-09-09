@@ -26,14 +26,13 @@ public class ConsultingHistory extends BaseTimeEntity {
     private String pbName;
     private String pbBranchOffice;
     // TODO: 추가에 따른 로직 추가
-    private String pbImg;
+    private String pbImage;
 
     private int customerId;
     private String customerName;
 
 
     private String roomId;
-    private String pbImage;
     private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
