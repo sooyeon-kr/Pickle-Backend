@@ -27,7 +27,6 @@ public class RequestLetter extends BaseTimeEntity {
     private int customerAge;
     private String customerJob;
 
-
     @Enumerated(EnumType.STRING)
     private GenderType customerGender;
 

@@ -14,7 +14,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        ddl-auto: update
+#        ddl-auto: update
   transaction:
     jta:
       platform: org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform

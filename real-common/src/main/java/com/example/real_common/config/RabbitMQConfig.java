@@ -7,27 +7,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     // Exchange names
-    public static final String PB_EXCHANGE = "pb.direct.exchange";
-    public static final String COMMON_EXCHANGE = "common.direct.exchange";
-    public static final String CUSTOMER_EXCHANGE = "customer.direct.exchange";
-    public static final String CONSULTING_EXCHANGE = "realtime.consulting.exchange";
-    public static final String DEAD_LETTER_EXCHANGE = "deadLetterExchange";
+    public static final String PB_EXCHANGE = "pb.direct.exchange_prod";
+    public static final String COMMON_EXCHANGE = "common.direct.exchange_prod";
+    public static final String CUSTOMER_EXCHANGE = "customer.direct.exchange_prod";
+    public static final String CONSULTING_EXCHANGE = "realtime.consulting.exchange_prod";
+    public static final String DEAD_LETTER_EXCHANGE = "deadLetterExchange_prod";
 
     // Routing keys
-    public static final String PB_NUMBER_TO_ID_ROUTING_KEY = "pbRoutingKey.pbNumber";
-    public static final String PB_TOKEN_TO_ID_ROUTING_KEY = "pbTokenRoutingKey.pbToken";
-    public static final String CUSTOMER_TOKEN_TO_ID_ROUTING_KEY = "customerTokenRoutingKey.customerToken";
-    public static final String CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY = "customerTokenNameRoutingKey.customerToken";
-    public static final String CONSULTING_ROOM_CREATION_ROUTING_KEY = "transferRoomInfoRoutingKey";
-    public static final String DEAD_LETTER_ROUTING_KEY = "deadLetterRoutingKey";
+    public static final String PB_NUMBER_TO_ID_ROUTING_KEY = "pbRoutingKey.pbNumber_prod";
+    public static final String PB_TOKEN_TO_ID_ROUTING_KEY = "pbTokenRoutingKey.pbToken_prod";
+    public static final String CUSTOMER_TOKEN_TO_ID_ROUTING_KEY = "customerTokenRoutingKey.customerToken_prod";
+    public static final String CUSTOMER_TOKEN_TO_NAME_ROUTING_KEY = "customerTokenNameRoutingKey.customerToken_prod";
+    public static final String CONSULTING_ROOM_CREATION_ROUTING_KEY = "transferRoomInfoRoutingKey_prod";
+    public static final String DEAD_LETTER_ROUTING_KEY = "deadLetterRoutingKey_prod";
 
     // Queue names
-    public static final String PB_NUMBER_TO_ID_CONVERSION_QUEUE = "pbIdbyNumberQueue";
-    public static final String PB_TOKEN_TO_ID_CONVERSION_QUEUE = "pbIdbyTokenQueue";
-    public static final String CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE = "customerIdbyTokenQueue";
-    public static final String CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE = "customerTokenNameQueue";
-    public static final String CONSULTING_ROOM_CREATION_QUEUE = "consultingRoomCreationQueue";
-    public static final String DEAD_LETTER_QUEUE_NAME = "deadLetterQueue";
+    public static final String PB_NUMBER_TO_ID_CONVERSION_QUEUE = "pbIdbyNumberQueue_prod";
+    public static final String PB_TOKEN_TO_ID_CONVERSION_QUEUE = "pbIdbyTokenQueue_prod";
+    public static final String CUSTOMER_TOKEN_TO_ID_CONVERSION_QUEUE = "customerIdbyTokenQueue_prod";
+    public static final String CUSTOMER_TOKEN_TO_NAME_CONVERSION_QUEUE = "customerTokenNameQueue_prod";
+    public static final String CONSULTING_ROOM_CREATION_QUEUE = "consultingRoomCreationQueue_prod";
+    public static final String DEAD_LETTER_QUEUE_NAME = "deadLetterQueue_prod";
 
     // Constants
     public static final int INVALID_PB_NUMBER = -1;
