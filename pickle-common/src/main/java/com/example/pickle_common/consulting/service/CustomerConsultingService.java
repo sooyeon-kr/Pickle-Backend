@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -33,12 +34,7 @@ public class CustomerConsultingService {
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
 
-    /**
-     * 요청서 생성 메소드
-     * @param authorizationHeader
-     * @param requestDto
-     * @return
-     */
+    @Transactional
     public CreateRequestLetterResponse createRequestLetter(String authorizationHeader, CreateRequestLetterRequest requestDto) {
         Instant start = Instant.now();
 
@@ -47,7 +43,7 @@ public class CustomerConsultingService {
         int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
         String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
 
-        if(pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName.equals(RabbitMQConfig.UNKNOWN_CUSTOMER)){
+        if (pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName.equals(RabbitMQConfig.UNKNOWN_CUSTOMER)) {
             throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
         }
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
@@ -93,6 +89,7 @@ public class CustomerConsultingService {
 
     /**
      * 상담 예약을 가져오는 메소드(요청중, 거절됨)
+     *
      * @param authorizationHeader
      * @return
      */
@@ -112,6 +109,7 @@ public class CustomerConsultingService {
 
     /**
      * 상태코드에 따라 상담 예약을 가져오는 메소드
+     *
      * @param authorizationHeader
      * @param statusCodes
      * @return
@@ -133,6 +131,7 @@ public class CustomerConsultingService {
     /**
      * 모든 상담 기록을 가져오는 메소드
      * 현재는 COMPLETED 상태만 가져옴
+     *
      * @param authorizationHeader
      * @return
      */

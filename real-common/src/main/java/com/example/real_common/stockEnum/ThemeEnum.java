@@ -98,6 +98,9 @@ public enum ThemeEnum {
     DOMESTIC_DERIVATIVES(84, 5, "국내파생", "ETF"),
     OVERSEAS_STOCK(85, 5, "해외주식", "ETF");
 
+    // 채권, 국채, 회사채
+
+
     private final int id;
     private final int categoryId;
     private final String name;
