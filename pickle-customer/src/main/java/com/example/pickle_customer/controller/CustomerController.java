@@ -3,6 +3,7 @@ package com.example.pickle_customer.controller;
 import com.example.pickle_customer.auth.JwtService;
 import com.example.pickle_customer.dto.CustomerJoinDto;
 import com.example.pickle_customer.dto.CustomerLoginDto;
+import com.example.pickle_customer.dto.LoginResponseDto;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.CustomerRepository;
 import com.example.pickle_customer.service.AccountService;
@@ -83,8 +84,14 @@ public class CustomerController {
                     String token = joinService.generateToken(customer.getCustomerId());
 
                     // 5. 성공적으로 토큰 생성 및 반환
+                    LoginResponseDto result = LoginResponseDto.builder()
+                            .token(token)
+                            .name(customer.getName())
+                            .userId(customer.getCustomerId())
+                            .build();
+
                     return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(new CommonResDto<>(1, "고객 로그인 및 토큰 발급 완료", token));
+                            .body(new CommonResDto<>(1, "고객 로그인 및 토큰 발급 완료", result));
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
                             .body(new CommonResDto<>(-1, "고객 정보를 찾을 수 없습니다", "해당 사용자를 찾을 수 없습니다"));
