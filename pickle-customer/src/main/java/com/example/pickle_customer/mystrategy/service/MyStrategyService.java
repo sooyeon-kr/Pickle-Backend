@@ -55,7 +55,9 @@ public class MyStrategyService {
 
         MyStrategy checkMyStrategy = myStrategyRepository.findByAccount(account).orElse(null);
         if (checkMyStrategy != null) {
-            throw new ConflictMyStrategyException("conflict with exist my strategy");
+            return CreateMyStrategyDto.Response.builder()
+                    .createdMyStrategyId(checkMyStrategy.getId())
+                    .build();
         }
 
         MyStrategy myStrategy = MyStrategy.builder()

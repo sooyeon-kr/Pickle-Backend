@@ -35,6 +35,7 @@ public class PortfolioResDTO {
         private double ratio;
         private String themeName;
         private double purchaseAmount;
+        private String categoryName;
 
 
     }
