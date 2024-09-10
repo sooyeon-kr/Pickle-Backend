@@ -25,7 +25,8 @@ public class OrderController {
     }
     @GetMapping("/products/{strategyId}")
     public List<OrderProductsResDTO> getProducts(@PathVariable("strategyId") int strategyId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        AccountResponseDto accountResponseDto = accountService.myAsset(token);
+        String actualToken = token.replace("Bearer ", "");
+        AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
         int accountId = accountResponseDto.getAccountId();
         return orderService.getProducts(strategyId, accountId);
     }

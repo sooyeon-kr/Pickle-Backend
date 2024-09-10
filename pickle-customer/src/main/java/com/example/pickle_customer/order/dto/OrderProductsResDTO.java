@@ -24,6 +24,7 @@ public class OrderProductsResDTO {
         private String name;
         private double ratio;
         private double myStrategyRatio;
+        private String categoryName;
 
     }
 }

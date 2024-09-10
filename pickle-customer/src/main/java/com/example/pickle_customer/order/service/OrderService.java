@@ -92,7 +92,8 @@ public class OrderService {
                 OrderProductsResDTO.ProductDto.ProductDtoBuilder productDtoBuilder = OrderProductsResDTO.ProductDto.builder()
                         .code(product.getCode())
                         .name(product.getName())
-                        .ratio(product.getRatio());
+                        .ratio(product.getRatio())
+                        .categoryName(category.getCategoryName());
                 MyStrategyProductComposition matchedMyProduct = findMatchingMyProduct(myCategories, category, product);
                 if (matchedMyProduct != null) {
                     productDtoBuilder
@@ -113,6 +114,7 @@ public class OrderService {
                                 .name(myProduct.getProductName())
                                 .ratio(0.0)
                                 .myStrategyRatio(myProduct.getRatio())
+                                .categoryName(myProduct.getCategoryName())
                                 .build();
 
                         productList.add(productDTO);
@@ -206,7 +208,9 @@ public class OrderService {
                         .name(productComposition.getProductName())
                         .code(productComposition.getProductCode())
                         .ratio(productComposition.getRatio())
+                        .categoryName(productComposition.getCategoryName())
                         .themeName(productComposition.getThemeName());
+
 
                 if (productInAccount != null) {
                     productBuilder
