@@ -161,6 +161,7 @@ public class PbConsultingService {
     protected boolean sendMessageToMQ(ConsultingHistory consultingHistory) {
     try {
         Map<String, String> message = new HashMap<>();
+        message.put("consultingHistoryId", String.valueOf(consultingHistory.getId()));
         message.put("roomId", consultingHistory.getRoomId());
         message.put("date", String.valueOf(consultingHistory.getDate()));
         message.put("pbBranchOffice", consultingHistory.getPbBranchOffice());
