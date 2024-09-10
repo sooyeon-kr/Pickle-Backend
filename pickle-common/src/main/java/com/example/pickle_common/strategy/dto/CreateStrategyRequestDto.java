@@ -34,7 +34,7 @@ public class CreateStrategyRequestDto {
         private String category;
 
         @Positive
-        private int categoryRatio;
+        private double categoryRatio;
 
         private List<@Valid ProductDto> productList;
     }
@@ -48,7 +48,7 @@ public class CreateStrategyRequestDto {
         private String name;
 
         @Positive
-        private int ratio;
+        private double ratio;
 
         @NotBlank
         private String themeName;
