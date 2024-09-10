@@ -14,7 +14,8 @@ spring:
   jpa:
     properties:
       hibernate:
-#        ddl-auto: update
+#        ddl-auto: create
+
   transaction:
     jta:
       platform: org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform
@@ -39,18 +40,18 @@ cloud:
     s3:
       bucket: ${AWS_S3_BUCKET_NAME}
 
-logging:
-  level:
-    root: INFO
-    com.example.pickle_common.consulting.service: INFO  # CustomerConsultingService가 있는 패키지
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/application.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/application-%d{yyyy-MM-dd}.%i.log
-      max-file-size: 10MB
-      max-history: 30
-      total-size-cap: 3GB
+#logging:
+#  level:
+#    root: INFO
+#    com.example.pickle_common.consulting.service: INFO  # CustomerConsultingService가 있는 패키지
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+#    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+#  file:
+#    name: logs/application.log
+#  logback:
+#    rollingpolicy:
+#      file-name-pattern: logs/application-%d{yyyy-MM-dd}.%i.log
+#      max-file-size: 10MB
+#      max-history: 30
+#      total-size-cap: 3GB
