@@ -2,10 +2,7 @@ package com.example.pickle_pb.pb.controller;
 
 
 import com.example.pickle_pb.pb.auth.JwtService;
-import com.example.pickle_pb.pb.dto.PbJoinDto;
-import com.example.pickle_pb.pb.dto.PbLoginDto;
-import com.example.pickle_pb.pb.dto.PbProfileRequestDto;
-import com.example.pickle_pb.pb.dto.ReadPbResponseDto;
+import com.example.pickle_pb.pb.dto.*;
 import com.example.pickle_pb.pb.entity.Pb;
 import com.example.pickle_pb.pb.repository.PbRepository;
 import com.example.pickle_pb.pb.service.PbService;
@@ -68,8 +65,14 @@ public class PbController {
             if (pbOptional.isPresent()) {
                 Pb pb = pbOptional.get();
                 String token = pbService.generateToken(pb.getId());
+                PbLoginResponseDto result = PbLoginResponseDto.builder()
+                        .token(token)
+                        .pbId(pb.getId())
+                        .name(pb.getUsername())
+                        .build();
+
                 return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(new CommonResDto<>(1, "PB 로그인 및 토큰 발급 완료", token));
+                        .body(new CommonResDto<>(1, "PB 로그인 및 토큰 발급 완료", result));
             }else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new CommonResDto<>(-1, "PB 정보를 찾을 수 없습니다", "해당 사용자를 찾을 수 없습니다"));
