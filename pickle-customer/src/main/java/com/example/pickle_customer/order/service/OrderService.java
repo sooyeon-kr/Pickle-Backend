@@ -57,7 +57,9 @@ public class OrderService {
 
     public List<OrderProductsResDTO> getProducts(Integer strategyId, Integer accountId) {
         List<OrderProductsResDTO> responseList = new ArrayList<>();
-        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
+        RestClient restClient = RestClient.builder()
+                .baseUrl("http://13.125.73.116:8004/api/pickle-common/inner/strategy").build();
+//        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
         RestClientDto.ReadStrategyResponseDto curStrategy = restClient.get()
                 .uri("/{strategyId}", strategyId)
                 .retrieve()
