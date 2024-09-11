@@ -1,9 +1,6 @@
 package com.example.pickle_common.consulting.service;
 
-import com.example.pickle_common.consulting.dto.ConsultingRejectInfoDto;
-import com.example.pickle_common.consulting.dto.CreateRequestLetterRequest;
-import com.example.pickle_common.consulting.dto.CreateRequestLetterResponse;
-import com.example.pickle_common.consulting.dto.CustomerConsultingResponse;
+import com.example.pickle_common.consulting.dto.*;
 import com.example.pickle_common.consulting.entity.*;
 import com.example.pickle_common.consulting.repository.ConsultingHistoryRepository;
 import com.example.pickle_common.consulting.repository.ConsultingRejectInfoRepository;
@@ -12,11 +9,15 @@ import com.example.pickle_common.mq.MessageQueueService;
 import com.example.real_common.config.RabbitMQConfig;
 import com.example.real_common.global.exception.error.UnableToCreateRequestLetterDuoToMqFailure;
 import com.example.real_common.global.exception.error.UnexpectedServiceException;
+import com.example.real_common.global.restClient.CustomRestClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -34,18 +35,58 @@ public class CustomerConsultingService {
     private final ConsultingRejectInfoRepository consultingRejectInfoRepository;
     private final MessageQueueService messageQueueService;
 
+    @Value("${PICKLE_PB_URL}")
+    private String PICKLE_PB_URL;
+    @Value("${PICKLE_CUS_URL}")
+    private String PICKLE_CUS_URL;
+
     @Transactional
     public CreateRequestLetterResponse createRequestLetter(String authorizationHeader, CreateRequestLetterRequest requestDto) {
         Instant start = Instant.now();
 
         String pbNumber = requestDto.getPbInfo().getPbNumber();
-        int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
-        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
-        String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
 
-        if (pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName.equals(RabbitMQConfig.UNKNOWN_CUSTOMER)) {
-            throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
-        }
+        RestClient pbRestClient = RestClient.builder()
+//                .baseUrl(PICKLE_PB_URL)
+                .baseUrl("http://localhost:8002")
+                .build();
+
+        RestClient cusRestClient = RestClient.builder()
+//                .baseUrl(PICKLE_CUS_URL)
+                .baseUrl("http://localhost:8003")
+                .build();
+
+        RestClientDto.ResponseGetPBIdByPbNumber pbIdByPbNumber = pbRestClient.get()
+                .uri("/api/pickle-pb/inner/{pbNumber}/id", pbNumber)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(RestClientDto.ResponseGetPBIdByPbNumber.class);
+
+        int pbId = pbIdByPbNumber.getPbId();
+
+//        String token = authorizationHeader.substring(7);
+        int customerId = cusRestClient.get()
+                .uri("/api/pickle-customer/getcustomerid")
+                .header("Authorization", authorizationHeader)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(RestClientDto.ReadCusIdResponseDto.class).getCustomerId();
+
+        String customerName = cusRestClient.get()
+                .uri("/api/pickle-customer/getcustomerName")
+                .header("Authorization", authorizationHeader)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(RestClientDto.ReadCusNameResponseDto.class).getCustomerName();
+
+//        int pbId = messageQueueService.getPbIdByPbNumberbySync(pbNumber);
+//        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
+//        String customerName = messageQueueService.getCustomerNameByCustomerToken(authorizationHeader);
+//
+//        if (pbId == RabbitMQConfig.INVALID_VALUE || customerId == RabbitMQConfig.INVALID_VALUE || customerName.equals(RabbitMQConfig.UNKNOWN_CUSTOMER)) {
+//            throw new UnableToCreateRequestLetterDuoToMqFailure(String.format("{} {} {}", pbId, customerId, customerName));
+//        }
+
         ConsultingHistory consultingHistory = ConsultingHistory.builder()
                 .customerId(customerId)
                 .customerName(customerName)

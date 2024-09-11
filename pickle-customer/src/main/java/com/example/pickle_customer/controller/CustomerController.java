@@ -4,6 +4,7 @@ import com.example.pickle_customer.auth.JwtService;
 import com.example.pickle_customer.dto.CustomerJoinDto;
 import com.example.pickle_customer.dto.CustomerLoginDto;
 import com.example.pickle_customer.dto.LoginResponseDto;
+import com.example.pickle_customer.dto.RestClientDto;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.CustomerRepository;
 import com.example.pickle_customer.service.AccountService;
@@ -12,6 +13,7 @@ import com.example.pickle_customer.service.ProductService;
 
 import com.example.real_common.global.common.CommonResDto;
 import com.example.real_common.global.exception.error.DuplicateUserIdException;
+import com.example.real_common.global.exception.error.NotFoundAccountException;
 import io.jsonwebtoken.Jwts;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class CustomerController {
     private final ProductService productService;
     private final CustomerRepository customerRepository;
     private final JwtService jwtService;
+
 
     // 생성자 주입 사용
     @Autowired
@@ -145,12 +148,33 @@ public class CustomerController {
 
     // 고객 ID 조회
     @GetMapping("/api/pickle-customer/getcustomerid")
-    public String getCustomerId(@RequestHeader("Authorization") String token) {
+    public RestClientDto.ReadCusIdResponseDto getCustomerId(@RequestHeader("Authorization") String token) {
         try {
             String jwtToken = token.substring(7); // "Bearer " 제거
-            return jwtService.extractUsername(jwtToken);
+            return RestClientDto.ReadCusIdResponseDto.builder()
+                    .customerId(Integer.parseInt(jwtService.extractUsername(jwtToken)))
+                    .build();
         } catch (Exception e) {
-            return "Invalid Token";
+            return RestClientDto.ReadCusIdResponseDto.builder().build();
         }
     }
+
+    @GetMapping("/api/pickle-customer/getcustomerName")
+    public RestClientDto.ReadCusNameResponseDto getCustomerName(@RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);
+            String customerName = customerRepository.findById(Integer.parseInt(jwtService.extractUsername(jwtToken)))
+                    .orElseThrow(()-> new NotFoundAccountException("not found cus"))
+                    .getName();
+
+            return RestClientDto.ReadCusNameResponseDto
+                    .builder()
+                    .customerName(customerName)
+                    .build();
+        } catch (Exception e) {
+            return RestClientDto.ReadCusNameResponseDto
+                    .builder().build();
+        }
+    }
+
 }
