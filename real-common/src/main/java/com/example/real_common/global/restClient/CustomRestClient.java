@@ -8,7 +8,7 @@ public class CustomRestClient {
 
     public static RestClient connectPb(String path) {
         return RestClient.builder()
-                .baseUrl(baseUrl + ":8002/api/pickle-pb" + path)
+                .baseUrl(path)
                 .build();
     }
 

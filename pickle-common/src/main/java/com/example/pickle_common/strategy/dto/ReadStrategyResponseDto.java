@@ -23,10 +23,32 @@ public class ReadStrategyResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StrategyInfoDto {
+        private int id;
         private String name;
         private String pbName;
         private String pbBranchOffice;
         private LocalDateTime createdAt;
-        private List<String> categoryComposition;
+        private List<ReadDetailStrategyResponseDto.CategoryDto> categoryList;
     }
+
+        @Builder
+        @AllArgsConstructor
+        @Getter
+        @NoArgsConstructor
+        public static class CategoryDto {
+            private String categoryName;
+            private double categoryRatio;
+            private List<ReadDetailStrategyResponseDto.ProductDto> productList;
+        }
+
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        @NoArgsConstructor
+        public static class ProductDto {
+            private String code;
+            private String name;
+            private String themeName;
+            private double ratio;
+        }
 }
