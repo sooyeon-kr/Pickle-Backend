@@ -27,4 +27,6 @@ public class RestClientDto {
         private int strategyId;
         private List<ReadDetailStrategyResponseDto.CategoryDto> categoryList;
     }
+
+
 }
