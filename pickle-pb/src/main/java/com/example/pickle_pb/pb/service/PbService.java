@@ -192,4 +192,13 @@ public class PbService {
     public Optional<Pb> find(String id){
         return pbRepository.findByPbNumber(id);
     }
+
+    public int getPbIdByPbNumber(String pbNumber) {
+        Pb existPb = pbRepository.findByPbNumber(pbNumber)
+                .orElseThrow(() -> new NotFoundAccountException("not found pb by pbnumber : " + pbNumber));
+
+        return existPb.getId();
+    }
+
+
 }
