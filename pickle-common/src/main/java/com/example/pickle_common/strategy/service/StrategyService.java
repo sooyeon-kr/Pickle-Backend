@@ -98,6 +98,10 @@ public class StrategyService {
     public ReadStrategyResponseDto readStrategy(String authorizationHeader, int customerId) {
 //        int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
 //        int customerId = 1;
+//        if (customerId == -1) {
+//            throw new NotFoundAccountException("not found user account, customerId : " + customerId);
+//        }
+
 
         List<Strategy> existStrategies = strategyRepository.findAllByCustomerId(customerId);
 
