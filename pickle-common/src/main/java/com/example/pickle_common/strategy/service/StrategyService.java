@@ -44,6 +44,8 @@ public class StrategyService {
     public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto, String authorizationHeader) {
 
         int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+//        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
+        int pbId = requestDto.getPbId();
         if (pbId == -1) {
             throw new NotFoundAccountException("not found user account");
         }
