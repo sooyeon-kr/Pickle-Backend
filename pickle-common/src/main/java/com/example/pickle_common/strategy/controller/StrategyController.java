@@ -30,7 +30,7 @@ public class StrategyController {
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<CommonResDto<?>> readStrategy(@RequestHeader("Authorization") String authorizationHeader, @RequestParam int customerId) {
+    public ResponseEntity<CommonResDto<?>> readStrategy(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int customerId) {
         ReadStrategyResponseDto result = strategyService.readStrategy(authorizationHeader, customerId);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "전략 조회 성공", result));
     }
