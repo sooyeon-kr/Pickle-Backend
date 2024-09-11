@@ -102,6 +102,7 @@ public class StrategyService {
 //            throw new NotFoundAccountException("not found user account, customerId : " + customerId);
 //        }
 
+
         List<Strategy> existStrategies = strategyRepository.findAllByCustomerId(customerId);
 
         RestClient restClient = CustomRestClient.connectPb(PICKLE_PB_URL);
