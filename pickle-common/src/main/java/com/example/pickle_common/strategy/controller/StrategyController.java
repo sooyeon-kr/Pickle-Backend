@@ -29,9 +29,9 @@ public class StrategyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResDto<>(1, "전략 생성 성공", responseDto));
     }
 
-    @GetMapping
-    public ResponseEntity<CommonResDto<?>> readStrategy(@RequestHeader("Authorization") String authorizationHeader) {
-        ReadStrategyResponseDto result = strategyService.readStrategy(authorizationHeader);
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CommonResDto<?>> readStrategy(@RequestHeader("Authorization") String authorizationHeader, @RequestParam int customerId) {
+        ReadStrategyResponseDto result = strategyService.readStrategy(authorizationHeader, customerId);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResDto<>(1, "전략 조회 성공", result));
     }
 
