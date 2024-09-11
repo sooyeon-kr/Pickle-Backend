@@ -47,13 +47,13 @@ public class CustomerConsultingService {
         String pbNumber = requestDto.getPbInfo().getPbNumber();
 
         RestClient pbRestClient = RestClient.builder()
-                .baseUrl(PICKLE_PB_URL)
-//                .baseUrl("http://localhost:8002")
+//                .baseUrl(PICKLE_PB_URL)
+                .baseUrl("http://52.79.32.38:8002")
                 .build();
 
         RestClient cusRestClient = RestClient.builder()
-                .baseUrl(PICKLE_CUS_URL)
-//                .baseUrl("http://localhost:8003")
+//                .baseUrl(PICKLE_CUS_URL)
+                .baseUrl("http://13.125.137.98:8003")
                 .build();
 
         RestClientDto.ResponseGetPBIdByPbNumber pbIdByPbNumber = pbRestClient.get()
