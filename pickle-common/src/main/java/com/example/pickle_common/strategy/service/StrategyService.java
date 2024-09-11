@@ -19,6 +19,7 @@ import com.example.real_common.stockEnum.CategoryEnum;
 import com.example.real_common.stockEnum.ThemeEnum;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -35,6 +36,9 @@ public class StrategyService {
     private final ProductRepository productRepository;
     private final ConsultingHistoryRepository consultingHistoryRepository;
     private final MessageQueueService messageQueueService;
+
+    @Value("${PICKLE_PB_URL}")
+    private String PICKLE_PB_URL;
 
     @Transactional
     public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto, String authorizationHeader) {
@@ -98,28 +102,33 @@ public class StrategyService {
 
     public ReadStrategyResponseDto readStrategy(String authorizationHeader) {
         int customerId = messageQueueService.getCustomerIdByCustomerToken(authorizationHeader);
+//        int customerId = 1;
+        if (customerId == -1) {
+            throw new NotFoundAccountException("not found user account, customerId : " + customerId);
+        }
 
         List<Strategy> existStrategies = strategyRepository.findAllByCustomerId(customerId);
 
-        RestClient restClient = CustomRestClient.connectPb("/inner");
+        RestClient restClient = CustomRestClient.connectPb(PICKLE_PB_URL);
 
         List<ReadStrategyResponseDto.StrategyInfoDto> strategyList = existStrategies.stream()
                 .map(existStrategy -> {
+                    int curpbId = existStrategy.getPbId();
                     RestClientDto.PbInfoRequestDto pbInfo = restClient.get()
-                            .uri("/{pbId}", existStrategy.getPbId())
+                            .uri("/api/pickle-pb/inner/{curpbId}", curpbId)
                             .accept(MediaType.APPLICATION_JSON)
                             .retrieve()
                             .body(RestClientDto.PbInfoRequestDto.class);
 
-                    List<String> curCategoryComposition = categoryCompositionRepository.findByStrategy_strategyId(existStrategy.getStrategyId()).stream()
-                            .map(CategoryComposition::getCategoryName).toList();
+                    List<ReadDetailStrategyResponseDto.CategoryDto> categoryDtoList = getCategoryDtoList(existStrategy.getStrategyId());
 
                     return ReadStrategyResponseDto.StrategyInfoDto.builder()
+                            .id(existStrategy.getStrategyId())
                             .name(existStrategy.getName())
                             .pbName(pbInfo.getName())
                             .pbBranchOffice(pbInfo.getBranchOffice())
                             .createdAt(existStrategy.getCreatedAt())
-                            .categoryComposition(curCategoryComposition)
+                            .categoryList(categoryDtoList)
                             .build();
                 }).toList();
 
