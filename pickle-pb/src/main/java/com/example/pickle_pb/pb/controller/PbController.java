@@ -95,12 +95,6 @@ public class PbController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("/api/pickle-pb/inner/{pbNumber}/id")
-    public ResponseEntity<?> getPbIdByNumber(@PathVariable("pbNumber") String pbNumber) {
-        int pbId = pbService.getPbIdByPbNumber(pbNumber);
-        return ResponseEntity.status(HttpStatus.OK).body(pbId);
-    }
-
     @PostMapping("/api/pickle-pb/profile")
     public ResponseEntity<CommonResDto<?>> postProfile(@RequestBody PbProfileRequestDto pbProfileRequestDto,
                                                        @RequestHeader("Authorization") String token){
@@ -134,11 +128,12 @@ public class PbController {
     }
 
     @GetMapping("/api/pickle-pb/getpbid")
-    public RestClientDto.ResponseGetPBIdByPbNumber getPbId(@RequestHeader("Authorization") String token) {
+    public String getPbId(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
+        return jwtService.extractUsername(jwtToken);
 
-        return RestClientDto.ResponseGetPBIdByPbNumber.builder()
-                .pbId(pbService.getPbIdByPbNumber(jwtToken))
-                .build();
     }
+
+
+
 }
