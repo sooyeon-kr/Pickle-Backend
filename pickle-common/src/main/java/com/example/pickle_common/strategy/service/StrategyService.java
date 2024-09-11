@@ -43,13 +43,6 @@ public class StrategyService {
     @Transactional
     public CreateStrategyResponseDto postStrategy(CreateStrategyRequestDto requestDto, String authorizationHeader) {
 
-        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
-//        int pbId = messageQueueService.getPbIdByPbToken(authorizationHeader);
-        int pbId = requestDto.getPbId();
-        if (pbId == -1) {
-            throw new NotFoundAccountException("not found user account");
-        }
-
         ConsultingHistory curConsultingHistory = consultingHistoryRepository
                 .findById(requestDto.getConsultingHistoryId())
                 .orElseThrow(()->new NotFoundConsultingHistoryException("consulting history not found with id : " + requestDto.getConsultingHistoryId()));
