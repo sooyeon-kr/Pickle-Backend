@@ -39,8 +39,9 @@ public class MyStrategyService {
 
     @Transactional
     public CreateMyStrategyDto.Response createMyStrategy(CreateMyStrategyDto.Request request) {
-        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
-
+//        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
+        RestClient restClient = RestClient.builder()
+                .baseUrl("http://13.125.73.116:8004/api/pickle-common/inner/strategy").build();
         RestClientDto.ReadStrategyResponseDto selectedStrategy = restClient.get()
                 .uri("/{strategyId}", request.getSelectedStrategyId())
                 .retrieve()
@@ -106,7 +107,9 @@ public class MyStrategyService {
 
     @Transactional
     public UpdateMyStrategyDto.Response updateMyStrategy(UpdateMyStrategyDto.Request request) {
-        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
+        RestClient restClient = RestClient.builder()
+                .baseUrl("http://13.125.73.116:8004/api/pickle-common/inner/strategy").build();
+//        RestClient restClient = CustomRestClient.connectCommon("/inner/strategy");
 
         RestClientDto.ReadStrategyResponseDto selectedStrategy = restClient.get()
                 .uri("/{strategyId}", request.getSelectedStrategyId())
