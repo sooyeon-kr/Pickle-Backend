@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerLoginDto {
-
-    private String userid;
+public class JoinReqDto {
+    private String userId;
     private String password;
+    private String username;
+    private String phoneNumber;
+    private String email;
 }

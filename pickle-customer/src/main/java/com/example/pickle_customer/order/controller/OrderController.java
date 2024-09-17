@@ -1,6 +1,6 @@
 package com.example.pickle_customer.order.controller;
 
-import com.example.pickle_customer.dto.AccountResponseDto;
+import com.example.pickle_customer.dto.AccountResDto;
 import com.example.pickle_customer.order.dto.*;
 import com.example.pickle_customer.order.service.OrderService;
 import com.example.pickle_customer.service.AccountService;
@@ -26,22 +26,22 @@ public class OrderController {
     @GetMapping("/products/{strategyId}")
     public List<OrderProductsResDTO> getProducts(@PathVariable("strategyId") int strategyId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String actualToken = token.replace("Bearer ", "");
-        AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
-        int accountId = accountResponseDto.getAccountId();
+        AccountResDto accountResDto = accountService.myAsset(actualToken);
+        int accountId = accountResDto.getAccountId();
         return orderService.getProducts(strategyId, accountId);
     }
     @PostMapping("/price")
     public PriceDTO getPrice(@RequestBody PriceDTO priceDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String actualToken = token.replace("Bearer ", "");
-        AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
-        int accountId = accountResponseDto.getAccountId();
+        AccountResDto accountResDto = accountService.myAsset(actualToken);
+        int accountId = accountResDto.getAccountId();
         return orderService.getPrice(priceDTO, accountId);
     }
     @GetMapping("/portfolio")
     public PortfolioResDTO getPortfolio(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String actualToken = token.replace("Bearer ", "");
-        AccountResponseDto accountResponseDto = accountService.myAsset(actualToken);
-        int accountId = accountResponseDto.getAccountId();
+        AccountResDto accountResDto = accountService.myAsset(actualToken);
+        int accountId = accountResDto.getAccountId();
         return orderService.getPortfolio(accountId);
     }
 

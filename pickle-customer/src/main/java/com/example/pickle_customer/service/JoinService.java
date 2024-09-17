@@ -1,7 +1,7 @@
 package com.example.pickle_customer.service;
 
 import com.example.pickle_customer.auth.JwtService;
-import com.example.pickle_customer.dto.CustomerJoinDto;
+import com.example.pickle_customer.dto.JoinReqDto;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
@@ -29,28 +29,28 @@ public class JoinService {
         this.accountRepository = accountRepository;
     }
 
-    public void joinProcess(CustomerJoinDto customerJoinDTO) {
-        String userid = customerJoinDTO.getUserid();
+    public void joinProcess(JoinReqDto joinReqDTO) {
+        String userId = joinReqDTO.getUserId();
 
         // 아이디 중복 체크
-        if (customerRepository.findByUserId(userid).isPresent()) {
-            throw new DuplicateUserIdException("이미 존재하는 아이디입니다: " + userid);
+        if (customerRepository.findByUserId(userId).isPresent()) {
+            throw new DuplicateUserIdException("이미 존재하는 아이디입니다: " + userId);
         }
 
-        String password = customerJoinDTO.getPassword();
-        String username = customerJoinDTO.getUsername();
-        String email = customerJoinDTO.getEmail();
-        String phonenumber = customerJoinDTO.getPhonenumber();
+        String password = joinReqDTO.getPassword();
+        String username = joinReqDTO.getUsername();
+        String email = joinReqDTO.getEmail();
+        String phoneNumber = joinReqDTO.getPhoneNumber();
 
         // MydataId를 찾기 위해 가장 큰 mydataId를 조회
         Integer maxMydataId = customerRepository.findMaxMydataId().orElse(0);
 
         Customer customer = Customer.builder()
-                .userId(userid)
+                .userId(userId)
                 .password(passwordEncoder.encode(password))
                 .name(username)
                 .email(email)
-                .phoneNumber(phonenumber)
+                .phoneNumber(phoneNumber)
                 .mydataId(maxMydataId + 1) // mydataId를 현재 가장 큰 값에서 1 증가시켜 설정
                 .build();
 
@@ -78,8 +78,8 @@ public class JoinService {
         return String.format("%03d-%06d-%02d-%03d", part1, part2, part3, part4);
     }
 
-    public String generateToken(int customerid) {
-        return jwtService.generateToken(customerid);
+    public String generateToken(int customerId) {
+        return jwtService.generateToken(customerId);
     }
 
     public void validateToken(String token) {

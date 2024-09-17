@@ -1,7 +1,7 @@
 package com.example.pickle_customer.service;
 
 import com.example.pickle_customer.auth.JwtService;
-import com.example.pickle_customer.dto.ProductResponseDto;
+import com.example.pickle_customer.dto.ProductResDto;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.entity.ProductInAccount;
@@ -32,7 +32,7 @@ public class ProductService {
     }
 
 
-    public List<ProductResponseDto> myProudcts(String token) {
+    public List<ProductResDto> myProudcts(String token) {
 
         // JWT 토큰에서 username 추출
         String userid = jwtService.extractUsername(token);
@@ -54,7 +54,7 @@ public class ProductService {
                     System.out.println("Product Name: " + productInAccount.getProductName());
                     System.out.println("Product Code: " + productInAccount.getProductCode());
                 })
-                .map(productInAccount -> new ProductResponseDto(
+                .map(productInAccount -> new ProductResDto(
                         productInAccount.getAccount().getAccountId(),
                         productInAccount.getProductName(),
                         productInAccount.getProductCode(),

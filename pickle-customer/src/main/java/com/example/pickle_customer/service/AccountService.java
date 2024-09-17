@@ -1,7 +1,7 @@
 package com.example.pickle_customer.service;
 
 import com.example.pickle_customer.auth.JwtService;
-import com.example.pickle_customer.dto.AccountResponseDto;
+import com.example.pickle_customer.dto.AccountResDto;
 import com.example.pickle_customer.entity.Account;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.AccountRepository;
@@ -23,7 +23,7 @@ public class AccountService {
         this.jwtService = jwtService;
     }
 
-    public AccountResponseDto myAsset(String token) {
+    public AccountResDto myAsset(String token) {
         // JWT 토큰에서 username 추출
         String userid = jwtService.extractUsername(token);
         System.out.println(userid +"22");
@@ -35,7 +35,7 @@ public class AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         // Account 엔티티를 AccountResponseDto로 변환하여 반환
-        return new AccountResponseDto(
+        return new AccountResDto(
                 account.getAccountId(),
                 account.getAccountNumber(),
                 account.getBalance(),

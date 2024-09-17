@@ -1,9 +1,9 @@
 package com.example.pickle_customer.controller;
 
 import com.example.pickle_customer.auth.JwtService;
-import com.example.pickle_customer.dto.CustomerJoinDto;
-import com.example.pickle_customer.dto.CustomerLoginDto;
-import com.example.pickle_customer.dto.LoginResponseDto;
+import com.example.pickle_customer.dto.JoinReqDto;
+import com.example.pickle_customer.dto.LoginReqDto;
+import com.example.pickle_customer.dto.LoginResDto;
 import com.example.pickle_customer.dto.RestClientDto;
 import com.example.pickle_customer.entity.Customer;
 import com.example.pickle_customer.repository.CustomerRepository;
@@ -14,10 +14,9 @@ import com.example.pickle_customer.service.ProductService;
 import com.example.real_common.global.common.CommonResDto;
 import com.example.real_common.global.exception.error.DuplicateUserIdException;
 import com.example.real_common.global.exception.error.NotFoundAccountException;
-import io.jsonwebtoken.Jwts;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,9 +54,9 @@ public class CustomerController {
 
     // 회원가입 처리
     @PostMapping("/api/pickle-customer/join")
-    public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody CustomerJoinDto customerJoinDTO) {
+    public ResponseEntity<CommonResDto<?>> joinProcess(@RequestBody JoinReqDto joinReqDTO) {
         try {
-            joinService.joinProcess(customerJoinDTO);
+            joinService.joinProcess(joinReqDTO);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new CommonResDto<>(1, "고객 회원가입 완료", "환영합니다!"));
         } catch (DuplicateUserIdException e) {
@@ -68,16 +67,16 @@ public class CustomerController {
 
     // 토큰 발급
     @PostMapping("/api/pickle-customer/token")
-    public ResponseEntity<CommonResDto<?>> getToken(@RequestBody CustomerLoginDto authRequest) {
+    public ResponseEntity<CommonResDto<?>> getToken(@RequestBody LoginReqDto authRequest) {
         // 1. 인증 처리
         try {
             Authentication authenticate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUserid(), authRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(authRequest.getUserId(), authRequest.getPassword())
             );
 
             if (authenticate.isAuthenticated()) {
                 // 2. userid로 고객 정보 조회
-                Optional<Customer> customerOptional = joinService.find(authRequest.getUserid());
+                Optional<Customer> customerOptional = joinService.find(authRequest.getUserId());
 
                 if (customerOptional.isPresent()) {
                     Customer customer = customerOptional.get();
@@ -86,7 +85,7 @@ public class CustomerController {
                     String token = joinService.generateToken(customer.getCustomerId());
 
                     // 5. 성공적으로 토큰 생성 및 반환
-                    LoginResponseDto result = LoginResponseDto.builder()
+                    LoginResDto result = LoginResDto.builder()
                             .token(token)
                             .name(customer.getName())
                             .userId(customer.getCustomerId())

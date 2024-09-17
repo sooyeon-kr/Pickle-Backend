@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponseDto {
+public class ProductResDto {
 
     private int accountId;
     private String productName;
@@ -19,6 +19,6 @@ public class ProductResponseDto {
     private String categoryName;
 
 
-    public ProductResponseDto(int accountId, String productName, String productCode, int heldQuantity, long purchaseAmount, long evaluationAmount, long profitAmount, double profitMargin, String categoryName, String themeName) {
+    public ProductResDto(int accountId, String productName, String productCode, int heldQuantity, long purchaseAmount, long evaluationAmount, long profitAmount, double profitMargin, String categoryName, String themeName) {
     }
 }

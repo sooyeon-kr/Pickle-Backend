@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountResponseDto {
+public class AccountResDto {
 
     private int accountId;
     private String accountNumber;
